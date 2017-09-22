@@ -22,6 +22,13 @@ public class OmniDrive extends OpMode
     /*
      * Code to run ONCE when the driver hits INIT
      */
+    public void strafe(boolean strafe){
+        FR.setDirection(strafe ? DcMotor.Direction.FORWARD : DcMotor.Direction.REVERSE);
+        FL.setDirection(strafe ? DcMotor.Direction.FORWARD : DcMotor.Direction.FORWARD);
+        BR.setDirection(strafe ? DcMotor.Direction.REVERSE : DcMotor.Direction.REVERSE);
+        BL.setDirection(strafe ? DcMotor.Direction.REVERSE : DcMotor.Direction.FORWARD);
+    }
+
     @Override
     public void init() {
         telemetry.addData("Status", "Initialized");
@@ -36,10 +43,7 @@ public class OmniDrive extends OpMode
 
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
-        FR.setDirection(DcMotor.Direction.REVERSE);
-        FL.setDirection(DcMotor.Direction.FORWARD);
-        BR.setDirection(DcMotor.Direction.REVERSE);
-        BL.setDirection(DcMotor.Direction.FORWARD);
+        strafe(false);
 
         // Tell the driver that initialization is complete.
         telemetry.addData("Status", "Initialized");
@@ -81,11 +85,8 @@ public class OmniDrive extends OpMode
         double turn  = -gamepad1.right_stick_x;
 
         if(Math.abs(drive_y) > .3) {
-            telemetry.addData("Status", "drive");
-            FR.setDirection(DcMotor.Direction.REVERSE);
-            FL.setDirection(DcMotor.Direction.FORWARD);
-            BR.setDirection(DcMotor.Direction.REVERSE);
-            BL.setDirection(DcMotor.Direction.FORWARD);
+            telemetry.addData("Status", "Driving");
+            strafe(false);
 
             leftPower    = Range.clip(drive_y + turn, -1.0, 1.0) ;
             rightPower   = Range.clip(drive_y - turn, -1.0, 1.0) ;
@@ -95,11 +96,8 @@ public class OmniDrive extends OpMode
             FR.setPower(rightPower);
             BR.setPower(rightPower);
         } else if (Math.abs(drive_x) > .3) {
-            telemetry.addData("Status", "strafe");
-            FR.setDirection(DcMotor.Direction.FORWARD);
-            FL.setDirection(DcMotor.Direction.FORWARD);
-            BR.setDirection(DcMotor.Direction.REVERSE);
-            BL.setDirection(DcMotor.Direction.REVERSE);
+            telemetry.addData("Status", "Strafing");
+            strafe(true);
 
             leftPower    = Range.clip(drive_x + turn, -1.0, 1.0) ;
             rightPower   = Range.clip(drive_x - turn, -1.0, 1.0) ;
@@ -109,11 +107,8 @@ public class OmniDrive extends OpMode
             FR.setPower(leftPower);
             BR.setPower(rightPower);
         } else {
-            telemetry.addData("Status", "else");
-            FR.setDirection(DcMotor.Direction.REVERSE);
-            FL.setDirection(DcMotor.Direction.FORWARD);
-            BR.setDirection(DcMotor.Direction.REVERSE);
-            BL.setDirection(DcMotor.Direction.FORWARD);
+            telemetry.addData("Status", "Turning");
+            strafe(false);
 
             leftPower = Range.clip(turn, -1.0, 1.0) ;
             rightPower = Range.clip(-turn, -1.0, 1.0) ;
