@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
@@ -17,6 +18,8 @@ public class OmniDrive extends OpMode
     private DcMotor FL = null;
     private DcMotor BR = null;
     private DcMotor BL = null;
+    private Servo SL = null;
+    private Servo SR = null;
 
 
     /*
@@ -40,6 +43,8 @@ public class OmniDrive extends OpMode
         FL = hardwareMap.get(DcMotor.class, "FL");
         BR  = hardwareMap.get(DcMotor.class, "BR");
         BL = hardwareMap.get(DcMotor.class, "BL");
+        SR  = hardwareMap.get(Servo.class, "SR");
+        SL = hardwareMap.get(Servo.class, "SL");
 
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
@@ -72,19 +77,25 @@ public class OmniDrive extends OpMode
         // Setup a variable for each drive wheel to save power level for telemetry
         double leftPower;
         double rightPower;
+        double scale = (gamepad1.right_bumper ? .3 : .7);
 
         // Choose to drive using either Tank Mode, or POV Mode
         // Comment out the method that's not used.  The default below is POV.
 
         // POV Mode uses left stick to go forward, and right stick to turn.
         // - This uses basic math to combine motions and is easier to drive straight.
-        double drive_y = gamepad1.left_stick_y;
-        double drive_x = -gamepad1.left_stick_x;
+        double drive_y = -gamepad1.left_stick_y;
+        double drive_x = gamepad1.left_stick_x;
         telemetry.addData("drive_y", drive_y);
         telemetry.addData("drive_x", drive_x);
-        double turn  = -gamepad1.right_stick_x;
+        double turn  = gamepad1.right_stick_x*scale;
+        telemetry.addData("turn", turn);
 
-        if(Math.abs(drive_y) > .3) {
+        if(Math.abs(turn) < .2) {
+            turn = 0;
+        }
+
+        if(Math.abs(drive_y) > .2) {
             telemetry.addData("Status", "Driving");
             strafe(false);
 
@@ -95,7 +106,7 @@ public class OmniDrive extends OpMode
             BL.setPower(leftPower);
             FR.setPower(rightPower);
             BR.setPower(rightPower);
-        } else if (Math.abs(drive_x) > .3) {
+        } else if (Math.abs(drive_x) > .2) {
             telemetry.addData("Status", "Strafing");
             strafe(true);
 
