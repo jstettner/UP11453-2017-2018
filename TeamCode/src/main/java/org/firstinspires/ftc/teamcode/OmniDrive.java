@@ -78,14 +78,15 @@ public class OmniDrive extends OpMode
         double leftPower;
         double rightPower;
         double scale = (gamepad1.right_bumper ? .3 : .7);
+        double drive_scale = (gamepad1.left_bumper ? .3 : 1);
 
         // Choose to drive using either Tank Mode, or POV Mode
         // Comment out the method that's not used.  The default below is POV.
 
         // POV Mode uses left stick to go forward, and right stick to turn.
         // - This uses basic math to combine motions and is easier to drive straight.
-        double drive_y = -gamepad1.left_stick_y;
-        double drive_x = gamepad1.left_stick_x;
+        double drive_y = -gamepad1.left_stick_y*drive_scale;
+        double drive_x = gamepad1.left_stick_x*drive_scale;
         telemetry.addData("drive_y", drive_y);
         telemetry.addData("drive_x", drive_x);
         double turn  = gamepad1.right_stick_x*scale;
