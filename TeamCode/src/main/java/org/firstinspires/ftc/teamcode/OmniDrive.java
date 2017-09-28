@@ -92,6 +92,10 @@ public class OmniDrive extends OpMode
         double turn  = gamepad1.right_stick_x*scale;
         telemetry.addData("turn", turn);
 
+        // servo test
+        SR.setPosition(0);
+        SL.setPosition(0);
+
         if(Math.abs(turn) < .2) {
             turn = 0;
         }
