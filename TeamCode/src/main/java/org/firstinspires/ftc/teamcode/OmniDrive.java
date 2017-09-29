@@ -93,10 +93,6 @@ public class OmniDrive extends OpMode {
         double turn = gamepad1.right_stick_x * scale;
         telemetry.addData("turn", turn);
 
-        // servo test
-        SR.setPosition(0);
-        SL.setPosition(0);
-
         if (Math.abs(turn) < .2) {
             turn = 0;
         }
@@ -135,15 +131,24 @@ public class OmniDrive extends OpMode {
             FR.setPower(rightPower);
             BR.setPower(rightPower);
         }
-
+        if (gamepad1.left_trigger > .2) {
+            if (SR.getPosition() != .6 && SL.getPosition() != .6) {
+                SR.setPosition(.3);
+                SL.setPosition(.8);
+            }
+        } else {
+            // servo test
+            SR.setPosition(1);
+            SL.setPosition(.2);
+        }
         // Raise or lower the lift
-        boolean dpDown = gamepad2.dpad_down;
-        boolean dpUp = gamepad2.dpad_up;
+        boolean dpDown = gamepad1.dpad_down;
+        boolean dpUp = gamepad1.dpad_up;
 
-        if (dpDown && !dpUp) {
+        if (dpUp && !dpDown) {
             lift.setPower(.8);
             telemetry.addData("Lift", "Lowering");
-        } else if (dpUp && !dpDown) {
+        } else if (!dpUp && dpDown) {
             lift.setPower(-.8);
             telemetry.addData("Lift", "Raising");
         } else {
