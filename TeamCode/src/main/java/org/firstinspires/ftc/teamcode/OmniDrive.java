@@ -87,7 +87,7 @@ public class OmniDrive extends OpMode {
         // POV Mode uses left stick to go forward, and right stick to turn.
         // - This uses basic math to combine motions and is easier to drive straight.
         double drive_y = -gamepad1.left_stick_y * drive_scale;
-        double drive_x = gamepad1.left_stick_x * drive_scale;
+        double drive_x = -gamepad1.left_stick_x * drive_scale;
         telemetry.addData("drive_y", drive_y);
         telemetry.addData("drive_x", drive_x);
         double turn = gamepad1.right_stick_x * scale;
