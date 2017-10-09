@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
-@TeleOp(name = "OmniDriveJack")
+@TeleOp(name = "OmniDriveMarco")
 
 public class OmniDrive extends OpMode {
     // Declare OpMode members.
@@ -19,6 +19,7 @@ public class OmniDrive extends OpMode {
     private DcMotor BL = null;
     private Servo SL = null;
     private Servo SR = null;
+    private Servo SJ = null;
     private DcMotor lift = null;
 
 
@@ -45,6 +46,7 @@ public class OmniDrive extends OpMode {
         BL = hardwareMap.get(DcMotor.class, "BL");
         SR = hardwareMap.get(Servo.class, "SR");
         SL = hardwareMap.get(Servo.class, "SL");
+        SJ = hardwareMap.get(Servo.class, "SJ");
         lift = hardwareMap.get(DcMotor.class, "lift");
 
         // Most robots need the motor on one side to be reversed to drive forward
@@ -79,7 +81,7 @@ public class OmniDrive extends OpMode {
         double leftPower;
         double rightPower;
         double scale = (gamepad1.right_bumper ? .3 : .7);
-        double drive_scale = (gamepad1.left_bumper ? .3 : 1);
+        double drive_scale = (gamepad1.right_bumper ? .3 : 1);
 
         // Choose to drive using either Tank Mode, or POV Mode
         // Comment out the method that's not used.  The default below is POV.
@@ -131,19 +133,26 @@ public class OmniDrive extends OpMode {
             FR.setPower(rightPower);
             BR.setPower(rightPower);
         }
-        if (gamepad1.left_trigger > .2) {
-            if (SR.getPosition() != .6 && SL.getPosition() != .6) {
-                SR.setPosition(.3);
+        if (gamepad2.left_trigger > .2) {
+            if (SR.getPosition() !=  0){
+                SR.setPosition(0);
                 SL.setPosition(.8);
             }
         } else {
             // servo test
-            SR.setPosition(1);
+            SR.setPosition(.9);
             SL.setPosition(.2);
         }
+        if (gamepad1.left_trigger > .2) {
+            if (SJ.getPosition() != .55) {
+                SJ.setPosition(.55);
+            }
+        } else {
+           SJ.setPosition(.3);
+        }
         // Raise or lower the lift
-        boolean dpDown = gamepad1.dpad_down;
-        boolean dpUp = gamepad1.dpad_up;
+        boolean dpDown = gamepad2.dpad_down;
+        boolean dpUp = gamepad2.dpad_up;
 
         if (dpUp && !dpDown) {
             lift.setPower(.8);
