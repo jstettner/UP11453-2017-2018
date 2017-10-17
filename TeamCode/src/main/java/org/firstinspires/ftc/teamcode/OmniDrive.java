@@ -20,10 +20,12 @@ public class OmniDrive extends OpMode {
     private DcMotor BL = null;
     private Servo SL = null;
     private Servo SR = null;
-    private Servo SJ = null;
+    private Servo JS = null;
     private DcMotor lift = null;
     ColorSensor CBR;
     ColorSensor CBL;
+    double JSdown = .6;
+    double JSup = .2;
 
 
     public void strafe(boolean strafe) {
@@ -51,8 +53,10 @@ public class OmniDrive extends OpMode {
         CBL = hardwareMap.get(ColorSensor.class, "CBL");
         SR = hardwareMap.get(Servo.class, "SR");
         SL = hardwareMap.get(Servo.class, "SL");
-        SJ = hardwareMap.get(Servo.class, "SJ");
+        JS = hardwareMap.get(Servo.class, "JS");
         lift = hardwareMap.get(DcMotor.class, "lift");
+
+        JS.setPosition(JSdown);
 
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
@@ -152,7 +156,7 @@ public class OmniDrive extends OpMode {
             SL.setPosition(.2);
         }
         if (gamepad1.left_trigger > .2) {
-            if (SJ.getPosition() != .55) {
+            if (JS.getPosition() != .55) {
             //    SJ.setPosition(.55);
             }
         } else {
