@@ -80,8 +80,8 @@ public class OmniDrive extends OpMode {
         // Setup a variable for each drive wheel to save power level for telemetry
         double leftPower;
         double rightPower;
-        double scale = (gamepad1.right_bumper ? .3 : .7);
-        double drive_scale = (gamepad1.right_bumper ? .3 : 1);
+        double scale = (gamepad1.right_bumper ? .5 : .7);
+        double drive_scale = (gamepad1.right_bumper ? .5 : 1);
 
         // Choose to drive using either Tank Mode, or POV Mode
         // Comment out the method that's not used.  The default below is POV.
@@ -145,10 +145,10 @@ public class OmniDrive extends OpMode {
         }
         if (gamepad1.left_trigger > .2) {
             if (SJ.getPosition() != .55) {
-                SJ.setPosition(.55);
+            //    SJ.setPosition(.55);
             }
         } else {
-           SJ.setPosition(.3);
+          // SJ.setPosition(.3);
         }
         // Raise or lower the lift
         boolean dpDown = gamepad2.dpad_down;
