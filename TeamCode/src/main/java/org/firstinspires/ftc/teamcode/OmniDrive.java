@@ -4,11 +4,12 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
-@TeleOp(name = "OmniDriveMarco")
+@TeleOp(name = "OmniDriveJack")
 
 public class OmniDrive extends OpMode {
     // Declare OpMode members.
@@ -21,6 +22,8 @@ public class OmniDrive extends OpMode {
     private Servo SR = null;
     private Servo SJ = null;
     private DcMotor lift = null;
+    ColorSensor CBR;
+    ColorSensor CBL;
 
 
     public void strafe(boolean strafe) {
@@ -44,6 +47,8 @@ public class OmniDrive extends OpMode {
         FL = hardwareMap.get(DcMotor.class, "FL");
         BR = hardwareMap.get(DcMotor.class, "BR");
         BL = hardwareMap.get(DcMotor.class, "BL");
+        CBR = hardwareMap.get(ColorSensor.class, "CBR");
+        CBL = hardwareMap.get(ColorSensor.class, "CBL");
         SR = hardwareMap.get(Servo.class, "SR");
         SL = hardwareMap.get(Servo.class, "SL");
         SJ = hardwareMap.get(Servo.class, "SJ");
@@ -82,6 +87,9 @@ public class OmniDrive extends OpMode {
         double rightPower;
         double scale = (gamepad1.right_bumper ? .5 : .7);
         double drive_scale = (gamepad1.right_bumper ? .5 : 1);
+
+        telemetry.addData("CBR R,G,B","("+CBR.red()+", "+CBR.green()+", "+CBR.blue()+")");
+        telemetry.addData("CBL R,G,B","("+CBL.red()+", "+CBL.green()+", "+CBL.blue()+")");
 
         // Choose to drive using either Tank Mode, or POV Mode
         // Comment out the method that's not used.  The default below is POV.
