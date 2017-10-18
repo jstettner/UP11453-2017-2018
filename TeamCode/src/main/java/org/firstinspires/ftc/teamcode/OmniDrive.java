@@ -56,8 +56,6 @@ public class OmniDrive extends OpMode {
         JS = hardwareMap.get(Servo.class, "JS");
         lift = hardwareMap.get(DcMotor.class, "lift");
 
-        JS.setPosition(JSdown);
-
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
         strafe(false);
@@ -79,6 +77,24 @@ public class OmniDrive extends OpMode {
     @Override
     public void start() {
         runtime.reset();
+    }
+
+
+    // 1: red is next to CBL, 2: red is next to CBR, 0: inconclusive
+    public int get_colors() {
+        if(CBR.red() > CBL.red() && CBR.blue() < CBL.blue()) {
+            return 2;
+        } else if(CBR.red() < CBL.red() && CBR.blue() > CBL.blue()) {
+            return 1;
+        }
+
+        if(CBR.red() > CBR.blue() && CBL.red() < CBL.blue()) {
+            return 2;
+        } else if(CBL.red() > CBL.blue() && CBR.red() < CBR.blue()) {
+            return 1;
+        }
+
+        return 0;
     }
 
     /*
