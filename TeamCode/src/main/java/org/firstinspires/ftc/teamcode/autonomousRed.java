@@ -30,6 +30,13 @@ public class autonomousRed extends OpMode {
     double JSdown = .6;
     double JSup = .2;
 
+    public enum Alliance {
+        BLUE, RED
+    }
+
+    public enum Jewel_Position {
+        RED_JEWEL_LEFT, RED_JEWEL_RIGHT, BLUE_JEWEL_LEFT, BLUE_JEWEL_RIGHT, JEWEL_INCONCLUSIVE
+    }
 
     public void strafe(boolean strafe) {
         FR.setDirection(strafe ? DcMotor.Direction.FORWARD : DcMotor.Direction.REVERSE);
@@ -102,22 +109,26 @@ public class autonomousRed extends OpMode {
         }
     }
 
-
-    // 1: red is next to CBL, 2: red is next to CBR, 0: inconclusive
-    public int get_colors() {
+    /*
+   * The function currently returns the location of the Red Jewel.
+   * It can be refactored later to return a color based on the
+   * alliance, but this version makes no assumption about what jewel
+   * the user wants to know about.
+   */
+    public Jewel_Position get_colors() {
         if(CBR.red() > CBL.red() && CBR.blue() < CBL.blue()) {
-            return 2;
+            return Jewel_Position.RED_JEWEL_RIGHT;
         } else if(CBR.red() < CBL.red() && CBR.blue() > CBL.blue()) {
-            return 1;
+            return Jewel_Position.RED_JEWEL_LEFT;
         }
 
         if(CBR.red() > CBR.blue() && CBL.red() < CBL.blue()) {
-            return 2;
+            return Jewel_Position.RED_JEWEL_RIGHT;
         } else if(CBL.red() > CBL.blue() && CBR.red() < CBR.blue()) {
-            return 1;
+            return Jewel_Position.RED_JEWEL_LEFT;
         }
 
-        return 0;
+        return Jewel_Position.JEWEL_INCONCLUSIVE;
     }
 
     public void drive(double turn, double drive_x, double drive_y, double time) {
