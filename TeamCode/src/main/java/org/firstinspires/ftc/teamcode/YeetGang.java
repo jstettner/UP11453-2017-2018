@@ -17,7 +17,7 @@ public class YeetGang extends OpMode {
     @Override
     public void init() {
 
-        lift = hardwareMap.get(DcMotor.class,"jesus");
+        lift = hardwareMap.get(DcMotor.class, "jesus");
 
 
     }
@@ -28,10 +28,10 @@ public class YeetGang extends OpMode {
         double rt = gamepad1.right_trigger;
         double lt = gamepad1.left_trigger;
 
-        if(lt > .3 && rt > .3){
+        if (lt > .3 && rt > .3) {
             lift.setPower(0);
 
-        }else {
+        } else {
             if (rt < .7) {
                 lift.setPower(0);
             } else {
@@ -46,8 +46,6 @@ public class YeetGang extends OpMode {
 
             }
         }
-
-
 
 
     }

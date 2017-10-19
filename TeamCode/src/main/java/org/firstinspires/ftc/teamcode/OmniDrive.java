@@ -1,17 +1,17 @@
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.ColorSensor;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
 @TeleOp(name = "OmniDriveJack")
 
-public class OmniDrive extends OpMode {
+public class OmniDrive extends God3OpMode {
+    double JSdown = .6;
+    double JSup = .2;
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
     private DcMotor FR = null;
@@ -22,18 +22,8 @@ public class OmniDrive extends OpMode {
     private Servo SR = null;
     private Servo JS = null;
     private DcMotor lift = null;
-    ColorSensor CBR;
-    ColorSensor CBL;
-    double JSdown = .6;
-    double JSup = .2;
-
-    public enum Alliance {
-        BLUE, RED
-    }
-
-    public enum Jewel_Position {
-        RED_JEWEL_LEFT, RED_JEWEL_RIGHT, BLUE_JEWEL_LEFT, BLUE_JEWEL_RIGHT, JEWEL_INCONCLUSIVE
-    }
+    private ColorSensor CBR;
+    private ColorSensor CBL;
 
     public void strafe(boolean strafe) {
         FR.setDirection(strafe ? DcMotor.Direction.FORWARD : DcMotor.Direction.REVERSE);
@@ -87,28 +77,6 @@ public class OmniDrive extends OpMode {
     }
 
     /*
-     * The function currently returns the location of the Red Jewel.
-     * It can be refactored later to return a color based on the
-     * alliance, but this version makes no assumption about what jewel
-     * the user wants to know about.
-     */
-    public Jewel_Position get_colors() {
-        if(CBR.red() > CBL.red() && CBR.blue() < CBL.blue()) {
-            return Jewel_Position.RED_JEWEL_RIGHT;
-        } else if(CBR.red() < CBL.red() && CBR.blue() > CBL.blue()) {
-            return Jewel_Position.RED_JEWEL_LEFT;
-        }
-
-        if(CBR.red() > CBR.blue() && CBL.red() < CBL.blue()) {
-            return Jewel_Position.RED_JEWEL_RIGHT;
-        } else if(CBL.red() > CBL.blue() && CBR.red() < CBR.blue()) {
-            return Jewel_Position.RED_JEWEL_LEFT;
-        }
-
-        return Jewel_Position.JEWEL_INCONCLUSIVE;
-    }
-
-    /*
      * Code to run REPEATEDLY after the driver hits PLAY but before they hit STOP
      */
     @Override
@@ -119,8 +87,8 @@ public class OmniDrive extends OpMode {
         double scale = (gamepad1.right_bumper ? .5 : .7);
         double drive_scale = (gamepad1.right_bumper ? .5 : 1);
 
-        telemetry.addData("CBR R,G,B","("+CBR.red()+", "+CBR.green()+", "+CBR.blue()+")");
-        telemetry.addData("CBL R,G,B","("+CBL.red()+", "+CBL.green()+", "+CBL.blue()+")");
+        telemetry.addData("CBR R,G,B", "(" + CBR.red() + ", " + CBR.green() + ", " + CBR.blue() + ")");
+        telemetry.addData("CBL R,G,B", "(" + CBL.red() + ", " + CBL.green() + ", " + CBL.blue() + ")");
 
         // Choose to drive using either Tank Mode, or POV Mode
         // Comment out the method that's not used.  The default below is POV.
@@ -173,21 +141,21 @@ public class OmniDrive extends OpMode {
             BR.setPower(rightPower);
         }
         if (gamepad2.left_trigger > .2) {
-            if (SR.getPosition() !=  0){
-                SR.setPosition(0);
-                SL.setPosition(.8);
+            if (SR.getPosition() != 0) {
+                SR.setPosition(RIGHT_SERVO_CLOSED);
+                SL.setPosition(LEFT_SERVO_CLOSED);
             }
         } else {
             // servo test
-            SR.setPosition(.9);
-            SL.setPosition(.2);
+            SR.setPosition(RIGHT_SERVO_OPEN);
+            SL.setPosition(LEFT_SERVO_OPEN);
         }
         if (gamepad1.left_trigger > .2) {
             if (JS.getPosition() != .55) {
-            //    SJ.setPosition(.55);
+                //    SJ.setPosition(.55);
             }
         } else {
-          // SJ.setPosition(.3);
+            // SJ.setPosition(.3);
         }
         // Raise or lower the lift
         boolean dpDown = gamepad2.dpad_down;
