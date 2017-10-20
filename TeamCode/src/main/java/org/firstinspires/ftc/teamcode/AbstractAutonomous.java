@@ -141,8 +141,10 @@ public abstract class AbstractAutonomous extends God3OpMode {
         closeGrabber();
 
         double startTime = clock.milliseconds();
-
-        while (clock.milliseconds() - startTime < 250) {
+        while (clock.milliseconds() - startTime < 500) {
+        }
+        startTime = clock.milliseconds();
+        while (clock.milliseconds() - startTime < 500) {
             lift.setPower(.7);
         }
         lift.setPower(0);

@@ -21,7 +21,7 @@ abstract class God3OpMode extends OpMode {
     /**
      * Right servo open position
      */
-    static final double RIGHT_SERVO_OPEN = 0.9;
+    static final double RIGHT_SERVO_OPEN = 0.8;
 
     /**
      * Left servo open position

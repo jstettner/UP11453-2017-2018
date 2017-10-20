@@ -56,6 +56,7 @@ public class OmniDrive extends God3OpMode {
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
         strafe(false);
+        JS.setPosition(JSup);
 
         // Tell the driver that initialization is complete.
         telemetry.addData("Status", "Initialized");
@@ -84,8 +85,8 @@ public class OmniDrive extends God3OpMode {
         // Setup a variable for each drive wheel to save power level for telemetry
         double leftPower;
         double rightPower;
-        double scale = (gamepad1.right_bumper ? .5 : .7);
-        double drive_scale = (gamepad1.right_bumper ? .5 : 1);
+        double scale = (gamepad1.right_bumper ? .3 : .7);
+        double drive_scale = (gamepad1.right_bumper ? .3 : 1);
 
         telemetry.addData("CBR R,G,B", "(" + CBR.red() + ", " + CBR.green() + ", " + CBR.blue() + ")");
         telemetry.addData("CBL R,G,B", "(" + CBL.red() + ", " + CBL.green() + ", " + CBL.blue() + ")");
