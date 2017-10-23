@@ -168,15 +168,15 @@ public abstract class AbstractAutonomous extends God3OpMode {
 
         if (isBlue()) {
             if (get_colors() == JewelPosition.RED_JEWEL_LEFT) {
-                drive(power, 0, 0, JEWEL_TURN_TIME);
+                drive(0, .5, 0, JEWEL_TURN_TIME);
             } else if (get_colors() == JewelPosition.RED_JEWEL_RIGHT) {
-                drive(-power, 0, 0, JEWEL_TURN_TIME);
+                drive(0, -.5, 0, JEWEL_TURN_TIME);
             }
         } else {
             if (get_colors() == JewelPosition.RED_JEWEL_RIGHT) {
-                drive(power, 0, 0, JEWEL_TURN_TIME);
+                drive(0, .5, 0, JEWEL_TURN_TIME);
             } else if (get_colors() == JewelPosition.RED_JEWEL_LEFT) {
-                drive(-power, 0, 0, JEWEL_TURN_TIME);
+                drive(-0, -.5, 0, JEWEL_TURN_TIME);
             }
         }
     }
