@@ -52,6 +52,10 @@ public class OmniDrive extends God3OpMode {
         SL = hardwareMap.get(Servo.class, "SL");
         JS = hardwareMap.get(Servo.class, "JS");
         lift = hardwareMap.get(DcMotor.class, "lift");
+        FR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        FL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        BR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        BL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
 
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
@@ -97,7 +101,7 @@ public class OmniDrive extends God3OpMode {
         // POV Mode uses left stick to go forward, and right stick to turn.
         // - This uses basic math to combine motions and is easier to drive straight.
         double drive_y = -gamepad1.left_stick_y * drive_scale;
-        double drive_x = -gamepad1.left_stick_x * drive_scale;
+        double drive_x = gamepad1.left_stick_x * drive_scale;
         telemetry.addData("drive_y", drive_y);
         telemetry.addData("drive_x", drive_x);
         double turn = gamepad1.right_stick_x * scale;
