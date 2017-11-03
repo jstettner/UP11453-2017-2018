@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
@@ -30,6 +31,10 @@ public class OmniDrive extends God3OpMode {
         FL.setDirection(strafe ? DcMotor.Direction.FORWARD : DcMotor.Direction.FORWARD);
         BR.setDirection(strafe ? DcMotor.Direction.REVERSE : DcMotor.Direction.REVERSE);
         BL.setDirection(strafe ? DcMotor.Direction.REVERSE : DcMotor.Direction.FORWARD);
+        FR.setZeroPowerBehavior(ZERO_POWER_BEHAVIOR);
+        FL.setZeroPowerBehavior(ZERO_POWER_BEHAVIOR);
+        BR.setZeroPowerBehavior(ZERO_POWER_BEHAVIOR);
+        BL.setZeroPowerBehavior(ZERO_POWER_BEHAVIOR);
     }
 
     /*
@@ -52,15 +57,14 @@ public class OmniDrive extends God3OpMode {
         SL = hardwareMap.get(Servo.class, "SL");
         JS = hardwareMap.get(Servo.class, "JS");
         lift = hardwareMap.get(DcMotor.class, "lift");
-        FR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-        FL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-        BR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-        BL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
 
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
         strafe(false);
         JS.setPosition(JSup);
+
+        lift.setDirection(DcMotorSimple.Direction.FORWARD);
+        lift.setZeroPowerBehavior(ZERO_POWER_BEHAVIOR);
 
         // Tell the driver that initialization is complete.
         telemetry.addData("Status", "Initialized");

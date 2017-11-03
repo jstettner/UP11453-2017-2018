@@ -168,15 +168,15 @@ public abstract class AbstractAutonomous extends God3OpMode {
 
         if (isBlue()) {
             if (get_colors() == JewelPosition.RED_JEWEL_LEFT) {
-                drive(0, .5, 0, JEWEL_TURN_TIME);
+                drive(.5, 0, 0, JEWEL_TURN_TIME);
             } else if (get_colors() == JewelPosition.RED_JEWEL_RIGHT) {
-                drive(0, -.5, 0, JEWEL_TURN_TIME);
+                drive(-.5, 0, 0, JEWEL_TURN_TIME);
             }
         } else {
             if (get_colors() == JewelPosition.RED_JEWEL_RIGHT) {
-                drive(0, .5, 0, JEWEL_TURN_TIME);
+                drive(.5, 0, 0, JEWEL_TURN_TIME);
             } else if (get_colors() == JewelPosition.RED_JEWEL_LEFT) {
-                drive(-0, -.5, 0, JEWEL_TURN_TIME);
+                drive(-.5, 0, 0, JEWEL_TURN_TIME);
             }
         }
     }
@@ -282,14 +282,6 @@ public abstract class AbstractAutonomous extends God3OpMode {
         return getAlliance() == Alliance.BLUE;
     }
 
-    public enum Alliance {
-        BLUE, RED
-    }
-
-    public enum JewelPosition {
-        RED_JEWEL_LEFT, RED_JEWEL_RIGHT, JEWEL_INCONCLUSIVE
-    }
-
     /**
      * Close the grabber
      */
@@ -306,5 +298,13 @@ public abstract class AbstractAutonomous extends God3OpMode {
     void openGrabber() {
         SR.setPosition(RIGHT_SERVO_OPEN);
         SL.setPosition(LEFT_SERVO_OPEN);
+    }
+
+    public enum Alliance {
+        BLUE, RED
+    }
+
+    public enum JewelPosition {
+        RED_JEWEL_LEFT, RED_JEWEL_RIGHT, JEWEL_INCONCLUSIVE
     }
 }
