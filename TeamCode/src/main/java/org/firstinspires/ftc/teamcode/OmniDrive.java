@@ -90,6 +90,7 @@ public class OmniDrive extends God3OpMode {
      */
     @Override
     public void loop() {
+        JS.setPosition(JSup);
         // Setup a variable for each drive wheel to save power level for telemetry
         double leftPower;
         double rightPower;
@@ -151,24 +152,32 @@ public class OmniDrive extends God3OpMode {
         }
         if (gamepad2.left_trigger > .2) {
             if (SR.getPosition() != 0) {
-                SR.setPosition(RIGHT_SERVO_CLOSED);
-                SL.setPosition(LEFT_SERVO_CLOSED);
+                SR.setPosition(RIGHT_SERVO_OPEN);
+                SL.setPosition(LEFT_SERVO_OPEN);
             }
+
+        } else if (gamepad2.left_bumper) {
+            SL.setPosition(LEFT_SERVO_OPEN);
+        } else if (gamepad2.right_bumper) {
+            SR.setPosition(RIGHT_SERVO_OPEN);
         } else {
             // servo test
-            SR.setPosition(RIGHT_SERVO_OPEN);
-            SL.setPosition(LEFT_SERVO_OPEN);
+            SR.setPosition(RIGHT_SERVO_CLOSED);
+            SL.setPosition(LEFT_SERVO_CLOSED);
         }
-        if (gamepad1.left_trigger > .2) {
-            if (JS.getPosition() != .55) {
-                //    SJ.setPosition(.55);
-            }
-        } else {
-            // SJ.setPosition(.3);
-        }
+
         // Raise or lower the lift
         boolean dpDown = gamepad2.dpad_down;
         boolean dpUp = gamepad2.dpad_up;
+
+        if(gamepad2.right_trigger > .2) {
+            if (SR.getPosition() != RIGHT_SERVO_FLAT) {
+                SR.setPosition(RIGHT_SERVO_FLAT);
+            }
+            if (SL.getPosition() != LEFT_SERVO_FLAT) {
+                SL.setPosition(LEFT_SERVO_FLAT);
+            }
+        }
 
         if (dpUp && !dpDown) {
             lift.setPower(.8);
