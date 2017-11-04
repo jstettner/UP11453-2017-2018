@@ -151,15 +151,27 @@ public class OmniDrive extends God3OpMode {
             BR.setPower(rightPower);
         }
         if (gamepad2.left_trigger > .2) {
-            if (SR.getPosition() != 0) {
+            if (SR.getPosition() != RIGHT_SERVO_OPEN) {
                 SR.setPosition(RIGHT_SERVO_OPEN);
                 SL.setPosition(LEFT_SERVO_OPEN);
             }
-
+        } else if(gamepad2.right_trigger > .2) {
+            if (SR.getPosition() != RIGHT_SERVO_FLAT) {
+                SR.setPosition(RIGHT_SERVO_FLAT);
+            }
+            if (SL.getPosition() != LEFT_SERVO_FLAT) {
+                SL.setPosition(LEFT_SERVO_FLAT);
+            }
         } else if (gamepad2.left_bumper) {
-            SL.setPosition(LEFT_SERVO_OPEN);
+            if(SL.getPosition() != LEFT_SERVO_OPEN) {
+                SL.setPosition(LEFT_SERVO_OPEN);
+            }
         } else if (gamepad2.right_bumper) {
-            SR.setPosition(RIGHT_SERVO_OPEN);
+            if(SR.getPosition() != RIGHT_SERVO_OPEN) {
+                SR.setPosition(RIGHT_SERVO_OPEN);
+            }
+        } else if (gamepad2.left_bumper) {
+          SL.setPosition(LEFT_SERVO_OPEN);
         } else {
             // servo test
             SR.setPosition(RIGHT_SERVO_CLOSED);
@@ -170,14 +182,6 @@ public class OmniDrive extends God3OpMode {
         boolean dpDown = gamepad2.dpad_down;
         boolean dpUp = gamepad2.dpad_up;
 
-        if(gamepad2.right_trigger > .2) {
-            if (SR.getPosition() != RIGHT_SERVO_FLAT) {
-                SR.setPosition(RIGHT_SERVO_FLAT);
-            }
-            if (SL.getPosition() != LEFT_SERVO_FLAT) {
-                SL.setPosition(LEFT_SERVO_FLAT);
-            }
-        }
 
         if (dpUp && !dpDown) {
             lift.setPower(.8);

@@ -13,28 +13,35 @@ abstract class God3OpMode extends OpMode {
     /**
      * Right servo closed position
      */
-    static final double RIGHT_SERVO_OPEN = 0.4;
+    static final double RIGHT_SERVO_OPEN = 0.36;
     /**
      * Left servo closed position
      */
-    static final double LEFT_SERVO_OPEN = 0.4;
+    static final double LEFT_SERVO_OPEN = 0.36;
 
     /**
      * Right servo open position[]p
      */
-    static final double RIGHT_SERVO_CLOSED = 0.6;
+    static final double RIGHT_SERVO_CLOSED = 0.60;
 
     /**
      * Left servo open position
      */
     static final double LEFT_SERVO_CLOSED = 0.57;
 
-    static final double RIGHT_SERVO_FLAT = 0.25;
+    static final double RIGHT_SERVO_AJAR = 0.54;
 
     /**
      * Left servo open position
      */
-    static final double LEFT_SERVO_FLAT = 0.25;
+    static final double LEFT_SERVO_AJAR = 0.53;
+
+    static final double RIGHT_SERVO_FLAT = 0.32;
+
+    /**
+     * Left servo open position
+     */
+    static final double LEFT_SERVO_FLAT = 0.32;
 
     /**
      * Behaviour when the motors are stopped
