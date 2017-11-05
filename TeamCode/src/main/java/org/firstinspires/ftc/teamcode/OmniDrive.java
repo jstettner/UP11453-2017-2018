@@ -170,6 +170,13 @@ public class OmniDrive extends God3OpMode {
             if(SR.getPosition() != RIGHT_SERVO_OPEN) {
                 SR.setPosition(RIGHT_SERVO_OPEN);
             }
+        } else if (gamepad2.a) {
+            if(SR.getPosition() != RIGHT_SERVO_AJAR) {
+                SR.setPosition(RIGHT_SERVO_AJAR);
+            }
+            if(SL.getPosition() != LEFT_SERVO_AJAR) {
+                SL.setPosition(LEFT_SERVO_AJAR);
+            }
         } else if (gamepad2.left_bumper) {
           SL.setPosition(LEFT_SERVO_OPEN);
         } else {
