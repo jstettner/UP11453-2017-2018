@@ -23,6 +23,8 @@ public class OmniDrive extends God3OpMode {
     private DcMotor lift = null;
     private ColorSensor CBR;
     private ColorSensor CBL;
+    private double short_drive_x;
+    private double short_drive_y;
     private ElapsedTime clock = new ElapsedTime();
     private double startTime = 0.0;
 
@@ -90,7 +92,10 @@ public class OmniDrive extends God3OpMode {
      */
     @Override
     public void loop() {
-        JS.setPosition(JEWEL_SERVO_UP);
+        if (JS.getPosition() != (JEWEL_SERVO_UP))
+            JS.setPosition(JEWEL_SERVO_UP);
+        if (gamepad2.y)
+            JS.setPosition(JEWEL_SERVO_UP);
         // Setup a variable for each drive wheel to save power level for telemetry
         double leftPower;
         double rightPower;
@@ -180,8 +185,8 @@ public class OmniDrive extends God3OpMode {
         } else if (gamepad2.left_bumper) {
             SL.setPosition(LEFT_SERVO_OPEN);
         } else if(gamepad1.dpad_down || gamepad1.dpad_left || gamepad1.dpad_right || gamepad1.dpad_up) {
-            double short_drive_x = 0;
-            double short_drive_y = 0;
+            short_drive_x = 0;
+            short_drive_y = 0;
             if (gamepad1.dpad_down) {
                 short_drive_y = -SHORT_DRIVE_POWER;
             } else if (gamepad1.dpad_up) {
