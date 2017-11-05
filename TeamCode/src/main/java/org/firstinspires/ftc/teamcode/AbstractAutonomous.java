@@ -15,13 +15,6 @@ public abstract class AbstractAutonomous extends God3OpMode {
     /**
      * Jewel servo down position
      */
-    private static final double JS_DOWN = .65;
-
-    /**
-     * Jewel servo up position
-     */
-    private static final double JS_UP = .2;
-
     /**
      * The power with which to turn when knocking off the jewel.
      */
@@ -109,7 +102,7 @@ public abstract class AbstractAutonomous extends God3OpMode {
         // Reverse the motor that runs backwards when connected directly to the battery
         strafe(false);
 
-        JS.setPosition(JS_UP);
+        JS.setPosition(JEWEL_SERVO_UP);
 
         openGrabber();
 
@@ -156,7 +149,7 @@ public abstract class AbstractAutonomous extends God3OpMode {
     private void pushJewel() {
         double power = 0.6;
 
-        JS.setPosition(JS_DOWN);
+        JS.setPosition(JEWEL_SERVO_DOWN);
         double startTime = clock.milliseconds();
 
         while (clock.milliseconds() - startTime < 2000) {
@@ -168,15 +161,15 @@ public abstract class AbstractAutonomous extends God3OpMode {
 
         if (isBlue()) {
             if (get_colors() == JewelPosition.RED_JEWEL_LEFT) {
-                drive(.5, 0, 0, JEWEL_TURN_TIME);
-            } else if (get_colors() == JewelPosition.RED_JEWEL_RIGHT) {
                 drive(-.5, 0, 0, JEWEL_TURN_TIME);
+            } else if (get_colors() == JewelPosition.RED_JEWEL_RIGHT) {
+                drive(.5, 0, 0, JEWEL_TURN_TIME);
             }
         } else {
             if (get_colors() == JewelPosition.RED_JEWEL_RIGHT) {
-                drive(.5, 0, 0, JEWEL_TURN_TIME);
-            } else if (get_colors() == JewelPosition.RED_JEWEL_LEFT) {
                 drive(-.5, 0, 0, JEWEL_TURN_TIME);
+            } else if (get_colors() == JewelPosition.RED_JEWEL_LEFT) {
+                drive(.5, 0, 0, JEWEL_TURN_TIME);
             }
         }
     }

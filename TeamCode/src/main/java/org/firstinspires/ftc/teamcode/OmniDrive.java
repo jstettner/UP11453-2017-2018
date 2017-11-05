@@ -11,8 +11,6 @@ import com.qualcomm.robotcore.util.Range;
 @TeleOp(name = "OmniDriveJack")
 
 public class OmniDrive extends God3OpMode {
-    double JSdown = .6;
-    double JSup = .2;
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
     private DcMotor FR = null;
@@ -25,6 +23,8 @@ public class OmniDrive extends God3OpMode {
     private DcMotor lift = null;
     private ColorSensor CBR;
     private ColorSensor CBL;
+    private ElapsedTime clock = new ElapsedTime();
+    private double startTime = 0.0;
 
     public void strafe(boolean strafe) {
         FR.setDirection(strafe ? DcMotor.Direction.FORWARD : DcMotor.Direction.REVERSE);
@@ -61,7 +61,7 @@ public class OmniDrive extends God3OpMode {
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
         strafe(false);
-        JS.setPosition(JSup);
+        JS.setPosition(JEWEL_SERVO_UP);
 
         lift.setDirection(DcMotorSimple.Direction.FORWARD);
         lift.setZeroPowerBehavior(ZERO_POWER_BEHAVIOR);
@@ -90,7 +90,7 @@ public class OmniDrive extends God3OpMode {
      */
     @Override
     public void loop() {
-        JS.setPosition(JSup);
+        JS.setPosition(JEWEL_SERVO_UP);
         // Setup a variable for each drive wheel to save power level for telemetry
         double leftPower;
         double rightPower;
@@ -178,7 +178,20 @@ public class OmniDrive extends God3OpMode {
                 SL.setPosition(LEFT_SERVO_AJAR);
             }
         } else if (gamepad2.left_bumper) {
-          SL.setPosition(LEFT_SERVO_OPEN);
+            SL.setPosition(LEFT_SERVO_OPEN);
+        } else if(gamepad1.dpad_down || gamepad1.dpad_left || gamepad1.dpad_right || gamepad1.dpad_up) {
+            double short_drive_x = 0;
+            double short_drive_y = 0;
+            if (gamepad1.dpad_down) {
+                short_drive_y = -SHORT_DRIVE_POWER;
+            } else if (gamepad1.dpad_up) {
+                short_drive_y = SHORT_DRIVE_POWER;
+            } else if (gamepad1.dpad_left) {
+                short_drive_x = SHORT_DRIVE_POWER;
+            } else {
+                short_drive_x = -SHORT_DRIVE_POWER;
+            }
+            drive(0.0, short_drive_x, short_drive_y, SHORT_DRIVE_TIME);
         } else {
             // servo test
             SR.setPosition(RIGHT_SERVO_CLOSED);
@@ -186,14 +199,11 @@ public class OmniDrive extends God3OpMode {
         }
 
         // Raise or lower the lift
-        boolean dpDown = gamepad2.dpad_down;
-        boolean dpUp = gamepad2.dpad_up;
 
-
-        if (dpUp && !dpDown) {
+        if (gamepad2.dpad_up && !gamepad2.dpad_down) {
             lift.setPower(.8);
             telemetry.addData("Lift", "Lowering");
-        } else if (!dpUp && dpDown) {
+        } else if (!gamepad2.dpad_up && gamepad2.dpad_down) {
             lift.setPower(-.8);
             telemetry.addData("Lift", "Raising");
         } else {
@@ -211,6 +221,60 @@ public class OmniDrive extends God3OpMode {
         // Show the elapsed game time and wheel power.
         telemetry.addData("Status", "Run Time: " + runtime.toString());
         telemetry.addData("Motors", "left (%.2f), right (%.2f)", leftPower, rightPower);
+    }
+    public void drive(double turn, double drive_x, double drive_y, double time) {
+        double leftPower;
+        double rightPower;
+        double startTime = clock.milliseconds();
+
+        while (clock.milliseconds() - startTime < time) {
+            telemetry.addData("CBR R,G,B", "(" + CBR.red() + ", " + CBR.green() + ", " + CBR.blue() + ")");
+            telemetry.addData("CBL R,G,B", "(" + CBL.red() + ", " + CBL.green() + ", " + CBL.blue() + ")");
+
+            if (Math.abs(turn) < .2) {
+                turn = 0;
+            }
+
+            if (Math.abs(drive_y) > .2) {
+                telemetry.addData("Status", "Driving");
+                strafe(false);
+
+                leftPower = Range.clip(drive_y + turn, -1.0, 1.0);
+                rightPower = Range.clip(drive_y - turn, -1.0, 1.0);
+
+                FL.setPower(leftPower);
+                BL.setPower(leftPower);
+                FR.setPower(rightPower);
+                BR.setPower(rightPower);
+            } else if (Math.abs(drive_x) > .2) {
+                telemetry.addData("Status", "Strafing");
+                strafe(true);
+
+                leftPower = Range.clip(drive_x + turn, -1.0, 1.0);
+                rightPower = Range.clip(drive_x - turn, -1.0, 1.0);
+
+                FL.setPower(leftPower);
+                BL.setPower(rightPower);
+                FR.setPower(leftPower);
+                BR.setPower(rightPower);
+            } else {
+                telemetry.addData("Status", "Turning");
+                strafe(false);
+
+                leftPower = Range.clip(turn, -1.0, 1.0);
+                rightPower = Range.clip(-turn, -1.0, 1.0);
+
+                FL.setPower(leftPower);
+                BL.setPower(leftPower);
+                FR.setPower(rightPower);
+                BR.setPower(rightPower);
+            }
+        }
+        telemetry.update();
+        FL.setPower(0);
+        BL.setPower(0);
+        FR.setPower(0);
+        BR.setPower(0);
     }
 
     /*
