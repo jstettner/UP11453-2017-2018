@@ -60,9 +60,14 @@ public class OmniDrive extends God3OpMode {
         JS = hardwareMap.get(Servo.class, "JS");
         lift = hardwareMap.get(DcMotor.class, "lift");
 
+        FL.setDirection(DcMotor.Direction.REVERSE);
+        BL.setDirection(DcMotor.Direction.REVERSE);
+        BR.setDirection(DcMotor.Direction.REVERSE);
+        FR.setDirection(DcMotor.Direction.REVERSE);
+
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
-        strafe(false);
+//        strafe(false);
         JS.setPosition(JEWEL_SERVO_UP);
 
         lift.setDirection(DcMotorSimple.Direction.FORWARD);
@@ -96,65 +101,94 @@ public class OmniDrive extends God3OpMode {
             JS.setPosition(JEWEL_SERVO_UP);
         if (gamepad2.y)
             JS.setPosition(JEWEL_SERVO_UP);
-        // Setup a variable for each drive wheel to save power level for telemetry
-        double leftPower;
-        double rightPower;
+
+        // left stick controls direction
+        // right stick X controls rotation
+
         double scale = (gamepad1.right_bumper ? .3 : .7);
         double drive_scale = (gamepad1.right_bumper ? .3 : 1);
 
-        telemetry.addData("CBR R,G,B", "(" + CBR.red() + ", " + CBR.green() + ", " + CBR.blue() + ")");
-        telemetry.addData("CBL R,G,B", "(" + CBL.red() + ", " + CBL.green() + ", " + CBL.blue() + ")");
+        double gamepad1LeftY = -gamepad1.left_stick_y * drive_scale;
+        double gamepad1LeftX = gamepad1.left_stick_x * drive_scale;
+        double gamepad1RightX = gamepad1.right_stick_x * scale;
 
-        // Choose to drive using either Tank Mode, or POV Mode
-        // Comment out the method that's not used.  The default below is POV.
+        // holonomic formulas
 
-        // POV Mode uses left stick to go forward, and right stick to turn.
-        // - This uses basic math to combine motions and is easier to drive straight.
-        double drive_y = -gamepad1.left_stick_y * drive_scale;
-        double drive_x = gamepad1.left_stick_x * drive_scale;
-        telemetry.addData("drive_y", drive_y);
-        telemetry.addData("drive_x", drive_x);
-        double turn = gamepad1.right_stick_x * scale;
-        telemetry.addData("turn", turn);
+        double frontLeft = -gamepad1LeftY - gamepad1LeftX - gamepad1RightX;
+        double frontRight = gamepad1LeftY - gamepad1LeftX - gamepad1RightX;
+        double backRight = gamepad1LeftY + gamepad1LeftX - gamepad1RightX;
+        double backLeft = -gamepad1LeftY + gamepad1LeftX - gamepad1RightX;
 
-        if (Math.abs(turn) < .2) {
-            turn = 0;
-        }
+        // clip the right/left values so that the values never exceed +/- 1
+        frontRight = Range.clip(frontRight, -1, 1);
+        frontLeft = Range.clip(frontLeft, -1, 1);
+        backLeft = Range.clip(backLeft, -1, 1);
+        backRight = Range.clip(backRight, -1, 1);
 
-        if (Math.abs(drive_y) > .2) {
-            telemetry.addData("Status", "Driving");
-            strafe(false);
+        FR.setPower(frontRight);
+        FL.setPower(frontLeft);
+        BR.setPower(backRight);
+        BL.setPower(backLeft);
 
-            leftPower = Range.clip(drive_y + turn, -1.0, 1.0);
-            rightPower = Range.clip(drive_y - turn, -1.0, 1.0);
-
-            FL.setPower(leftPower);
-            BL.setPower(leftPower);
-            FR.setPower(rightPower);
-            BR.setPower(rightPower);
-        } else if (Math.abs(drive_x) > .2) {
-            telemetry.addData("Status", "Strafing");
-            strafe(true);
-
-            leftPower = Range.clip(drive_x + turn, -1.0, 1.0);
-            rightPower = Range.clip(drive_x - turn, -1.0, 1.0);
-
-            FL.setPower(leftPower);
-            BL.setPower(rightPower);
-            FR.setPower(leftPower);
-            BR.setPower(rightPower);
-        } else {
-            telemetry.addData("Status", "Turning");
-            strafe(false);
-
-            leftPower = Range.clip(turn, -1.0, 1.0);
-            rightPower = Range.clip(-turn, -1.0, 1.0);
-
-            FL.setPower(leftPower);
-            BL.setPower(leftPower);
-            FR.setPower(rightPower);
-            BR.setPower(rightPower);
-        }
+        // Setup a variable for each drive wheel to save power level for telemetry
+//        double leftPower;
+//        double rightPower;
+//        double scale = (gamepad1.right_bumper ? .3 : .7);
+//        double drive_scale = (gamepad1.right_bumper ? .3 : 1);
+//
+//        telemetry.addData("CBR R,G,B", "(" + CBR.red() + ", " + CBR.green() + ", " + CBR.blue() + ")");
+//        telemetry.addData("CBL R,G,B", "(" + CBL.red() + ", " + CBL.green() + ", " + CBL.blue() + ")");
+//
+//        // Choose to drive using either Tank Mode, or POV Mode
+//        // Comment out the method that's not used.  The default below is POV.
+//
+//        // POV Mode uses left stick to go forward, and right stick to turn.
+//        // - This uses basic math to combine motions and is easier to drive straight.
+//        double drive_y = -gamepad1.left_stick_y * drive_scale;
+//        double drive_x = gamepad1.left_stick_x * drive_scale;
+//        telemetry.addData("drive_y", drive_y);
+//        telemetry.addData("drive_x", drive_x);
+//        double turn = gamepad1.right_stick_x * scale;
+//        telemetry.addData("turn", turn);
+//
+//        if (Math.abs(turn) < .2) {
+//            turn = 0;
+//        }
+//
+//        if (Math.abs(drive_y) > .2) {
+//            telemetry.addData("Status", "Driving");
+//            strafe(false);
+//
+//            leftPower = Range.clip(drive_y + turn, -1.0, 1.0);
+//            rightPower = Range.clip(drive_y - turn, -1.0, 1.0);
+//
+//            FL.setPower(leftPower);
+//            BL.setPower(leftPower);
+//            FR.setPower(rightPower);
+//            BR.setPower(rightPower);
+//        } else if (Math.abs(drive_x) > .2) {
+//            telemetry.addData("Status", "Strafing");
+//            strafe(true);
+//
+//            leftPower = Range.clip(drive_x + turn, -1.0, 1.0);
+//            rightPower = Range.clip(drive_x - turn, -1.0, 1.0);
+//
+//            FL.setPower(leftPower);
+//            BL.setPower(rightPower);
+//            FR.setPower(leftPower);
+//            BR.setPower(rightPower);
+//        } else {
+//            telemetry.addData("Status", "Turning");
+//            strafe(false);
+//
+//            leftPower = Range.clip(turn, -1.0, 1.0);
+//            rightPower = Range.clip(-turn, -1.0, 1.0);
+//
+//            FL.setPower(leftPower);
+//            BL.setPower(leftPower);
+//            FR.setPower(rightPower);
+//            BR.setPower(rightPower);
+//        }
         if (gamepad2.left_trigger > .2) {
             if (SR.getPosition() != RIGHT_SERVO_OPEN) {
                 SR.setPosition(RIGHT_SERVO_OPEN);
@@ -225,7 +259,7 @@ public class OmniDrive extends God3OpMode {
 
         // Show the elapsed game time and wheel power.
         telemetry.addData("Status", "Run Time: " + runtime.toString());
-        telemetry.addData("Motors", "left (%.2f), right (%.2f)", leftPower, rightPower);
+        //telemetry.addData("Motors", "left (%.2f), right (%.2f)", leftPower, rightPower);
     }
     public void drive(double turn, double drive_x, double drive_y, double time) {
         double leftPower;
