@@ -161,19 +161,33 @@ public abstract class AbstractAutonomous extends God3OpMode {
 
         if (isBlue()) {
             if (get_colors() == JewelPosition.RED_JEWEL_LEFT) {
+                drive(.5, 0, 0, JEWEL_TURN_TIME);
+                delay(500);
                 drive(-.5, 0, 0, JEWEL_TURN_TIME);
             } else if (get_colors() == JewelPosition.RED_JEWEL_RIGHT) {
+                drive(-.5, 0, 0, JEWEL_TURN_TIME);
+                delay(500);
                 drive(.5, 0, 0, JEWEL_TURN_TIME);
             }
         } else {
             if (get_colors() == JewelPosition.RED_JEWEL_RIGHT) {
+                drive(.5, 0, 0, JEWEL_TURN_TIME);
+                delay(500);
                 drive(-.5, 0, 0, JEWEL_TURN_TIME);
             } else if (get_colors() == JewelPosition.RED_JEWEL_LEFT) {
+                drive(-.5, 0, 0, JEWEL_TURN_TIME);
+                delay(500);
                 drive(.5, 0, 0, JEWEL_TURN_TIME);
             }
         }
-    }
 
+
+    }
+    public void delay(int time) {
+        double startTime = clock.milliseconds();
+        while (clock.milliseconds() - startTime < time) {
+        }
+    }
     public void drive(double turn, double drive_x, double drive_y, double time) {
         double leftPower;
         double rightPower;
@@ -228,7 +242,59 @@ public abstract class AbstractAutonomous extends God3OpMode {
         FR.setPower(0);
         BR.setPower(0);
     }
+    public void drive(double turn, double drive_x, double drive_y) {
+        double leftPower;
+        double rightPower;
+        double startTime = clock.milliseconds();
 
+            telemetry.addData("CBR R,G,B", "(" + CBR.red() + ", " + CBR.green() + ", " + CBR.blue() + ")");
+            telemetry.addData("CBL R,G,B", "(" + CBL.red() + ", " + CBL.green() + ", " + CBL.blue() + ")");
+
+            if (Math.abs(turn) < .2) {
+                turn = 0;
+            }
+
+            if (Math.abs(drive_y) > .2) {
+                telemetry.addData("Status", "Driving");
+                strafe(false);
+
+                leftPower = Range.clip(drive_y + turn, -1.0, 1.0);
+                rightPower = Range.clip(drive_y - turn, -1.0, 1.0);
+
+                FL.setPower(leftPower);
+                BL.setPower(leftPower);
+                FR.setPower(rightPower);
+                BR.setPower(rightPower);
+            } else if (Math.abs(drive_x) > .2) {
+                telemetry.addData("Status", "Strafing");
+                strafe(true);
+
+                leftPower = Range.clip(drive_x + turn, -1.0, 1.0);
+                rightPower = Range.clip(drive_x - turn, -1.0, 1.0);
+
+                FL.setPower(leftPower);
+                BL.setPower(rightPower);
+                FR.setPower(leftPower);
+                BR.setPower(rightPower);
+            } else {
+                telemetry.addData("Status", "Turning");
+                strafe(false);
+
+                leftPower = Range.clip(turn, -1.0, 1.0);
+                rightPower = Range.clip(-turn, -1.0, 1.0);
+
+                FL.setPower(leftPower);
+                BL.setPower(leftPower);
+                FR.setPower(rightPower);
+                BR.setPower(rightPower);
+
+        }
+        telemetry.update();
+        FL.setPower(0);
+        BL.setPower(0);
+        FR.setPower(0);
+        BR.setPower(0);
+    }
     /*
      * Code to run REPEATEDLY after the driver hits PLAY but before they hit STOP
      */

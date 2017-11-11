@@ -2,6 +2,25 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.hardware.ColorSensor;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.util.Range;
+
+import org.firstinspires.ftc.robotcore.external.Func;
+import org.firstinspires.ftc.robotcore.external.navigation.Acceleration;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
+import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
+import org.firstinspires.ftc.robotcore.external.navigation.Position;
+import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
+
+import java.util.Locale;
 
 /**
  * New automous Op Mode
@@ -13,19 +32,32 @@ public abstract class NewAutonomous extends God3OpMode {
      * The original angle
      */
     private double startingAngle = 0;
-
+    private ElapsedTime clock = new ElapsedTime();
     /**
      * The REV imu
      */
     private BNO055IMU imu = null;
+    private double fullAngle = 0;
 
     @Override
     public void init() {
+        telemetry.addData("Status", "Initialized");
 
+        // Initialize the hardware variables.
+        FR = hardwareMap.get(DcMotor.class, "FR");
+        FL = hardwareMap.get(DcMotor.class, "FL");
+        BR = hardwareMap.get(DcMotor.class, "BR");
+        BL = hardwareMap.get(DcMotor.class, "BL");
+        CBR = hardwareMap.get(ColorSensor.class, "CBR");
+        CBL = hardwareMap.get(ColorSensor.class, "CBL");
+        JS = hardwareMap.get(Servo.class, "JS");
+        lift = hardwareMap.get(DcMotor.class, "lift");
+        SR = hardwareMap.get(Servo.class, "SR");
+        SL = hardwareMap.get(Servo.class, "SL");
         imu = hardwareMap.get(BNO055IMU.class, "imu");
 
     }
-
+    boolean gone = false;
     volatile boolean started = false;
 
     @Override
@@ -46,6 +78,7 @@ public abstract class NewAutonomous extends God3OpMode {
         startingAngle = imu.getAngularOrientation().firstAngle;
         telemetry.addData("start", startingAngle);
         telemetry.update();
+        startingAngle = 0;
         started = true;
     }
 
@@ -55,32 +88,144 @@ public abstract class NewAutonomous extends God3OpMode {
 
     @Override
     public void loop() {
-
+        if (startingAngle == 0) {
+            startingAngle = angle();
+        }
         if (!started) {
             return;
         }
+        if (angle() > startingAngle - 30.0) {
+            drive(.23, 0, 0);
+        } else {
+            drive(0, 0, 0);
+        }
+        telemetry.addData("angle: ", angle());
+        telemetry.addData("startingAngle: ", startingAngle);
 
-//        if (countThing < 30) {
-//            countThing++;
-//            return;
-//        } else if (countThing == 30) {
-//            countThing++;
-//            startingAngle = imu.getAngularOrientation().firstAngle;
-//            return;
-//        }
 
-        telemetry.addData("First", imu.getAngularOrientation().firstAngle);
-        telemetry.addData("Second", imu.getAngularOrientation().secondAngle);
-        telemetry.addData("Third", imu.getAngularOrientation().thirdAngle);
-        telemetry.addData("Orientation",angle());
     }
 
-    private double angle() {
-        double pos = (imu.getAngularOrientation().firstAngle - startingAngle + 360) % 360;
-        if (pos <= 180) {
-            return pos;
-        } else {
-            return pos - 360;
+    public void delay(int time) {
+        double startTime = clock.milliseconds();
+        while (clock.milliseconds() - startTime < time) {
         }
+    }
+
+    public void drive(double turn, double drive_x, double drive_y) {
+        double leftPower;
+        double rightPower;
+
+        telemetry.addData("CBR R,G,B", "(" + CBR.red() + ", " + CBR.green() + ", " + CBR.blue() + ")");
+        telemetry.addData("CBL R,G,B", "(" + CBL.red() + ", " + CBL.green() + ", " + CBL.blue() + ")");
+
+        if (Math.abs(turn) < .2) {
+            turn = 0;
+        }
+
+        if (Math.abs(drive_y) > .2) {
+            telemetry.addData("Status", "Driving");
+            strafe(false);
+
+            leftPower = Range.clip(drive_y + turn, -1.0, 1.0);
+            rightPower = Range.clip(drive_y - turn, -1.0, 1.0);
+
+            FL.setPower(leftPower);
+            BL.setPower(leftPower);
+            FR.setPower(rightPower);
+            BR.setPower(rightPower);
+        } else if (Math.abs(drive_x) > .2) {
+            telemetry.addData("Status", "Strafing");
+            strafe(true);
+
+            leftPower = Range.clip(drive_x + turn, -1.0, 1.0);
+            rightPower = Range.clip(drive_x - turn, -1.0, 1.0);
+
+            FL.setPower(leftPower);
+            BL.setPower(rightPower);
+            FR.setPower(leftPower);
+            BR.setPower(rightPower);
+        } else {
+            telemetry.addData("Status", "Turning");
+            strafe(false);
+
+            leftPower = Range.clip(turn, -1.0, 1.0);
+            rightPower = Range.clip(-turn, -1.0, 1.0);
+
+            FL.setPower(leftPower);
+            BL.setPower(leftPower);
+            FR.setPower(rightPower);
+            BR.setPower(rightPower);
+
+        }
+        telemetry.update();
+    }
+
+    public void drive(double turn, double drive_x, double drive_y, double time) {
+        double leftPower;
+        double rightPower;
+        double startTime = clock.milliseconds();
+
+        while (clock.milliseconds() - startTime < time) {
+            telemetry.addData("CBR R,G,B", "(" + CBR.red() + ", " + CBR.green() + ", " + CBR.blue() + ")");
+            telemetry.addData("CBL R,G,B", "(" + CBL.red() + ", " + CBL.green() + ", " + CBL.blue() + ")");
+
+            if (Math.abs(turn) < .2) {
+                turn = 0;
+            }
+
+            if (Math.abs(drive_y) > .2) {
+                telemetry.addData("Status", "Driving");
+                strafe(false);
+
+                leftPower = Range.clip(drive_y + turn, -1.0, 1.0);
+                rightPower = Range.clip(drive_y - turn, -1.0, 1.0);
+
+                FL.setPower(leftPower);
+                BL.setPower(leftPower);
+                FR.setPower(rightPower);
+                BR.setPower(rightPower);
+            } else if (Math.abs(drive_x) > .2) {
+                telemetry.addData("Status", "Strafing");
+                strafe(true);
+
+                leftPower = Range.clip(drive_x + turn, -1.0, 1.0);
+                rightPower = Range.clip(drive_x - turn, -1.0, 1.0);
+
+                FL.setPower(leftPower);
+                BL.setPower(rightPower);
+                FR.setPower(leftPower);
+                BR.setPower(rightPower);
+            } else {
+                telemetry.addData("Status", "Turning");
+                strafe(false);
+
+                leftPower = Range.clip(turn, -1.0, 1.0);
+                rightPower = Range.clip(-turn, -1.0, 1.0);
+
+                FL.setPower(leftPower);
+                BL.setPower(leftPower);
+                FR.setPower(rightPower);
+                BR.setPower(rightPower);
+            }
+        }
+        telemetry.update();
+        FL.setPower(0);
+        BL.setPower(0);
+        FR.setPower(0);
+        BR.setPower(0);
+    }
+
+    void turn(double degrees) {
+        double startReading = angle();
+        if (angle() < startReading + degrees) {
+            drive(-.23, 0, 0);
+        } else {
+            drive(0, 0, 0);
+        }
+    }
+
+    double angle() {
+        Orientation angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+        return AngleUnit.DEGREES.fromUnit(angles.angleUnit, angles.firstAngle);
     }
 }
