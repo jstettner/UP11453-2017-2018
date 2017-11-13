@@ -57,7 +57,7 @@ public abstract class NewAutonomous extends God3OpMode {
         imu = hardwareMap.get(BNO055IMU.class, "imu");
 
     }
-    boolean gone = false;
+    boolean turned = false;
     volatile boolean started = false;
 
     @Override
@@ -85,7 +85,7 @@ public abstract class NewAutonomous extends God3OpMode {
 //    private volatile boolean initialized = false;
 
     private int countThing = 0;
-
+    int state = 0;
     @Override
     public void loop() {
         if (startingAngle == 0) {
@@ -94,11 +94,43 @@ public abstract class NewAutonomous extends God3OpMode {
         if (!started) {
             return;
         }
-        if (angle() > startingAngle - 30.0) {
-            drive(.23, 0, 0);
-        } else {
-            drive(0, 0, 0);
+        if (state == 0) {
+            if (angle() < startingAngle + 75.0) {
+                drive(-.15, 0, 0);
+            } else {
+                drive(0, 0, 0);
+                delay(800);
+                startingAngle = angle();
+                delay(400);
+                state = 1;
+            }
         }
+        while (state == 1) {
+            drive(0, 0, .35);
+            delay(2000);
+            drive(0, 0, 0);
+            startingAngle = angle();
+            delay(1000);
+            state = 2;
+        }
+        if (state == 2) {
+            if (angle() < startingAngle + 20.0) {
+                drive(-.12, 0, 0);
+            } else {
+                drive(0, 0, 0);
+                delay(800);
+                startingAngle = angle();
+                delay(400);
+                state = 3;
+            }
+        }
+        while (state == 3) {
+            drive(0, 0, .35);
+            delay(500);
+            drive(0, 0, 0);
+            state = 4;
+        }
+        //   turn(45.0);
         telemetry.addData("angle: ", angle());
         telemetry.addData("startingAngle: ", startingAngle);
 
@@ -118,11 +150,11 @@ public abstract class NewAutonomous extends God3OpMode {
         telemetry.addData("CBR R,G,B", "(" + CBR.red() + ", " + CBR.green() + ", " + CBR.blue() + ")");
         telemetry.addData("CBL R,G,B", "(" + CBL.red() + ", " + CBL.green() + ", " + CBL.blue() + ")");
 
-        if (Math.abs(turn) < .2) {
+        if (Math.abs(turn) < .05) {
             turn = 0;
         }
 
-        if (Math.abs(drive_y) > .2) {
+        if (Math.abs(drive_y) > .05) {
             telemetry.addData("Status", "Driving");
             strafe(false);
 
@@ -133,7 +165,7 @@ public abstract class NewAutonomous extends God3OpMode {
             BL.setPower(leftPower);
             FR.setPower(rightPower);
             BR.setPower(rightPower);
-        } else if (Math.abs(drive_x) > .2) {
+        } else if (Math.abs(drive_x) > .05) {
             telemetry.addData("Status", "Strafing");
             strafe(true);
 
@@ -209,19 +241,22 @@ public abstract class NewAutonomous extends God3OpMode {
             }
         }
         telemetry.update();
-        FL.setPower(0);
-        BL.setPower(0);
-        FR.setPower(0);
-        BR.setPower(0);
     }
 
     void turn(double degrees) {
-        double startReading = angle();
-        if (angle() < startReading + degrees) {
-            drive(-.23, 0, 0);
-        } else {
-            drive(0, 0, 0);
+        boolean turned = false;
+        double startingAngle = angle();
+        while (!turned) {
+            if (degrees > 0) {
+                if (angle() < startingAngle + degrees) {
+                    drive(-.15, 0, 0);
+                } else {
+                    drive(0, 0, 0);
+                    turned = true;
+                }
+            }
         }
+
     }
 
     double angle() {
