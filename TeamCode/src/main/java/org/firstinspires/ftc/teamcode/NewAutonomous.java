@@ -115,7 +115,7 @@ public abstract class NewAutonomous extends God3OpMode {
         }
         if (state == 2) {
             if (angle() < startingAngle + 20.0) {
-                drive(-.12, 0, 0);
+                drive(-.12, 0, 0); 
             } else {
                 drive(0, 0, 0);
                 delay(800);
