@@ -42,8 +42,7 @@ public class OmniDrive extends God3OpMode {
     /*
      * Code to run ONCE when the driver hits INIT
      */
-    @Override
-    public void init() {
+    public void runOpMode() throws InterruptedException {
         telemetry.addData("Status", "Initialized");
 
         // Initialize the hardware variables. Note that the strings used here as parameters
@@ -75,62 +74,43 @@ public class OmniDrive extends God3OpMode {
 
         // Tell the driver that initialization is complete.
         telemetry.addData("Status", "Initialized");
-    }
-
-    /*
-     * Code to run REPEATEDLY after the driver hits INIT, but before they hit PLAY
-     */
-    @Override
-    public void init_loop() {
-    }
-
-    /*
-     * Code to run ONCE when the driver hits PLAY
-     */
-    @Override
-    public void start() {
         runtime.reset();
-    }
+        waitForStart();
+        while (opModeIsActive()) {
+            if (JS.getPosition() != (JEWEL_SERVO_UP))
+                JS.setPosition(JEWEL_SERVO_UP);
+            if (gamepad2.y)
+                JS.setPosition(JEWEL_SERVO_UP);
 
-    /*
-     * Code to run REPEATEDLY after the driver hits PLAY but before they hit STOP
-     */
-    @Override
-    public void loop() {
-        if (JS.getPosition() != (JEWEL_SERVO_UP))
-            JS.setPosition(JEWEL_SERVO_UP);
-        if (gamepad2.y)
-            JS.setPosition(JEWEL_SERVO_UP);
+            // left stick controls direction
+            // right stick X controls rotation
 
-        // left stick controls direction
-        // right stick X controls rotation
+            double scale = (gamepad1.right_bumper ? .3 : .7);
+            double drive_scale = (gamepad1.right_bumper ? .3 : 1);
 
-        double scale = (gamepad1.right_bumper ? .3 : .7);
-        double drive_scale = (gamepad1.right_bumper ? .3 : 1);
+            double gamepad1LeftY = -gamepad1.left_stick_y * drive_scale;
+            double gamepad1LeftX = gamepad1.left_stick_x * drive_scale;
+            double gamepad1RightX = gamepad1.right_stick_x * scale;
 
-        double gamepad1LeftY = -gamepad1.left_stick_y * drive_scale;
-        double gamepad1LeftX = gamepad1.left_stick_x * drive_scale;
-        double gamepad1RightX = gamepad1.right_stick_x * scale;
+            // holonomic formulas
 
-        // holonomic formulas
+            double frontLeft = -gamepad1LeftY - gamepad1LeftX - gamepad1RightX;
+            double frontRight = gamepad1LeftY - gamepad1LeftX - gamepad1RightX;
+            double backRight = gamepad1LeftY + gamepad1LeftX - gamepad1RightX;
+            double backLeft = -gamepad1LeftY + gamepad1LeftX - gamepad1RightX;
 
-        double frontLeft = -gamepad1LeftY - gamepad1LeftX - gamepad1RightX;
-        double frontRight = gamepad1LeftY - gamepad1LeftX - gamepad1RightX;
-        double backRight = gamepad1LeftY + gamepad1LeftX - gamepad1RightX;
-        double backLeft = -gamepad1LeftY + gamepad1LeftX - gamepad1RightX;
+            // clip the right/left values so that the values never exceed +/- 1
+            frontRight = Range.clip(frontRight, -1, 1);
+            frontLeft = Range.clip(frontLeft, -1, 1);
+            backLeft = Range.clip(backLeft, -1, 1);
+            backRight = Range.clip(backRight, -1, 1);
 
-        // clip the right/left values so that the values never exceed +/- 1
-        frontRight = Range.clip(frontRight, -1, 1);
-        frontLeft = Range.clip(frontLeft, -1, 1);
-        backLeft = Range.clip(backLeft, -1, 1);
-        backRight = Range.clip(backRight, -1, 1);
+            FR.setPower(frontRight);
+            FL.setPower(frontLeft);
+            BR.setPower(backRight);
+            BL.setPower(backLeft);
 
-        FR.setPower(frontRight);
-        FL.setPower(frontLeft);
-        BR.setPower(backRight);
-        BL.setPower(backLeft);
-
-        // Setup a variable for each drive wheel to save power level for telemetry
+            // Setup a variable for each drive wheel to save power level for telemetry
 //        double leftPower;
 //        double rightPower;
 //        double scale = (gamepad1.right_bumper ? .3 : .7);
@@ -189,79 +169,85 @@ public class OmniDrive extends God3OpMode {
 //            FR.setPower(rightPower);
 //            BR.setPower(rightPower);
 //        }
-        if (gamepad2.left_trigger > .2) {
-            if (SR.getPosition() != RIGHT_SERVO_OPEN) {
-                SR.setPosition(RIGHT_SERVO_OPEN);
+            if (gamepad2.left_trigger > .2) {
+                if (SR.getPosition() != RIGHT_SERVO_OPEN) {
+                    SR.setPosition(RIGHT_SERVO_OPEN);
+                    SL.setPosition(LEFT_SERVO_OPEN);
+                }
+            } else if (gamepad2.right_trigger > .2) {
+                if (SR.getPosition() != RIGHT_SERVO_FLAT) {
+                    SR.setPosition(RIGHT_SERVO_FLAT);
+                }
+                if (SL.getPosition() != LEFT_SERVO_FLAT) {
+                    SL.setPosition(LEFT_SERVO_FLAT);
+                }
+            } else if (gamepad2.left_bumper) {
+                if (SL.getPosition() != LEFT_SERVO_OPEN) {
+                    SL.setPosition(LEFT_SERVO_OPEN);
+                }
+            } else if (gamepad2.right_bumper) {
+                if (SR.getPosition() != RIGHT_SERVO_OPEN) {
+                    SR.setPosition(RIGHT_SERVO_OPEN);
+                }
+            } else if (gamepad2.a) {
+                if (SR.getPosition() != RIGHT_SERVO_AJAR) {
+                    SR.setPosition(RIGHT_SERVO_AJAR);
+                }
+                if (SL.getPosition() != LEFT_SERVO_AJAR) {
+                    SL.setPosition(LEFT_SERVO_AJAR);
+                }
+            } else if (gamepad2.left_bumper) {
                 SL.setPosition(LEFT_SERVO_OPEN);
-            }
-        } else if(gamepad2.right_trigger > .2) {
-            if (SR.getPosition() != RIGHT_SERVO_FLAT) {
-                SR.setPosition(RIGHT_SERVO_FLAT);
-            }
-            if (SL.getPosition() != LEFT_SERVO_FLAT) {
-                SL.setPosition(LEFT_SERVO_FLAT);
-            }
-        } else if (gamepad2.left_bumper) {
-            if(SL.getPosition() != LEFT_SERVO_OPEN) {
-                SL.setPosition(LEFT_SERVO_OPEN);
-            }
-        } else if (gamepad2.right_bumper) {
-            if(SR.getPosition() != RIGHT_SERVO_OPEN) {
-                SR.setPosition(RIGHT_SERVO_OPEN);
-            }
-        } else if (gamepad2.a) {
-            if(SR.getPosition() != RIGHT_SERVO_AJAR) {
-                SR.setPosition(RIGHT_SERVO_AJAR);
-            }
-            if(SL.getPosition() != LEFT_SERVO_AJAR) {
-                SL.setPosition(LEFT_SERVO_AJAR);
-            }
-        } else if (gamepad2.left_bumper) {
-            SL.setPosition(LEFT_SERVO_OPEN);
-        } else if(gamepad1.dpad_down || gamepad1.dpad_left || gamepad1.dpad_right || gamepad1.dpad_up) {
-            short_drive_x = 0;
-            short_drive_y = 0;
-            if (gamepad1.dpad_down) {
-                short_drive_y = -SHORT_DRIVE_POWER;
-            } else if (gamepad1.dpad_up) {
-                short_drive_y = SHORT_DRIVE_POWER;
-            } else if (gamepad1.dpad_left) {
-                short_drive_x = SHORT_DRIVE_POWER;
+            } else if (gamepad1.dpad_down || gamepad1.dpad_left || gamepad1.dpad_right || gamepad1.dpad_up) {
+                short_drive_x = 0;
+                short_drive_y = 0;
+                if (gamepad1.dpad_down) {
+                    short_drive_y = -SHORT_DRIVE_POWER;
+                } else if (gamepad1.dpad_up) {
+                    short_drive_y = SHORT_DRIVE_POWER;
+                } else if (gamepad1.dpad_left) {
+                    short_drive_x = SHORT_DRIVE_POWER;
+                } else {
+                    short_drive_x = -SHORT_DRIVE_POWER;
+                }
+                drive(0.0, short_drive_x, short_drive_y, SHORT_DRIVE_TIME);
             } else {
-                short_drive_x = -SHORT_DRIVE_POWER;
+                // servo test
+                SR.setPosition(RIGHT_SERVO_CLOSED);
+                SL.setPosition(LEFT_SERVO_CLOSED);
             }
-            drive(0.0, short_drive_x, short_drive_y, SHORT_DRIVE_TIME);
-        } else {
-            // servo test
-            SR.setPosition(RIGHT_SERVO_CLOSED);
-            SL.setPosition(LEFT_SERVO_CLOSED);
+
+            // Raise or lower the lift
+
+            if (gamepad2.dpad_up && !gamepad2.dpad_down) {
+                lift.setPower(.8);
+                telemetry.addData("Lift", "Lowering");
+            } else if (!gamepad2.dpad_up && gamepad2.dpad_down) {
+                lift.setPower(-.8);
+                telemetry.addData("Lift", "Raising");
+            } else {
+                lift.setPower(0);
+                telemetry.addData("Lift", "Stationary");
+            }
+
+
+            // Tank Mode uses one stick to control each wheel.
+            // - This requires no math, but it is hard to drive forward slowly and keep straight.
+            // leftPower  = -gamepad1.left_stick_y ;
+            // rightPower = -gamepad1.right_stick_y ;
+
+            // Send calculated power to wheels
+
+            // Show the elapsed game time and wheel power.
+            telemetry.addData("Status", "Run Time: " + runtime.toString());
+            //telemetry.addData("Motors", "left (%.2f), right (%.2f)", leftPower, rightPower);
         }
-
-        // Raise or lower the lift
-
-        if (gamepad2.dpad_up && !gamepad2.dpad_down) {
-            lift.setPower(.8);
-            telemetry.addData("Lift", "Lowering");
-        } else if (!gamepad2.dpad_up && gamepad2.dpad_down) {
-            lift.setPower(-.8);
-            telemetry.addData("Lift", "Raising");
-        } else {
-            lift.setPower(0);
-            telemetry.addData("Lift", "Stationary");
-        }
-
-
-        // Tank Mode uses one stick to control each wheel.
-        // - This requires no math, but it is hard to drive forward slowly and keep straight.
-        // leftPower  = -gamepad1.left_stick_y ;
-        // rightPower = -gamepad1.right_stick_y ;
-
-        // Send calculated power to wheels
-
-        // Show the elapsed game time and wheel power.
-        telemetry.addData("Status", "Run Time: " + runtime.toString());
-        //telemetry.addData("Motors", "left (%.2f), right (%.2f)", leftPower, rightPower);
     }
+
+    /*
+     * Code to run REPEATEDLY after the driver hits INIT, but before they hit PLAY
+     */
+
     public void drive(double turn, double drive_x, double drive_y, double time) {
         double leftPower;
         double rightPower;
@@ -320,8 +306,5 @@ public class OmniDrive extends God3OpMode {
     /*
      * Code to run ONCE after the driver hits STOP
      */
-    @Override
-    public void stop() {
-    }
 
 }

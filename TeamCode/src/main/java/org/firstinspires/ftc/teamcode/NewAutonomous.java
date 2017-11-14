@@ -31,118 +31,83 @@ public abstract class NewAutonomous extends God3OpMode {
     /**
      * The original angle
      */
-    private double startingAngle = 0;
+     double startingAngle = 0;
     private ElapsedTime clock = new ElapsedTime();
     /**
      * The REV imu
      */
-    private BNO055IMU imu = null;
+    BNO055IMU imu = null;
     private double fullAngle = 0;
-
-    @Override
-    public void init() {
-        telemetry.addData("Status", "Initialized");
-
-        // Initialize the hardware variables.
-        FR = hardwareMap.get(DcMotor.class, "FR");
-        FL = hardwareMap.get(DcMotor.class, "FL");
-        BR = hardwareMap.get(DcMotor.class, "BR");
-        BL = hardwareMap.get(DcMotor.class, "BL");
-        CBR = hardwareMap.get(ColorSensor.class, "CBR");
-        CBL = hardwareMap.get(ColorSensor.class, "CBL");
-        JS = hardwareMap.get(Servo.class, "JS");
-        lift = hardwareMap.get(DcMotor.class, "lift");
-        SR = hardwareMap.get(Servo.class, "SR");
-        SL = hardwareMap.get(Servo.class, "SL");
-        imu = hardwareMap.get(BNO055IMU.class, "imu");
-
-    }
     boolean turned = false;
     volatile boolean started = false;
 
-    @Override
-    public void start() {
-        final BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
-
-        parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
-        parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
-
-//        new Thread(new Runnable() {
-//            @Override
-//            public void run() {
-//                imu.initialize(parameters);
-//                initialized = true;
-//            }
-//        }).start();
-        imu.initialize(parameters);
-        startingAngle = imu.getAngularOrientation().firstAngle;
-        telemetry.addData("start", startingAngle);
-        telemetry.update();
-        startingAngle = 0;
-        started = true;
-    }
 
 //    private volatile boolean initialized = false;
 
-    private int countThing = 0;
-    int state = 0;
-    @Override
-    public void loop() {
-        if (startingAngle == 0) {
-            startingAngle = angle();
-        }
-        if (!started) {
-            return;
-        }
-        if (state == 0) {
-            if (angle() < startingAngle + 75.0) {
-                drive(-.15, 0, 0);
-            } else {
-                drive(0, 0, 0);
-                delay(800);
-                startingAngle = angle();
-                delay(400);
-                state = 1;
-            }
-        }
-        while (state == 1) {
-            drive(0, 0, .35);
-            delay(2000);
-            drive(0, 0, 0);
-            startingAngle = angle();
-            delay(1000);
-            state = 2;
-        }
-        if (state == 2) {
-            if (angle() < startingAngle + 20.0) {
-                drive(-.12, 0, 0); 
-            } else {
-                drive(0, 0, 0);
-                delay(800);
-                startingAngle = angle();
-                delay(400);
-                state = 3;
-            }
-        }
-        while (state == 3) {
-            drive(0, 0, .35);
-            delay(500);
-            drive(0, 0, 0);
-            state = 4;
-        }
-        //   turn(45.0);
-        telemetry.addData("angle: ", angle());
-        telemetry.addData("startingAngle: ", startingAngle);
-
-
-    }
 
     public void delay(int time) {
         double startTime = clock.milliseconds();
         while (clock.milliseconds() - startTime < time) {
         }
     }
+    public void turn(double degrees) {
+        while (angle() < startingAngle + 110.0) {
+            drive(-.15, 0, 0);
+        }
+        /*boolean turned = false;
+        double startingAngle = angle();
+        double wantedAngle = startingAngle + degrees;
+        double currentAngle = angle();
+        if (degrees > 0) {
+            if (startingAngle + degrees > 360) {
+                while(currentAngle < wantedAngle) {
+                    currentAngle = angle();
+                    if (currentAngle < startingAngle) {
+                        currentAngle += 360.0;
+                    }
+                    drive(-.15, 0, 0);
+                }
+            }
+        } else {
 
+        }*/
+        drive(0, 0, 0);
+    }
+     void getGlyph() {
+        closeGrabber();
+
+        double startTime = clock.milliseconds();
+        while (clock.milliseconds() - startTime < 500) {
+        }
+        startTime = clock.milliseconds();
+        while (clock.milliseconds() - startTime < 500) {
+            lift.setPower(.7);
+        }
+        lift.setPower(0);
+    }
+    void closeGrabber() {
+        if (SR.getPosition() != RIGHT_SERVO_CLOSED) {
+            SR.setPosition(RIGHT_SERVO_CLOSED);
+            SL.setPosition(LEFT_SERVO_CLOSED);
+        }
+    }
+
+    /**
+     * Open the grabber
+     */
+    void openGrabber() {
+        SR.setPosition(RIGHT_SERVO_FLAT);
+        SL.setPosition(LEFT_SERVO_FLAT);
+    }
+    public void drive(double turn, double drive_x, double drive_y, int time) {
+        boolean driving = true;
+        while (driving) {
+            drive(turn, drive_x, drive_y);
+            delay(time);
+            drive(0, 0, 0);
+            driving = false;
+        }
+    }
     public void drive(double turn, double drive_x, double drive_y) {
         double leftPower;
         double rightPower;
@@ -243,21 +208,6 @@ public abstract class NewAutonomous extends God3OpMode {
         telemetry.update();
     }
 
-    void turn(double degrees) {
-        boolean turned = false;
-        double startingAngle = angle();
-        while (!turned) {
-            if (degrees > 0) {
-                if (angle() < startingAngle + degrees) {
-                    drive(-.15, 0, 0);
-                } else {
-                    drive(0, 0, 0);
-                    turned = true;
-                }
-            }
-        }
-
-    }
 
     double angle() {
         Orientation angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);

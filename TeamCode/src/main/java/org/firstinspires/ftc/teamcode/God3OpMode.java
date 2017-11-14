@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -12,7 +13,7 @@ import static com.qualcomm.robotcore.hardware.DcMotor.ZeroPowerBehavior;
  * Created by Raffa on 10/19/17.
  */
 
-abstract class God3OpMode extends OpMode {
+abstract class God3OpMode extends LinearOpMode {
     /**
      * The power with which to turn when knocking off the jewel.
      */
@@ -86,7 +87,7 @@ abstract class God3OpMode extends OpMode {
     /**
      * Left servo open position
      */
-    static final double LEFT_SERVO_CLOSED = 0.57;
+    static final double LEFT_SERVO_CLOSED = 0.60;
 
     static final double RIGHT_SERVO_AJAR = 0.54;
 

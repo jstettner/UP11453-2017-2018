@@ -83,7 +83,12 @@ public abstract class AbstractAutonomous extends God3OpMode {
      * Code to run ONCE when the driver hits INIT
      */
     @Override
-    public void init() {
+    public void runOpMode() throws InterruptedException {
+        // Declare any local / helper variables here
+
+        // Our initialization code should go here
+
+        // Example: Map the hardware to the arm_motor variable
         telemetry.addData("Status", "Initialized");
 
         // Initialize the hardware variables.
@@ -108,23 +113,15 @@ public abstract class AbstractAutonomous extends God3OpMode {
 
         // Tell the driver that initialization is complete.
         telemetry.addData("Status", "Initialized");
-    }
 
-    /*
-     * Code to run REPEATEDLY after the driver hits INIT, but before they hit PLAY
-     */
-    public void init_loop() {
+        // Wait for the game to start (driver presses PLAY)
+        waitForStart();
+        while (opModeIsActive()) {
+            getGlyph();
+            pushJewel();
+        }
 
-    }
-
-    /*
-     * Code to run ONCE when the driver hits PLAY
-     */
-    public void start() {
-
-        getGlyph();
-        pushJewel();
-
+        // ...
     }
 
     /**
@@ -298,16 +295,7 @@ public abstract class AbstractAutonomous extends God3OpMode {
     /*
      * Code to run REPEATEDLY after the driver hits PLAY but before they hit STOP
      */
-    @Override
-    public void loop() {
-    }
 
-    /*
-     * Code to run ONCE after the driver hits STOP
-     */
-    @Override
-    public void stop() {
-    }
 
     /*
     * The function currently returns the location of the Red Jewel.
@@ -345,7 +333,7 @@ public abstract class AbstractAutonomous extends God3OpMode {
      * Close the grabber
      */
     void closeGrabber() {
-        if (SR.getPosition() != 0) {
+        if (SR.getPosition() != RIGHT_SERVO_CLOSED) {
             SR.setPosition(RIGHT_SERVO_CLOSED);
             SL.setPosition(LEFT_SERVO_CLOSED);
         }
