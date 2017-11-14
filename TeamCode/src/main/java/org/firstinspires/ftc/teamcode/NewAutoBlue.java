@@ -45,12 +45,24 @@ public class NewAutoBlue extends NewAutonomous {
         waitForStart();
 
         while (opModeIsActive()) {
-            run(0);
+            closeGrabber();
+            delay(1000);
+            lift.setPower(.4);
+            delay(800);
+            lift.setPower(0);
+            drive(0, -.38, 0, 750);
+            drive(-.2, 0, 0, 1700);
+            drive(0, 0, .3, 1800);
+            delay(500);
+            openGrabber();
+            delay(500);
+            drive(0, 0, -.3, 200);
+            /*run(0);
             run(1);
             run(2);
             run(3);
             run(4);
-            run(5);
+            run(5);*/
             break;
         }
     }
