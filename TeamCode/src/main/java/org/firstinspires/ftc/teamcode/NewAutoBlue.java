@@ -91,6 +91,7 @@ public class NewAutoBlue extends NewAutonomous {
         } else if (state == 4) {
             delay(500);
             openGrabberFlat();
+            delay(1200);
         } else if (state == 5){
             drive(0, 0, .3, 1800);
         } else {

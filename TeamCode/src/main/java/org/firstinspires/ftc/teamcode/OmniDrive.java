@@ -27,10 +27,7 @@ public class OmniDrive extends God3OpMode {
     private double short_drive_y;
     private ElapsedTime clock = new ElapsedTime();
     private double startTime = 0.0;
-    double frontLeft = 0;
-    double frontRight = 0;
-    double backRight = 0;
-    double backLeft = 0;
+
     public void strafe(boolean strafe) {
         FR.setDirection(strafe ? DcMotor.Direction.FORWARD : DcMotor.Direction.REVERSE);
         FL.setDirection(strafe ? DcMotor.Direction.FORWARD : DcMotor.Direction.FORWARD);
@@ -66,6 +63,10 @@ public class OmniDrive extends God3OpMode {
         BL.setDirection(DcMotor.Direction.REVERSE);
         BR.setDirection(DcMotor.Direction.REVERSE);
         FR.setDirection(DcMotor.Direction.REVERSE);
+        FR.setZeroPowerBehavior(ZERO_POWER_BEHAVIOR);
+        FL.setZeroPowerBehavior(ZERO_POWER_BEHAVIOR);
+        BR.setZeroPowerBehavior(ZERO_POWER_BEHAVIOR);
+        BL.setZeroPowerBehavior(ZERO_POWER_BEHAVIOR);
 
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
@@ -96,23 +97,19 @@ public class OmniDrive extends God3OpMode {
             double gamepad1RightX = gamepad1.right_stick_x * scale;
 
             // holonomic formulas
-            if (Math.abs(gamepad1.left_stick_x) > .15 || Math.abs(gamepad1.left_stick_y) > .15 || Math.abs(gamepad1.right_stick_y) > .15 || Math.abs(gamepad1.right_stick_x) > .15) {
-                frontLeft = -gamepad1LeftY - gamepad1LeftX - gamepad1RightX;
-                frontRight = gamepad1LeftY - gamepad1LeftX - gamepad1RightX;
-                backRight = gamepad1LeftY + gamepad1LeftX - gamepad1RightX;
-                backLeft = -gamepad1LeftY + gamepad1LeftX - gamepad1RightX;
-            } else {
-                frontLeft = 0;
-                frontRight = 0;
-                backRight = 0;
-                backLeft = 0;
-            }
+            double frontLeft = -gamepad1LeftY - gamepad1LeftX - gamepad1RightX;
+            double frontRight = gamepad1LeftY - gamepad1LeftX - gamepad1RightX;
+            double backRight = gamepad1LeftY + gamepad1LeftX - gamepad1RightX;
+            double backLeft = -gamepad1LeftY + gamepad1LeftX - gamepad1RightX;
+
+            // clip the right/left values so that the values never exceed +/- 1
             frontRight = Range.clip(frontRight, -1, 1);
             frontLeft = Range.clip(frontLeft, -1, 1);
             backLeft = Range.clip(backLeft, -1, 1);
             backRight = Range.clip(backRight, -1, 1);
-            // clip the right/left values so that the values never exceed +/- 1
-
+            if (Math.abs(frontRight) < .15 && Math.abs(frontLeft) < .15 && Math.abs(backRight) < .15 && Math.abs(backLeft) < .15) {
+                frontRight = frontLeft = backLeft = backRight = 0;
+            }
             FR.setPower(frontRight);
             FL.setPower(frontLeft);
             BR.setPower(backRight);
