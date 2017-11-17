@@ -18,59 +18,59 @@ public abstract class AbstractAutonomous extends God3OpMode {
     /**
      * The power with which to turn when knocking off the jewel.
      */
-    private static final double JEWEL_TURN_TIME = 125;
+    private static final int JEWEL_TURN_TIME = 25;
 
     /**
      * Clock to time operations
      */
-    private ElapsedTime clock = new ElapsedTime();
+     ElapsedTime clock = new ElapsedTime();
 
     /**
      * Right color sensor
      */
-    private ColorSensor CBR;
+     ColorSensor CBR;
 
     /**
      * Left color sensor
      */
-    private ColorSensor CBL;
+     ColorSensor CBL;
 
     /**
      * Front-right Servo
      */
-    private DcMotor FR = null;
+     DcMotor FR = null;
 
     /**
      * Front-left Servo
      */
-    private DcMotor FL = null;
+     DcMotor FL = null;
 
     /**
      * Back-right Servo
      */
-    private DcMotor BR = null;
+     DcMotor BR = null;
 
     /**
      * Back-left Servo
      */
-    private DcMotor BL = null;
+     DcMotor BL = null;
 
     /**
      * Jewel Servo
      */
-    private Servo JS = null;
+     Servo JS = null;
 
     /**
      * Left grabber servo
      */
-    private Servo SL = null;
+     Servo SL = null;
 
     /**
      * Right grabber servo
      */
-    private Servo SR = null;
+     Servo SR = null;
 
-    private DcMotor lift = null;
+     DcMotor lift = null;
 
     public void strafe(boolean strafe) {
         FR.setDirection(strafe ? DcMotor.Direction.FORWARD : DcMotor.Direction.REVERSE);
@@ -143,7 +143,7 @@ public abstract class AbstractAutonomous extends God3OpMode {
     /**
      * Push the correct jewel
      */
-    private void pushJewel() {
+    void pushJewel() {
         double power = 0.6;
 
         JS.setPosition(JEWEL_SERVO_DOWN);
@@ -156,15 +156,15 @@ public abstract class AbstractAutonomous extends God3OpMode {
 
         telemetry.addData("result", get_colors());
 
-        if (isBlue()) {
+        if (!isBlue()) {
             if (get_colors() == JewelPosition.RED_JEWEL_LEFT) {
-                drive(.5, 0, 0, JEWEL_TURN_TIME);
+                drive(.3, 0, 0, JEWEL_TURN_TIME);
                 delay(500);
-                drive(-.5, 0, 0, JEWEL_TURN_TIME);
+                drive(-.3, 0, 0, JEWEL_TURN_TIME);
             } else if (get_colors() == JewelPosition.RED_JEWEL_RIGHT) {
-                drive(-.5, 0, 0, JEWEL_TURN_TIME);
+                drive(-.3, 0, 0, JEWEL_TURN_TIME);
                 delay(500);
-                drive(.5, 0, 0, JEWEL_TURN_TIME);
+                drive(.3, 0, 0, JEWEL_TURN_TIME);
             }
         } else {
             if (get_colors() == JewelPosition.RED_JEWEL_RIGHT) {
@@ -177,67 +177,18 @@ public abstract class AbstractAutonomous extends God3OpMode {
                 drive(.5, 0, 0, JEWEL_TURN_TIME);
             }
         }
-
-
+        JS.setPosition(JEWEL_SERVO_UP);
+        delay(1000);
     }
     public void delay(int time) {
         double startTime = clock.milliseconds();
         while (clock.milliseconds() - startTime < time) {
         }
     }
-    public void drive(double turn, double drive_x, double drive_y, double time) {
-        double leftPower;
-        double rightPower;
-        double startTime = clock.milliseconds();
-
-        while (clock.milliseconds() - startTime < time) {
-            telemetry.addData("CBR R,G,B", "(" + CBR.red() + ", " + CBR.green() + ", " + CBR.blue() + ")");
-            telemetry.addData("CBL R,G,B", "(" + CBL.red() + ", " + CBL.green() + ", " + CBL.blue() + ")");
-
-            if (Math.abs(turn) < .2) {
-                turn = 0;
-            }
-
-            if (Math.abs(drive_y) > .2) {
-                telemetry.addData("Status", "Driving");
-                strafe(false);
-
-                leftPower = Range.clip(drive_y + turn, -1.0, 1.0);
-                rightPower = Range.clip(drive_y - turn, -1.0, 1.0);
-
-                FL.setPower(leftPower);
-                BL.setPower(leftPower);
-                FR.setPower(rightPower);
-                BR.setPower(rightPower);
-            } else if (Math.abs(drive_x) > .2) {
-                telemetry.addData("Status", "Strafing");
-                strafe(true);
-
-                leftPower = Range.clip(drive_x + turn, -1.0, 1.0);
-                rightPower = Range.clip(drive_x - turn, -1.0, 1.0);
-
-                FL.setPower(leftPower);
-                BL.setPower(rightPower);
-                FR.setPower(leftPower);
-                BR.setPower(rightPower);
-            } else {
-                telemetry.addData("Status", "Turning");
-                strafe(false);
-
-                leftPower = Range.clip(turn, -1.0, 1.0);
-                rightPower = Range.clip(-turn, -1.0, 1.0);
-
-                FL.setPower(leftPower);
-                BL.setPower(leftPower);
-                FR.setPower(rightPower);
-                BR.setPower(rightPower);
-            }
-        }
-        telemetry.update();
-        FL.setPower(0);
-        BL.setPower(0);
-        FR.setPower(0);
-        BR.setPower(0);
+    public void drive(double turn, double drive_x, double drive_y, int time) {
+        drive(turn, drive_x, drive_y);
+        delay(time);
+        drive(0, 0, 0);
     }
     public void drive(double turn, double drive_x, double drive_y) {
         double leftPower;
@@ -346,7 +297,10 @@ public abstract class AbstractAutonomous extends God3OpMode {
         SR.setPosition(RIGHT_SERVO_OPEN);
         SL.setPosition(LEFT_SERVO_OPEN);
     }
-
+    void openGrabberFlat() {
+        SR.setPosition(RIGHT_SERVO_FLAT);
+        SL.setPosition(LEFT_SERVO_FLAT);
+    }
     public enum Alliance {
         BLUE, RED
     }

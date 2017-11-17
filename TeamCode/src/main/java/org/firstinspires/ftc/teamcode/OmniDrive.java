@@ -27,7 +27,10 @@ public class OmniDrive extends God3OpMode {
     private double short_drive_y;
     private ElapsedTime clock = new ElapsedTime();
     private double startTime = 0.0;
-
+    double frontLeft = 0;
+    double frontRight = 0;
+    double backRight = 0;
+    double backLeft = 0;
     public void strafe(boolean strafe) {
         FR.setDirection(strafe ? DcMotor.Direction.FORWARD : DcMotor.Direction.REVERSE);
         FL.setDirection(strafe ? DcMotor.Direction.FORWARD : DcMotor.Direction.FORWARD);
@@ -93,17 +96,22 @@ public class OmniDrive extends God3OpMode {
             double gamepad1RightX = gamepad1.right_stick_x * scale;
 
             // holonomic formulas
-
-            double frontLeft = -gamepad1LeftY - gamepad1LeftX - gamepad1RightX;
-            double frontRight = gamepad1LeftY - gamepad1LeftX - gamepad1RightX;
-            double backRight = gamepad1LeftY + gamepad1LeftX - gamepad1RightX;
-            double backLeft = -gamepad1LeftY + gamepad1LeftX - gamepad1RightX;
-
-            // clip the right/left values so that the values never exceed +/- 1
+            if (Math.abs(gamepad1.left_stick_x) > .15 || Math.abs(gamepad1.left_stick_y) > .15 || Math.abs(gamepad1.right_stick_y) > .15 || Math.abs(gamepad1.right_stick_x) > .15) {
+                frontLeft = -gamepad1LeftY - gamepad1LeftX - gamepad1RightX;
+                frontRight = gamepad1LeftY - gamepad1LeftX - gamepad1RightX;
+                backRight = gamepad1LeftY + gamepad1LeftX - gamepad1RightX;
+                backLeft = -gamepad1LeftY + gamepad1LeftX - gamepad1RightX;
+            } else {
+                frontLeft = 0;
+                frontRight = 0;
+                backRight = 0;
+                backLeft = 0;
+            }
             frontRight = Range.clip(frontRight, -1, 1);
             frontLeft = Range.clip(frontLeft, -1, 1);
             backLeft = Range.clip(backLeft, -1, 1);
             backRight = Range.clip(backRight, -1, 1);
+            // clip the right/left values so that the values never exceed +/- 1
 
             FR.setPower(frontRight);
             FL.setPower(frontLeft);

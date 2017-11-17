@@ -11,6 +11,10 @@ import com.qualcomm.robotcore.hardware.Servo;
  */
 @Autonomous(name = "newAutoBlue")
 public class NewAutoBlue extends NewAutonomous {
+
+    public AbstractAutonomous.Alliance getAlliance() {
+        return AbstractAutonomous.Alliance.BLUE;
+    }
     public void runOpMode() {
         telemetry.addData("Status", "Initialized");
 
@@ -42,27 +46,31 @@ public class NewAutoBlue extends NewAutonomous {
         startingAngle = imu.getAngularOrientation().firstAngle;
         telemetry.addData("start", startingAngle);
         telemetry.update();
+        strafe(false);
+        JS.setPosition(JEWEL_SERVO_UP);
         waitForStart();
 
         while (opModeIsActive()) {
-            closeGrabber();
+           /* closeGrabber();
             delay(1000);
             lift.setPower(.4);
             delay(800);
             lift.setPower(0);
+            pushJewel();
             drive(0, -.38, 0, 750);
             drive(-.2, 0, 0, 1700);
             drive(0, 0, .3, 1800);
             delay(500);
             openGrabber();
             delay(500);
-            drive(0, 0, -.3, 200);
-            /*run(0);
+            drive(0, 0, -.3, 200);*/
+            run(0);
             run(1);
             run(2);
             run(3);
             run(4);
-            run(5);*/
+            run(5);
+            run(6);
             break;
         }
     }
@@ -74,17 +82,20 @@ public class NewAutoBlue extends NewAutonomous {
             lift.setPower(.4);
             delay(800);
             lift.setPower(0);
-            drive(0, -.38, 0, 750);
         } else if (state == 1) {
-            drive(-.2, 0, 0, 1700);
+            pushJewel();
         } else if (state == 2) {
-            drive(0, 0, .3, 1800);
+            drive(0, -.38, 0, 1200);
         } else if (state == 3) {
-            delay(500);
-            openGrabber();
+            drive(-.2, 0, 0, 1900);
         } else if (state == 4) {
             delay(500);
+            openGrabberFlat();
+        } else if (state == 5){
+            drive(0, 0, .3, 1800);
         } else {
+            delay(500);
+            delay(500);
             drive(0, 0, -.3, 200);
         }
     }

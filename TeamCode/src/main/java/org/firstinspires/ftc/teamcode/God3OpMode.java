@@ -104,7 +104,7 @@ abstract class God3OpMode extends LinearOpMode {
     static final double LEFT_SERVO_FLAT = 0.32;
     static final double SHORT_DRIVE_TIME = 100;
     static final double SHORT_DRIVE_POWER = .5;
-    static final double JEWEL_SERVO_DOWN = .64;
+    static final double JEWEL_SERVO_DOWN = .66;
     static final double JEWEL_SERVO_UP = .2;
     /**
      * Behaviour when the motors are stopped

@@ -26,7 +26,7 @@ import java.util.Locale;
  * New automous Op Mode
  */
 
-public abstract class NewAutonomous extends God3OpMode {
+public abstract class NewAutonomous extends AbstractAutonomous {
 
     /**
      * The original angle
