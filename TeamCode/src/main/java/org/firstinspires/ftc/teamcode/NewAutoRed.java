@@ -9,11 +9,11 @@ import com.qualcomm.robotcore.hardware.Servo;
 /**
  * Created by student on 11/9/17.
  */
-@Autonomous(name = "newAutoBlue")
-public class NewAutoBlue extends NewAutonomous {
+@Autonomous(name = "newAutoRed")
+public class NewAutoRed extends NewAutonomous {
 
-    public AbstractAutonomous.Alliance getAlliance() {
-        return AbstractAutonomous.Alliance.BLUE;
+    public Alliance getAlliance() {
+        return Alliance.RED;
     }
     public void runOpMode() {
         telemetry.addData("Status", "Initialized");
@@ -56,19 +56,6 @@ public class NewAutoBlue extends NewAutonomous {
         waitForStart();
 
         while (opModeIsActive()) {
-           /* closeGrabber();
-            delay(1000);
-            lift.setPower(.4);
-            delay(800);
-            lift.setPower(0);
-            pushJewel();
-            drive(0, -.38, 0, 750);
-            drive(-.2, 0, 0, 1700);
-            drive(0, 0, .3, 1800);
-            delay(500);
-            openGrabber();
-            delay(500);
-            drive(0, 0, -.3, 200);*/
             run(0);
             run(1);
             run(2);
@@ -91,9 +78,9 @@ public class NewAutoBlue extends NewAutonomous {
             pushJewel();
         } else if (state == 2) {
             delay(1000);
-            drive(0, -.38, 0, 1200);
+            drive(0, .38, 0, 1200);
         } else if (state == 3) {
-            drive(-.2, 0, 0, 1600);
+            drive(.2, 0, 0, 1750);
         } else if (state == 4) {
             lift.setPower(-.4);
             delay(600);

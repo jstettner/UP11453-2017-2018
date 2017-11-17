@@ -159,26 +159,34 @@ public abstract class AbstractAutonomous extends God3OpMode {
         if (!isBlue()) {
             if (get_colors() == JewelPosition.RED_JEWEL_LEFT) {
                 drive(.3, 0, 0, JEWEL_TURN_TIME);
-                delay(500);
+                JS.setPosition(JEWEL_SERVO_UP);
+                delay(1500);
                 drive(-.3, 0, 0, JEWEL_TURN_TIME);
             } else if (get_colors() == JewelPosition.RED_JEWEL_RIGHT) {
                 drive(-.3, 0, 0, JEWEL_TURN_TIME);
-                delay(500);
+                JS.setPosition(JEWEL_SERVO_UP);
+                delay(1500);
                 drive(.3, 0, 0, JEWEL_TURN_TIME);
+            } else {
+                JS.setPosition(JEWEL_SERVO_UP);
+                delay(1500);
             }
         } else {
             if (get_colors() == JewelPosition.RED_JEWEL_RIGHT) {
                 drive(.5, 0, 0, JEWEL_TURN_TIME);
-                delay(500);
+                JS.setPosition(JEWEL_SERVO_UP);
+                delay(1500);
                 drive(-.5, 0, 0, JEWEL_TURN_TIME);
             } else if (get_colors() == JewelPosition.RED_JEWEL_LEFT) {
                 drive(-.5, 0, 0, JEWEL_TURN_TIME);
-                delay(500);
+                JS.setPosition(JEWEL_SERVO_UP);
+                delay(1500);
                 drive(.5, 0, 0, JEWEL_TURN_TIME);
+            } else {
+                JS.setPosition(JEWEL_SERVO_UP);
+                delay(1500);
             }
         }
-        JS.setPosition(JEWEL_SERVO_UP);
-        delay(1000);
     }
     public void delay(int time) {
         double startTime = clock.milliseconds();

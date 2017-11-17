@@ -81,10 +81,7 @@ public class OmniDrive extends God3OpMode {
         runtime.reset();
         waitForStart();
         while (opModeIsActive()) {
-            if (JS.getPosition() != (JEWEL_SERVO_UP))
-                JS.setPosition(JEWEL_SERVO_UP);
-            if (gamepad2.y)
-                JS.setPosition(JEWEL_SERVO_UP);
+            JS.setPosition(JEWEL_SERVO_UP);
 
             // left stick controls direction
             // right stick X controls rotation
@@ -107,13 +104,23 @@ public class OmniDrive extends God3OpMode {
             frontLeft = Range.clip(frontLeft, -1, 1);
             backLeft = Range.clip(backLeft, -1, 1);
             backRight = Range.clip(backRight, -1, 1);
-            if (Math.abs(frontRight) < .15 && Math.abs(frontLeft) < .15 && Math.abs(backRight) < .15 && Math.abs(backLeft) < .15) {
-                frontRight = frontLeft = backLeft = backRight = 0;
+            telemetry.addData("FR", frontRight);
+            telemetry.addData("FL", frontLeft);
+            telemetry.addData("BR", backRight);
+            telemetry.addData("BL", backLeft);
+
+            if (Math.abs(frontRight) > .15 && Math.abs(frontLeft) > .15 && Math.abs(backRight) > .15 && Math.abs(backLeft) > .15) {
+                FR.setPower(frontRight);
+                FL.setPower(frontLeft);
+                BR.setPower(backRight);
+                BL.setPower(backLeft);
+            } else {
+                FR.setPower(0);
+                FL.setPower(0);
+                BR.setPower(0);
+                BL.setPower(0);
             }
-            FR.setPower(frontRight);
-            FL.setPower(frontLeft);
-            BR.setPower(backRight);
-            BL.setPower(backLeft);
+            telemetry.update();
 
             // Setup a variable for each drive wheel to save power level for telemetry
 //        double leftPower;
@@ -203,7 +210,7 @@ public class OmniDrive extends God3OpMode {
                 }
             } else if (gamepad2.left_bumper) {
                 SL.setPosition(LEFT_SERVO_OPEN);
-            } else if (gamepad1.dpad_down || gamepad1.dpad_left || gamepad1.dpad_right || gamepad1.dpad_up) {
+            } else if (false) {
                 short_drive_x = 0;
                 short_drive_y = 0;
                 if (gamepad1.dpad_down) {
@@ -247,6 +254,10 @@ public class OmniDrive extends God3OpMode {
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             //telemetry.addData("Motors", "left (%.2f), right (%.2f)", leftPower, rightPower);
         }
+        FL.setPower(0);
+        BL.setPower(0);
+        FR.setPower(0);
+        BR.setPower(0);
     }
 
     /*
@@ -301,15 +312,12 @@ public class OmniDrive extends God3OpMode {
                 BR.setPower(rightPower);
             }
         }
-        telemetry.update();
-        FL.setPower(0);
-        BL.setPower(0);
-        FR.setPower(0);
-        BR.setPower(0);
     }
+
 
     /*
      * Code to run ONCE after the driver hits STOP
      */
+
 
 }
