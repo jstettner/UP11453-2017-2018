@@ -63,6 +63,7 @@ public class NewAutoRed extends NewAutonomous {
             run(4);
             run(5);
             run(6);
+            run(7);
             break;
         }
     }
@@ -77,18 +78,23 @@ public class NewAutoRed extends NewAutonomous {
         } else if (state == 1) {
             pushJewel();
         } else if (state == 2) {
-            delay(1000);
+            delay(500);
             drive(0, .38, 0, 1200);
         } else if (state == 3) {
-            drive(.2, 0, 0, 1750);
+            drive(.2, 0, 0, 800);
+            drive(0, .2, 0, 200);
+            drive(.2, 0, 0, 500);
         } else if (state == 4) {
+            drive(0, -.2, 0, 200);
+            drive(.2, 0, 0, 500);
+        } else if (state == 5) {
             lift.setPower(-.4);
             delay(600);
             lift.setPower(0);
             delay(500);
             openGrabberFlat();
             delay(1000);
-        } else if (state == 5){
+        } else if (state == 6){
             drive(0, 0, .3, 1800);
         } else {
             delay(500);

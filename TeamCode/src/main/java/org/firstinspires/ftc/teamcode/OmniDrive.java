@@ -92,34 +92,33 @@ public class OmniDrive extends God3OpMode {
             double gamepad1LeftY = -gamepad1.left_stick_y * drive_scale;
             double gamepad1LeftX = gamepad1.left_stick_x * drive_scale;
             double gamepad1RightX = gamepad1.right_stick_x * scale;
-
-            // holonomic formulas
             double frontLeft = -gamepad1LeftY - gamepad1LeftX - gamepad1RightX;
             double frontRight = gamepad1LeftY - gamepad1LeftX - gamepad1RightX;
             double backRight = gamepad1LeftY + gamepad1LeftX - gamepad1RightX;
             double backLeft = -gamepad1LeftY + gamepad1LeftX - gamepad1RightX;
+            if (Math.abs(gamepad1LeftX) > .2 || Math.abs(gamepad1LeftY) > .2 || Math.abs(gamepad1RightX) > .2) {
+                // holonomic formulas
 
-            // clip the right/left values so that the values never exceed +/- 1
-            frontRight = Range.clip(frontRight, -1, 1);
-            frontLeft = Range.clip(frontLeft, -1, 1);
-            backLeft = Range.clip(backLeft, -1, 1);
-            backRight = Range.clip(backRight, -1, 1);
+                // clip the right/left values so that the values never exceed +/- 1
+                frontRight = Range.clip(frontRight, -1, 1);
+                frontLeft = Range.clip(frontLeft, -1, 1);
+                backLeft = Range.clip(backLeft, -1, 1);
+                backRight = Range.clip(backRight, -1, 1);
+            } else {
+                frontRight = 0;
+                frontLeft = 0;
+                backRight = 0;
+                backLeft = 0;
+            }
             telemetry.addData("FR", frontRight);
             telemetry.addData("FL", frontLeft);
             telemetry.addData("BR", backRight);
             telemetry.addData("BL", backLeft);
-
-            if (Math.abs(frontRight) > .15 && Math.abs(frontLeft) > .15 && Math.abs(backRight) > .15 && Math.abs(backLeft) > .15) {
-                FR.setPower(frontRight);
-                FL.setPower(frontLeft);
-                BR.setPower(backRight);
-                BL.setPower(backLeft);
-            } else {
-                FR.setPower(0);
-                FL.setPower(0);
-                BR.setPower(0);
-                BL.setPower(0);
-            }
+            double tolerance = .1;
+            FR.setPower(frontRight);
+            FL.setPower(frontLeft);
+            BR.setPower(backRight);
+            BL.setPower(backLeft);
             telemetry.update();
 
             // Setup a variable for each drive wheel to save power level for telemetry
