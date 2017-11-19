@@ -92,10 +92,10 @@ public class OmniDrive extends God3OpMode {
             double gamepad1LeftY = -gamepad1.left_stick_y * drive_scale;
             double gamepad1LeftX = gamepad1.left_stick_x * drive_scale;
             double gamepad1RightX = gamepad1.right_stick_x * scale;
-            double frontLeft = -gamepad1.left_stick_y - gamepad1.left_stick_ - gamepad1.right_stick_x;
-            double frontRight = gamepad1.left_stick_y - gamepad1.left_stick_ - gamepad1.right_stick_x;
-            double backRight = gamepad1.left_stick_y + gamepad1.left_stick_ - gamepad1.right_stick_x;
-            double backLeft = -gamepad1.left_stick_y + gamepad1.left_stick_ - gamepad1.right_stick_x;
+            double frontLeft = -gamepad1.left_stick_y - gamepad1.left_stick - gamepad1.right_stick_x;
+            double frontRight = gamepad1.left_stick_y - gamepad1.left_stick - gamepad1.right_stick_x;
+            double backRight = gamepad1.left_stick_y + gamepad1.left_stick - gamepad1.right_stick_x;
+            double backLeft = -gamepad1.left_stick_y + gamepad1.left_stick - gamepad1.right_stick_x;
             if (Math.abs(gamepad1LeftX) > .2 || Math.abs(gamepad1LeftY) > .2 || Math.abs(gamepad1RightX) > .2) {
                 // holonomic formulas
 
