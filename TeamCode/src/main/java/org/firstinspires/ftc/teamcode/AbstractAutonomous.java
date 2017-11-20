@@ -119,6 +119,7 @@ public abstract class AbstractAutonomous extends God3OpMode {
         while (opModeIsActive()) {
             getGlyph();
             pushJewel();
+            break;
         }
 
         // ...

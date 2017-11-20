@@ -81,12 +81,8 @@ public class NewAutoRed extends NewAutonomous {
             delay(500);
             drive(0, .38, 0, 1200);
         } else if (state == 3) {
-            drive(.2, 0, 0, 800);
-            drive(0, .2, 0, 200);
-            drive(.2, 0, 0, 500);
+            drive(.2, 0, 0, 1450);
         } else if (state == 4) {
-            drive(0, -.2, 0, 200);
-            drive(.2, 0, 0, 500);
         } else if (state == 5) {
             lift.setPower(-.4);
             delay(600);
