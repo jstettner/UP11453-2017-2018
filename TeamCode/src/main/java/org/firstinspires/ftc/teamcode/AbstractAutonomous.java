@@ -174,15 +174,15 @@ public abstract class AbstractAutonomous extends God3OpMode {
             }
         } else {
             if (get_colors() == JewelPosition.RED_JEWEL_RIGHT) {
-                drive(.5, 0, 0, JEWEL_TURN_TIME);
+                drive(.3, 0, 0, JEWEL_TURN_TIME);
                 JS.setPosition(JEWEL_SERVO_UP);
                 delay(1500);
-                drive(-.5, 0, 0, JEWEL_TURN_TIME);
+                drive(-.3, 0, 0, JEWEL_TURN_TIME);
             } else if (get_colors() == JewelPosition.RED_JEWEL_LEFT) {
-                drive(-.5, 0, 0, JEWEL_TURN_TIME);
+                drive(-.3, 0, 0, JEWEL_TURN_TIME);
                 JS.setPosition(JEWEL_SERVO_UP);
                 delay(1500);
-                drive(.5, 0, 0, JEWEL_TURN_TIME);
+                drive(.3, 0, 0, JEWEL_TURN_TIME);
             } else {
                 JS.setPosition(JEWEL_SERVO_UP);
                 delay(1500);
@@ -264,7 +264,12 @@ public abstract class AbstractAutonomous extends God3OpMode {
     * the user wants to know about.
     */
     public JewelPosition get_colors() {
-        if (CBR.red() > CBL.red() && CBR.blue() < CBL.blue()) {
+        if (CBR.red() > CBR.blue()) {
+            return JewelPosition.RED_JEWEL_RIGHT;
+        } else  if (CBR.red() < CBR.blue()) {
+            return JewelPosition.RED_JEWEL_LEFT;
+        }
+        /*if (CBR.red() > CBL.red() && CBR.blue() < CBL.blue()) {
             return JewelPosition.RED_JEWEL_RIGHT;
         } else if (CBR.red() < CBL.red() && CBR.blue() > CBL.blue()) {
             return JewelPosition.RED_JEWEL_LEFT;
@@ -274,7 +279,7 @@ public abstract class AbstractAutonomous extends God3OpMode {
             return JewelPosition.RED_JEWEL_RIGHT;
         } else if (CBL.red() > CBL.blue() && CBR.red() < CBR.blue()) {
             return JewelPosition.RED_JEWEL_LEFT;
-        }
+        }*/
 
         return JewelPosition.JEWEL_INCONCLUSIVE;
     }
