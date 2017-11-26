@@ -112,7 +112,6 @@ public abstract class NewAutonomous extends AbstractAutonomous {
         double leftPower;
         double rightPower;
 
-        telemetry.addData("CBR R,G,B", "(" + CBR.red() + ", " + CBR.green() + ", " + CBR.blue() + ")");
         telemetry.addData("CBL R,G,B", "(" + CBL.red() + ", " + CBL.green() + ", " + CBL.blue() + ")");
 
         if (Math.abs(turn) < .05) {
@@ -163,7 +162,6 @@ public abstract class NewAutonomous extends AbstractAutonomous {
         double startTime = clock.milliseconds();
 
         while (clock.milliseconds() - startTime < time) {
-            telemetry.addData("CBR R,G,B", "(" + CBR.red() + ", " + CBR.green() + ", " + CBR.blue() + ")");
             telemetry.addData("CBL R,G,B", "(" + CBL.red() + ", " + CBL.green() + ", " + CBL.blue() + ")");
 
             if (Math.abs(turn) < .2) {

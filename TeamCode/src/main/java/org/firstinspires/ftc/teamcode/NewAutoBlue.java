@@ -6,12 +6,14 @@ import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 
+import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
+
 /**
  * Created by student on 11/9/17.
  */
 @Autonomous(name = "newAutoBlue")
 public class NewAutoBlue extends NewAutonomous {
-
+    RelicRecoveryVuMark column = RelicRecoveryVuMark.UNKNOWN;
     public AbstractAutonomous.Alliance getAlliance() {
         return AbstractAutonomous.Alliance.BLUE;
     }
@@ -23,7 +25,6 @@ public class NewAutoBlue extends NewAutonomous {
         FL = hardwareMap.get(DcMotor.class, "FL");
         BR = hardwareMap.get(DcMotor.class, "BR");
         BL = hardwareMap.get(DcMotor.class, "BL");
-        CBR = hardwareMap.get(ColorSensor.class, "CBR");
         CBL = hardwareMap.get(ColorSensor.class, "CBL");
         JS = hardwareMap.get(Servo.class, "JS");
         lift = hardwareMap.get(DcMotor.class, "lift");
@@ -76,6 +77,7 @@ public class NewAutoBlue extends NewAutonomous {
             run(4);
             run(5);
             run(6);
+            run(7);
             break;
         }
     }
@@ -88,20 +90,32 @@ public class NewAutoBlue extends NewAutonomous {
             delay(800);
             lift.setPower(0);
         } else if (state == 1) {
-            pushJewel();
+            column = getPicto();
+            telemetry.addData("column", column);
+            telemetry.update();
+            delay(1000);
         } else if (state == 2) {
             delay(1000);
-            drive(0, -.38, 0, 1200);
+            pushJewel();
         } else if (state == 3) {
-            drive(-.2, 0, 0, 1600);
+            delay(1000);
+            if (column == RelicRecoveryVuMark.CENTER || column == RelicRecoveryVuMark.UNKNOWN) {
+                drive(0, -.38, 0, 1200);
+            } else if (column == RelicRecoveryVuMark.LEFT) {
+                drive(0, -.38, 0, 1075);
+            } else if (column == RelicRecoveryVuMark.RIGHT) {
+                drive(0, -.38, 0, 1346);
+            }
         } else if (state == 4) {
+            drive(-.2, 0, 0, 1600);
+        } else if (state == 5) {
             lift.setPower(-.4);
             delay(600);
             lift.setPower(0);
             delay(500);
             openGrabberFlat();
             delay(1000);
-        } else if (state == 5){
+        } else if (state == 6){
             drive(0, 0, .3, 1800);
         } else {
             delay(500);

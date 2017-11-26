@@ -23,7 +23,6 @@ public class NewAutoRed extends NewAutonomous {
         FL = hardwareMap.get(DcMotor.class, "FL");
         BR = hardwareMap.get(DcMotor.class, "BR");
         BL = hardwareMap.get(DcMotor.class, "BL");
-        CBR = hardwareMap.get(ColorSensor.class, "CBR");
         CBL = hardwareMap.get(ColorSensor.class, "CBL");
         JS = hardwareMap.get(Servo.class, "JS");
         lift = hardwareMap.get(DcMotor.class, "lift");

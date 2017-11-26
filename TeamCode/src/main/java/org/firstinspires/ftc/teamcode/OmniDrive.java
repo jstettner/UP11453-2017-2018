@@ -21,7 +21,6 @@ public class OmniDrive extends God3OpMode {
     private Servo SR = null;
     private Servo JS = null;
     private DcMotor lift = null;
-    private ColorSensor CBR;
     private ColorSensor CBL;
     private double short_drive_x;
     private double short_drive_y;
@@ -52,7 +51,6 @@ public class OmniDrive extends God3OpMode {
         FL = hardwareMap.get(DcMotor.class, "FL");
         BR = hardwareMap.get(DcMotor.class, "BR");
         BL = hardwareMap.get(DcMotor.class, "BL");
-        CBR = hardwareMap.get(ColorSensor.class, "CBR");
         CBL = hardwareMap.get(ColorSensor.class, "CBL");
         SR = hardwareMap.get(Servo.class, "SR");
         SL = hardwareMap.get(Servo.class, "SL");
@@ -269,8 +267,7 @@ public class OmniDrive extends God3OpMode {
         double startTime = clock.milliseconds();
 
         while (clock.milliseconds() - startTime < time) {
-            telemetry.addData("CBR R,G,B", "(" + CBR.red() + ", " + CBR.green() + ", " + CBR.blue() + ")");
-            telemetry.addData("CBL R,G,B", "(" + CBL.red() + ", " + CBL.green() + ", " + CBL.blue() + ")");
+             telemetry.addData("CBL R,G,B", "(" + CBL.red() + ", " + CBL.green() + ", " + CBL.blue() + ")");
 
             if (Math.abs(turn) < .2) {
                 turn = 0;
