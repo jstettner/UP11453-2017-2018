@@ -15,6 +15,10 @@ public class OmniDrive extends God3OpMode {
     private ElapsedTime runtime = new ElapsedTime();
     private DcMotor FR = null;
     private DcMotor FL = null;
+    private DcMotor relic = null;
+    private Servo SRelicRotate = null;
+    private Servo SRelicPickup = null;
+    private boolean read = false;
     private DcMotor BR = null;
     private DcMotor BL = null;
     private Servo SL = null;
@@ -22,10 +26,13 @@ public class OmniDrive extends God3OpMode {
     private Servo JS = null;
     private DcMotor lift = null;
     private ColorSensor CBL;
+    private boolean gripped = false;
+    private boolean lifted = false;
     private double short_drive_x;
     private double short_drive_y;
     private ElapsedTime clock = new ElapsedTime();
     private double startTime = 0.0;
+    int counter = 0;
 
     public void strafe(boolean strafe) {
         FR.setDirection(strafe ? DcMotor.Direction.FORWARD : DcMotor.Direction.REVERSE);
@@ -49,12 +56,15 @@ public class OmniDrive extends God3OpMode {
         // step (using the FTC Robot Controller app on the phone).
         FR = hardwareMap.get(DcMotor.class, "FR");
         FL = hardwareMap.get(DcMotor.class, "FL");
+        relic = hardwareMap.get(DcMotor.class, "relic");
         BR = hardwareMap.get(DcMotor.class, "BR");
         BL = hardwareMap.get(DcMotor.class, "BL");
         CBL = hardwareMap.get(ColorSensor.class, "CBL");
         SR = hardwareMap.get(Servo.class, "SR");
         SL = hardwareMap.get(Servo.class, "SL");
         JS = hardwareMap.get(Servo.class, "JS");
+        SRelicRotate = hardwareMap.get(Servo.class, "SRelicRotate");
+        SRelicPickup = hardwareMap.get(Servo.class, "SRelicPickup");
         lift = hardwareMap.get(DcMotor.class, "lift");
 
         FL.setDirection(DcMotor.Direction.REVERSE);
@@ -65,6 +75,7 @@ public class OmniDrive extends God3OpMode {
         FL.setZeroPowerBehavior(ZERO_POWER_BEHAVIOR);
         BR.setZeroPowerBehavior(ZERO_POWER_BEHAVIOR);
         BL.setZeroPowerBehavior(ZERO_POWER_BEHAVIOR);
+        relic.setZeroPowerBehavior(ZERO_POWER_BEHAVIOR);
 
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
@@ -205,6 +216,22 @@ public class OmniDrive extends God3OpMode {
                 if (SL.getPosition() != LEFT_SERVO_AJAR) {
                     SL.setPosition(LEFT_SERVO_AJAR);
                 }
+            } else if (Math.abs(gamepad2.left_stick_y) > .2) {
+                relic.setPower(map(gamepad2.left_stick_y, -1.0, 1.0, -.7, .7));
+            } else if (gamepad2.x) {
+                SRelicRotate.setPosition(RELIC_GRIPPED);
+             /*   if (!read) {
+                    read = true;
+                    if (SRelicRotate.getPosition() == RELIC_GRIPPED) {
+                        SRelicRotate.setPosition(RELIC_UNGRIPPED);
+                    } else if (SRelicRotate.getPosition() == RELIC_UNGRIPPED) {
+                        SRelicRotate.setPosition(RELIC_GRIPPED);
+                    }\
+                } */
+            } else if (gamepad2.b) {
+                SRelicRotate.setPosition(RELIC_UNGRIPPED);
+            } else if (gamepad2.y) {
+                SRelicPickup.setPosition(RELIC_PICKUP);
             } else if (gamepad2.left_bumper) {
                 SL.setPosition(LEFT_SERVO_OPEN);
             } else if (false) {
@@ -221,6 +248,8 @@ public class OmniDrive extends God3OpMode {
                 }
                 drive(0.0, short_drive_x, short_drive_y, SHORT_DRIVE_TIME);
             } else {
+                read = false;
+                relic.setPower(0.0);
                 // servo test
                 SR.setPosition(RIGHT_SERVO_CLOSED);
                 SL.setPosition(LEFT_SERVO_CLOSED);
@@ -260,7 +289,9 @@ public class OmniDrive extends God3OpMode {
     /*
      * Code to run REPEATEDLY after the driver hits INIT, but before they hit PLAY
      */
-
+    public double map(double x, double in_min, double in_max, double out_min, double out_max) {
+        return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+    }
     public void drive(double turn, double drive_x, double drive_y, double time) {
         double leftPower;
         double rightPower;
