@@ -189,6 +189,9 @@ public class OmniDrive extends God3OpMode {
 //            FR.setPower(rightPower);
 //            BR.setPower(rightPower);
 //        }
+            telemetry.addData("read", read);
+            telemetry.addData("relic pos: ", SRelicRotate.getPosition());
+
             if (gamepad2.left_trigger > .2) {
                 if (SR.getPosition() != RIGHT_SERVO_OPEN) {
                     SR.setPosition(RIGHT_SERVO_OPEN);
@@ -217,37 +220,29 @@ public class OmniDrive extends God3OpMode {
                     SL.setPosition(LEFT_SERVO_AJAR);
                 }
             } else if (Math.abs(gamepad2.left_stick_y) > .2) {
-                relic.setPower(map(gamepad2.left_stick_y, -1.0, 1.0, -.7, .7));
+                lift.setPower(map(gamepad2.right_stick_y, -1.0, 1.0, -.85, .85));
+            } else if (Math.abs(gamepad2.right_stick_y) > .2) {
+                relic.setPower(map(gamepad2.right_stick_y, -1.0, 1.0, -.7, .7));
             } else if (gamepad2.x) {
-                SRelicRotate.setPosition(RELIC_GRIPPED);
-             /*   if (!read) {
+                if (!read) {
                     read = true;
-                    if (SRelicRotate.getPosition() == RELIC_GRIPPED) {
+                    if (SRelicRotate.getPosition() < RELIC_GRIPPED + .01) {
                         SRelicRotate.setPosition(RELIC_UNGRIPPED);
                     } else if (SRelicRotate.getPosition() == RELIC_UNGRIPPED) {
                         SRelicRotate.setPosition(RELIC_GRIPPED);
-                    }\
-                } */
-            } else if (gamepad2.b) {
-                SRelicRotate.setPosition(RELIC_UNGRIPPED);
+                    }
+                }
+               // SRelicRotate.setPosition(RELIC_GRIPPED);
             } else if (gamepad2.y) {
+                SRelicPickup.setPosition(RELIC_DROP);
+                // SRelicRotate.setPosition(RELIC_GRIPPED);
+            } else if (gamepad2.b) {
                 SRelicPickup.setPosition(RELIC_PICKUP);
+                // SRelicRotate.setPosition(RELIC_GRIPPED);
             } else if (gamepad2.left_bumper) {
                 SL.setPosition(LEFT_SERVO_OPEN);
-            } else if (false) {
-                short_drive_x = 0;
-                short_drive_y = 0;
-                if (gamepad1.dpad_down) {
-                    short_drive_y = -SHORT_DRIVE_POWER;
-                } else if (gamepad1.dpad_up) {
-                    short_drive_y = SHORT_DRIVE_POWER;
-                } else if (gamepad1.dpad_left) {
-                    short_drive_x = SHORT_DRIVE_POWER;
-                } else {
-                    short_drive_x = -SHORT_DRIVE_POWER;
-                }
-                drive(0.0, short_drive_x, short_drive_y, SHORT_DRIVE_TIME);
             } else {
+                gripped = false;
                 read = false;
                 relic.setPower(0.0);
                 // servo test
