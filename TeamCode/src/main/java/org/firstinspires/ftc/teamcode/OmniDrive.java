@@ -228,7 +228,7 @@ public class OmniDrive extends God3OpMode {
                     read = true;
                     if (SRelicRotate.getPosition() < RELIC_GRIPPED + .01) {
                         SRelicRotate.setPosition(RELIC_UNGRIPPED);
-                    } else if (SRelicRotate.getPosition() == RELIC_UNGRIPPED) {
+                    } else if (SRelicRotate.getPosition() > RELIC_UNGRIPPED - .01) {
                         SRelicRotate.setPosition(RELIC_GRIPPED);
                     }
                 }
