@@ -94,11 +94,11 @@ abstract class God3OpMode extends LinearOpMode {
 
     static final double RELIC_UNGRIPPED = 0.60;
 
-    static final double RELIC_GRIPPED = 0.07;
+    static final double RELIC_GRIPPED = 0.15;
 
     static final double RELIC_PICKUP = .28;
 
-    static final double RELIC_DROP = .4;
+    static final double RELIC_DROP = .47;
 
 
     /**

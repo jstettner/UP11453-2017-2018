@@ -17,6 +17,7 @@ public class OmniDrive extends God3OpMode {
     private DcMotor FL = null;
     private DcMotor relic = null;
     private Servo SRelicRotate = null;
+    private String mode = "lift";
     private Servo SRelicPickup = null;
     private boolean read = false;
     private DcMotor BR = null;
@@ -29,6 +30,7 @@ public class OmniDrive extends God3OpMode {
     private boolean gripped = false;
     private boolean lifted = false;
     private double short_drive_x;
+    private boolean modeBool = false;
     private double short_drive_y;
     private ElapsedTime clock = new ElapsedTime();
     private double startTime = 0.0;
@@ -56,9 +58,9 @@ public class OmniDrive extends God3OpMode {
         // step (using the FTC Robot Controller app on the phone).
         FR = hardwareMap.get(DcMotor.class, "FR");
         FL = hardwareMap.get(DcMotor.class, "FL");
-        relic = hardwareMap.get(DcMotor.class, "relic");
         BR = hardwareMap.get(DcMotor.class, "BR");
         BL = hardwareMap.get(DcMotor.class, "BL");
+        relic = hardwareMap.get(DcMotor.class, "relic");
         CBL = hardwareMap.get(ColorSensor.class, "CBL");
         SR = hardwareMap.get(Servo.class, "SR");
         SL = hardwareMap.get(Servo.class, "SL");
@@ -190,7 +192,9 @@ public class OmniDrive extends God3OpMode {
 //            BR.setPower(rightPower);
 //        }
             telemetry.addData("read", read);
+            telemetry.addData("gripped", gripped);
             telemetry.addData("relic pos: ", SRelicRotate.getPosition());
+            telemetry.addData("relic pos: ", SRelicPickup.getPosition());
 
             if (gamepad2.left_trigger > .2) {
                 if (SR.getPosition() != RIGHT_SERVO_OPEN) {
@@ -233,12 +237,18 @@ public class OmniDrive extends God3OpMode {
                     }
                 }
                // SRelicRotate.setPosition(RELIC_GRIPPED);
-            } else if (gamepad2.y) {
-                SRelicPickup.setPosition(RELIC_DROP);
-                // SRelicRotate.setPosition(RELIC_GRIPPED);
             } else if (gamepad2.b) {
-                SRelicPickup.setPosition(RELIC_PICKUP);
-                // SRelicRotate.setPosition(RELIC_GRIPPED);
+          //      SRelicPickup.setPosition(RELIC_DROP);
+                if (!gripped) {
+                    gripped = true;
+                    if (SRelicPickup.getPosition() < RELIC_PICKUP + .01) {
+                        SRelicPickup.setPosition(RELIC_DROP);
+                    } else if (SRelicPickup.getPosition() > RELIC_DROP - .01) {
+                        SRelicPickup.setPosition(RELIC_PICKUP);
+                    }
+                }
+            } else if (gamepad2.y) {
+                //SRelicPickup.setPosition(RELIC_PICKUP);
             } else if (gamepad2.left_bumper) {
                 SL.setPosition(LEFT_SERVO_OPEN);
             } else {
@@ -262,7 +272,19 @@ public class OmniDrive extends God3OpMode {
                 lift.setPower(0);
                 telemetry.addData("Lift", "Stationary");
             }
-
+            if (gamepad1.y) {
+                if (!modeBool) {
+                    modeBool = true;
+                    if (mode == "relic") {
+                        switchToLift();
+                    } else {
+                        switchToRelic();
+                    }
+                }
+                // SRelicRotate.setPosition(RELIC_GRIPPED);
+            } else {
+                modeBool = false;
+            }
 
             // Tank Mode uses one stick to control each wheel.
             // - This requires no math, but it is hard to drive forward slowly and keep straight.
@@ -334,6 +356,20 @@ public class OmniDrive extends God3OpMode {
                 BR.setPower(rightPower);
             }
         }
+    }
+    public void switchToRelic() {
+        mode = "relic";
+        FR = hardwareMap.get(DcMotor.class, "FR");
+        FL = hardwareMap.get(DcMotor.class, "FL");
+        BR = hardwareMap.get(DcMotor.class, "BR");
+        BL = hardwareMap.get(DcMotor.class, "BL");
+    }
+    public void switchToLift() {
+        mode = "lift";
+        FR = hardwareMap.get(DcMotor.class, "BR");
+        FL = hardwareMap.get(DcMotor.class, "FR");
+        BR = hardwareMap.get(DcMotor.class, "BL");
+        BL = hardwareMap.get(DcMotor.class, "FL");
     }
 
 
