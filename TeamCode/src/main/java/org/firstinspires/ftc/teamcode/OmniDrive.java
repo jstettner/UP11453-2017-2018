@@ -30,7 +30,7 @@ public class OmniDrive extends God3OpMode {
     private boolean gripped = false;
     private boolean lifted = false;
     private double short_drive_x;
-    private boolean modeBool = false;
+    private boolean modeBool = false; 
     private double short_drive_y;
     private ElapsedTime clock = new ElapsedTime();
     private double startTime = 0.0;
