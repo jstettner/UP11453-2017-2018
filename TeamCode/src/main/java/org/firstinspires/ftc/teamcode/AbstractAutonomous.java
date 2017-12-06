@@ -386,7 +386,7 @@ public abstract class AbstractAutonomous extends God3OpMode {
 
         RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
         double startTime = clock.milliseconds();
-        while (clock.milliseconds() - startTime < 1500) {
+        while (clock.milliseconds() - startTime < 3000) {
             vuMark = RelicRecoveryVuMark.from(relicTemplate);
         }
         int turnTime = 0;
@@ -406,7 +406,8 @@ public abstract class AbstractAutonomous extends God3OpMode {
             break;
         }
         delay(100);
-        drive(.3, 0, 0, (int) (turnTime*.85));
+        if (turnTime > 0)
+            drive(.3, 0, 0, (int) (turnTime*.85));
         delay(100);
         return vuMark;
     }

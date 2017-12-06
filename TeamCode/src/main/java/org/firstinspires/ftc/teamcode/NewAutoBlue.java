@@ -102,12 +102,18 @@ public class NewAutoBlue extends NewAutonomous {
             if (column == RelicRecoveryVuMark.CENTER || column == RelicRecoveryVuMark.UNKNOWN) {
                 drive(0, -.38, 0, 1200);
             } else if (column == RelicRecoveryVuMark.LEFT) {
-                drive(0, -.38, 0, 1075);
+                drive(0, -.38, 0, 1000);
             } else if (column == RelicRecoveryVuMark.RIGHT) {
                 drive(0, -.38, 0, 1346);
             }
         } else if (state == 4) {
-            drive(-.2, 0, 0, 1600);
+            if (column == RelicRecoveryVuMark.CENTER || column == RelicRecoveryVuMark.UNKNOWN) {
+                drive(-.2, 0, 0, 1650);
+            } else if (column == RelicRecoveryVuMark.LEFT) {
+                drive(-.2, 0, 0, 1650);
+            } else if (column == RelicRecoveryVuMark.RIGHT) {
+                drive(-.2, 0, 0, 1650);
+            }
         } else if (state == 5) {
             lift.setPower(-.4);
             delay(600);

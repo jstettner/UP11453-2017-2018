@@ -17,6 +17,7 @@ public class OmniDrive extends God3OpMode {
     private DcMotor FL = null;
     private DcMotor relic = null;
     private Servo SRelicRotate = null;
+    private Servo SBlock = null;
     private String mode = "lift";
     private Servo SRelicPickup = null;
     private boolean read = false;
@@ -30,7 +31,7 @@ public class OmniDrive extends God3OpMode {
     private boolean gripped = false;
     private boolean lifted = false;
     private double short_drive_x;
-    private boolean modeBool = false; 
+    private boolean modeBool = false;
     private double short_drive_y;
     private ElapsedTime clock = new ElapsedTime();
     private double startTime = 0.0;
@@ -67,6 +68,7 @@ public class OmniDrive extends God3OpMode {
         JS = hardwareMap.get(Servo.class, "JS");
         SRelicRotate = hardwareMap.get(Servo.class, "SRelicRotate");
         SRelicPickup = hardwareMap.get(Servo.class, "SRelicPickup");
+        SBlock = hardwareMap.get(Servo.class, "SBlock");
         lift = hardwareMap.get(DcMotor.class, "lift");
 
         FL.setDirection(DcMotor.Direction.REVERSE);
@@ -272,13 +274,14 @@ public class OmniDrive extends God3OpMode {
                 lift.setPower(0);
                 telemetry.addData("Lift", "Stationary");
             }
+
             if (gamepad1.y) {
                 if (!modeBool) {
                     modeBool = true;
-                    if (mode == "relic") {
-                        switchToLift();
-                    } else {
+                    if (mode == "lift") {
                         switchToRelic();
+                    } else {
+                        switchToLift();
                     }
                 }
                 // SRelicRotate.setPosition(RELIC_GRIPPED);
@@ -358,18 +361,21 @@ public class OmniDrive extends God3OpMode {
         }
     }
     public void switchToRelic() {
+        SBlock.setPosition(.5);
         mode = "relic";
-        FR = hardwareMap.get(DcMotor.class, "FR");
-        FL = hardwareMap.get(DcMotor.class, "FL");
-        BR = hardwareMap.get(DcMotor.class, "BR");
-        BL = hardwareMap.get(DcMotor.class, "BL");
-    }
-    public void switchToLift() {
-        mode = "lift";
         FR = hardwareMap.get(DcMotor.class, "BR");
         FL = hardwareMap.get(DcMotor.class, "FR");
         BR = hardwareMap.get(DcMotor.class, "BL");
         BL = hardwareMap.get(DcMotor.class, "FL");
+        SRelicRotate.setPosition(RELIC_GRIPPED);
+    }
+    public void switchToLift() {
+       // SBlock.setPosition(.9);
+        mode = "lift";
+        FR = hardwareMap.get(DcMotor.class, "FR");
+        FL = hardwareMap.get(DcMotor.class, "FL");
+        BR = hardwareMap.get(DcMotor.class, "BR");
+        BL = hardwareMap.get(DcMotor.class, "BL");
     }
 
 
