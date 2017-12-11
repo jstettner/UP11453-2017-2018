@@ -421,24 +421,17 @@ public abstract class AbstractAutonomous extends God3OpMode {
     public void turn(double power, double angle) {
         telemetry.addData("test", "test");
         double startingAngle = angle();
-        power = Math.abs(power);
-        if (angle > 0) {
             while (getAngleDiff(startingAngle, angle()) < angle) {
                 telemetry.addData("not working", "plz");
                 telemetry.addData("angleDiff", getAngleDiff(startingAngle, angle()));
                 telemetry.addData("startingAngle", startingAngle);
                 if (angle() - getAngleDiff(startingAngle, angle()) < 20.0) {
-                    drive(.2, 0, 0, 100);
+                    drive((power / Math.abs(power))*.2, 0, 0, 50);
                 } else {
                     drive(power, 0, 0);
                 }
                 telemetry.update();
             }
-        } else {
-            while (getAngleDiff(startingAngle, angle()) < Math.abs(angle)) {
-                drive(-power, 0, 0, 0);
-            }
-        }
         FL.setPower(0);
         BL.setPower(0);
         FR.setPower(0);

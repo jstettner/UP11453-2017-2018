@@ -11,11 +11,11 @@ import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
 /**
  * Created by student on 11/9/17.
  */
-@Autonomous(name = "newAutoBlue1")
-public class NewAutoBlue1 extends NewAutonomous {
+@Autonomous(name = "newAutoBlue2")
+public class NewAutoBlue2 extends NewAutonomous {
     RelicRecoveryVuMark column = RelicRecoveryVuMark.UNKNOWN;
-    public AbstractAutonomous.Alliance getAlliance() {
-        return AbstractAutonomous.Alliance.BLUE;
+    public Alliance getAlliance() {
+        return Alliance.BLUE;
     }
     public void runOpMode() {
         telemetry.addData("Status", "Initialized");
@@ -77,6 +77,8 @@ public class NewAutoBlue1 extends NewAutonomous {
             run(5);
             run(6);
             run(7);
+            run(8);
+            run(9);
             break;
         }
     }
@@ -98,29 +100,35 @@ public class NewAutoBlue1 extends NewAutonomous {
             pushJewel();
         } else if (state == 3) {
             delay(1000);
-            if (column == RelicRecoveryVuMark.CENTER || column == RelicRecoveryVuMark.UNKNOWN) {
-                drive(0, -.38, 0, 1200);
-            } else if (column == RelicRecoveryVuMark.LEFT) {
-                drive(0, -.38, 0, 1050);
-            } else if (column == RelicRecoveryVuMark.RIGHT) {
-                drive(0, -.38, 0, 1350);
-            }
+            drive(0, -.38, 0, 1000);
         } else if (state == 4) {
-            if (column == RelicRecoveryVuMark.CENTER || column == RelicRecoveryVuMark.UNKNOWN) {
-                turn(-.2, 154);
-            } else if (column == RelicRecoveryVuMark.LEFT) {
-                turn(-.2, 163);
-            } else if (column == RelicRecoveryVuMark.RIGHT) {
-                turn(-.2, 147);
-            }
+            delay(1000);
+            turn(-.2, 90);
         } else if (state == 5) {
+            drive(0, .35, 0, 1000);
+            if (column == RelicRecoveryVuMark.CENTER || column == RelicRecoveryVuMark.UNKNOWN) {
+                drive(0, .38, 0, 1200);
+            } else if (column == RelicRecoveryVuMark.LEFT) {
+                drive(0, .38, 0, 1050);
+            } else if (column == RelicRecoveryVuMark.RIGHT) {
+                drive(0, .38, 0, 1350);
+            }
+        } else if (state == 6) {
+            if (column == RelicRecoveryVuMark.CENTER || column == RelicRecoveryVuMark.UNKNOWN) {
+                turn(-.2, 15);
+            } else if (column == RelicRecoveryVuMark.LEFT) {
+                turn(-.2, 15);
+            } else if (column == RelicRecoveryVuMark.RIGHT) {
+                turn(-.2, 15);
+            }
+        } else if (state == 7) {
             lift.setPower(-.4);
             delay(600);
             lift.setPower(0);
             delay(500);
             openGrabberFlat();
             delay(1000);
-        } else if (state == 6){
+        } else if (state == 8){
             drive(0, 0, .3, 1800);
         } else {
             delay(500);
