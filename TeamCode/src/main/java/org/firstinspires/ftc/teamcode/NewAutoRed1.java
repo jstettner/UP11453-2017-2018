@@ -6,16 +6,14 @@ import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 
-import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
-
 /**
  * Created by student on 11/9/17.
  */
-@Autonomous(name = "newAutoBlue")
-public class NewAutoBlue extends NewAutonomous {
-    RelicRecoveryVuMark column = RelicRecoveryVuMark.UNKNOWN;
-    public AbstractAutonomous.Alliance getAlliance() {
-        return AbstractAutonomous.Alliance.BLUE;
+@Autonomous(name = "newAutoRed1")
+public class NewAutoRed1 extends NewAutonomous {
+
+    public Alliance getAlliance() {
+        return Alliance.RED;
     }
     public void runOpMode() {
         telemetry.addData("Status", "Initialized");
@@ -30,16 +28,13 @@ public class NewAutoBlue extends NewAutonomous {
         lift = hardwareMap.get(DcMotor.class, "lift");
         SR = hardwareMap.get(Servo.class, "SR");
         SL = hardwareMap.get(Servo.class, "SL");
+
         FR.setZeroPowerBehavior(ZERO_POWER_BEHAVIOR);
         FL.setZeroPowerBehavior(ZERO_POWER_BEHAVIOR);
         BR.setZeroPowerBehavior(ZERO_POWER_BEHAVIOR);
         BL.setZeroPowerBehavior(ZERO_POWER_BEHAVIOR);
         lift.setZeroPowerBehavior(ZERO_POWER_BEHAVIOR);
-        imu = hardwareMap.get(BNO055IMU.class, "imu");
-        final BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
-
-        parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
-        parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
+        initGyro();
 //        new Thread(new Runnable() {
 //            @Override
 //            public void run() {
@@ -47,7 +42,6 @@ public class NewAutoBlue extends NewAutonomous {
 //                initialized = true;
 //            }
 //        }).start();
-        imu.initialize(parameters);
         startingAngle = imu.getAngularOrientation().firstAngle;
         telemetry.addData("start", startingAngle);
         telemetry.update();
@@ -56,19 +50,6 @@ public class NewAutoBlue extends NewAutonomous {
         waitForStart();
 
         while (opModeIsActive()) {
-           /* closeGrabber();
-            delay(1000);
-            lift.setPower(.4);
-            delay(800);
-            lift.setPower(0);
-            pushJewel();
-            drive(0, -.38, 0, 750);
-            drive(-.2, 0, 0, 1700);
-            drive(0, 0, .3, 1800);
-            delay(500);
-            openGrabber();
-            delay(500);
-            drive(0, 0, -.3, 200);*/
             run(0);
             run(1);
             run(2);
@@ -89,30 +70,13 @@ public class NewAutoBlue extends NewAutonomous {
             delay(800);
             lift.setPower(0);
         } else if (state == 1) {
-            column = getPicto();
-            telemetry.addData("column", column);
-            telemetry.update();
-            delay(1000);
-        } else if (state == 2) {
-            delay(1000);
             pushJewel();
+        } else if (state == 2) {
+            delay(500);
+            drive(0, .38, 0, 1200);
         } else if (state == 3) {
-            delay(1000);
-            if (column == RelicRecoveryVuMark.CENTER || column == RelicRecoveryVuMark.UNKNOWN) {
-                drive(0, -.38, 0, 1200);
-            } else if (column == RelicRecoveryVuMark.LEFT) {
-                drive(0, -.38, 0, 1000);
-            } else if (column == RelicRecoveryVuMark.RIGHT) {
-                drive(0, -.38, 0, 1346);
-            }
+            drive(.2, 0, 0, 1450);
         } else if (state == 4) {
-            if (column == RelicRecoveryVuMark.CENTER || column == RelicRecoveryVuMark.UNKNOWN) {
-                drive(-.2, 0, 0, 1650);
-            } else if (column == RelicRecoveryVuMark.LEFT) {
-                drive(-.2, 0, 0, 1650);
-            } else if (column == RelicRecoveryVuMark.RIGHT) {
-                drive(-.2, 0, 0, 1650);
-            }
         } else if (state == 5) {
             lift.setPower(-.4);
             delay(600);
