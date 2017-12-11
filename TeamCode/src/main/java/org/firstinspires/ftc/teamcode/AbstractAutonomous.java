@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -25,7 +26,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
  */
 
 public abstract class AbstractAutonomous extends God3OpMode {
-
+    BNO055IMU imu = null;
 
     /**
      * {@link #vuforia} is the variable we will use to store our instance of the Vuforia
@@ -102,6 +103,7 @@ public abstract class AbstractAutonomous extends God3OpMode {
      */
     @Override
     public void runOpMode() throws InterruptedException {
+
         // Declare any local / helper variables here
 
         // Our initialization code should go here
@@ -410,5 +412,44 @@ public abstract class AbstractAutonomous extends God3OpMode {
             drive(.3, 0, 0, (int) (turnTime*.85));
         delay(100);
         return vuMark;
+    }
+    double angle() {
+        Orientation angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+        return AngleUnit.DEGREES.fromUnit(angles.angleUnit, angles.firstAngle);
+    }
+
+    public void turn(double power, double angle) {
+        telemetry.addData("test", "test");
+        double startingAngle = angle();
+        power = Math.abs(power);
+        if (angle > 0) {
+            while (getAngleDiff(startingAngle, angle()) < angle) {
+                telemetry.addData("not working", "plz");
+                telemetry.addData("angleDiff", getAngleDiff(startingAngle, angle()));
+                telemetry.addData("startingAngle", startingAngle);
+                if (angle() - getAngleDiff(startingAngle, angle()) < 20.0) {
+                    drive(.2, 0, 0, 100);
+                } else {
+                    drive(power, 0, 0);
+                }
+                telemetry.update();
+            }
+        } else {
+            while (getAngleDiff(startingAngle, angle()) < Math.abs(angle)) {
+                drive(-power, 0, 0, 0);
+            }
+        }
+        FL.setPower(0);
+        BL.setPower(0);
+        FR.setPower(0);
+        BR.setPower(0);
+    }
+    public void initGyro() {
+        imu = hardwareMap.get(BNO055IMU.class, "imu");
+        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+
+        parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
+        parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
+        imu.initialize(parameters);
     }
 }

@@ -126,5 +126,18 @@ abstract class God3OpMode extends LinearOpMode {
         BR.setDirection(strafe ? DcMotor.Direction.REVERSE : DcMotor.Direction.REVERSE);
         BL.setDirection(strafe ? DcMotor.Direction.REVERSE : DcMotor.Direction.FORWARD);
     }
-
+    public double getAngleDiff(double angle1, double angle2) {
+        if(Math.abs(angle1 - angle2) < 180.0)
+            return Math.abs(angle1-angle2);
+        else if(angle1 > angle2)
+        {
+            angle1 -= 360;
+            return Math.abs(angle2-angle1);
+        }
+        else
+        {
+            angle2 -= 360;
+            return Math.abs(angle1-angle2);
+        }
+    }
 }

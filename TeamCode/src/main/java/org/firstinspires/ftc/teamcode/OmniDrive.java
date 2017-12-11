@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -7,6 +8,11 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
+
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
+import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
 @TeleOp(name = "OmniDriveJack")
 
@@ -36,6 +42,7 @@ public class OmniDrive extends God3OpMode {
     private ElapsedTime clock = new ElapsedTime();
     private double startTime = 0.0;
     int counter = 0;
+    BNO055IMU imu = null;
 
     public void strafe(boolean strafe) {
         FR.setDirection(strafe ? DcMotor.Direction.FORWARD : DcMotor.Direction.REVERSE);
@@ -53,7 +60,7 @@ public class OmniDrive extends God3OpMode {
      */
     public void runOpMode() throws InterruptedException {
         telemetry.addData("Status", "Initialized");
-
+        initGyro();
         // Initialize the hardware variables. Note that the strings used here as parameters
         // to 'get' must correspond to the names assigned during the robot configuration
         // step (using the FTC Robot Controller app on the phone).
@@ -88,12 +95,17 @@ public class OmniDrive extends God3OpMode {
 
         lift.setDirection(DcMotorSimple.Direction.FORWARD);
         lift.setZeroPowerBehavior(ZERO_POWER_BEHAVIOR);
-
+        double startingAngle = 0;
         // Tell the driver that initialization is complete.
         telemetry.addData("Status", "Initialized");
         runtime.reset();
         waitForStart();
         while (opModeIsActive()) {
+            if (startingAngle == 0) {
+                startingAngle = angle();
+            }
+            telemetry.addData("gyro", angle());
+            telemetry.addData("difference in angle", getAngleDiff(startingAngle, angle()));
             JS.setPosition(JEWEL_SERVO_UP);
 
             // left stick controls direction
@@ -253,6 +265,11 @@ public class OmniDrive extends God3OpMode {
                 //SRelicPickup.setPosition(RELIC_PICKUP);
             } else if (gamepad2.left_bumper) {
                 SL.setPosition(LEFT_SERVO_OPEN);
+            } else if (gamepad1.b) {
+                if (!read) {
+                    read = true;
+                    turn(.2, 90.0);
+                }
             } else {
                 gripped = false;
                 read = false;
@@ -305,7 +322,32 @@ public class OmniDrive extends God3OpMode {
         FR.setPower(0);
         BR.setPower(0);
     }
-
+    public void turn(double power, double angle) {
+        telemetry.addData("test", "test");
+        double startingAngle = angle();
+        power = Math.abs(power);
+        if (angle > 0) {
+            while (getAngleDiff(startingAngle, angle()) < angle) {
+                telemetry.addData("not working", "plz");
+                telemetry.addData("angleDiff", getAngleDiff(startingAngle, angle()));
+                telemetry.addData("startingAngle", startingAngle);
+                if (angle() - getAngleDiff(startingAngle, angle()) < 20.0) {
+                    drive(.2, 0, 0, 100);
+                } else {
+                    drive(power, 0, 0);
+                }
+                telemetry.update();
+            }
+        } else {
+            while (getAngleDiff(startingAngle, angle()) < Math.abs(angle)) {
+                drive(-power, 0, 0, 0);
+            }
+        }
+        FL.setPower(0);
+        BL.setPower(0);
+        FR.setPower(0);
+        BR.setPower(0);
+    }
     /*
      * Code to run REPEATEDLY after the driver hits INIT, but before they hit PLAY
      */
@@ -377,11 +419,68 @@ public class OmniDrive extends God3OpMode {
         BR = hardwareMap.get(DcMotor.class, "BR");
         BL = hardwareMap.get(DcMotor.class, "BL");
     }
+    double angle() {
+        Orientation angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+        return AngleUnit.DEGREES.fromUnit(angles.angleUnit, angles.firstAngle);
+    }
+    public void drive(double turn, double drive_x, double drive_y) {
+        double leftPower;
+        double rightPower;
+        double startTime = clock.milliseconds();
 
+        telemetry.addData("CBL R,G,B", "(" + CBL.red() + ", " + CBL.green() + ", " + CBL.blue() + ")");
 
+        if (Math.abs(turn) < .2) {
+            turn = 0;
+        }
+
+        if (Math.abs(drive_y) > .2) {
+            telemetry.addData("Status", "Driving");
+            strafe(false);
+
+            leftPower = Range.clip(drive_y + turn, -1.0, 1.0);
+            rightPower = Range.clip(drive_y - turn, -1.0, 1.0);
+
+            FL.setPower(leftPower);
+            BL.setPower(leftPower);
+            FR.setPower(rightPower);
+            BR.setPower(rightPower);
+        } else if (Math.abs(drive_x) > .2) {
+            telemetry.addData("Status", "Strafing");
+            strafe(true);
+
+            leftPower = Range.clip(drive_x + turn, -1.0, 1.0);
+            rightPower = Range.clip(drive_x - turn, -1.0, 1.0);
+
+            FL.setPower(leftPower);
+            BL.setPower(rightPower);
+            FR.setPower(leftPower);
+            BR.setPower(rightPower);
+        } else {
+            telemetry.addData("Status", "Turning");
+            strafe(false);
+
+            leftPower = Range.clip(turn, -1.0, 1.0);
+            rightPower = Range.clip(-turn, -1.0, 1.0);
+
+            FL.setPower(leftPower);
+            BL.setPower(leftPower);
+            FR.setPower(rightPower);
+            BR.setPower(rightPower);
+
+        }
+        telemetry.update();
+    }
     /*
      * Code to run ONCE after the driver hits STOP
      */
 
+    public void initGyro() {
+        imu = hardwareMap.get(BNO055IMU.class, "imu");
+        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
 
+        parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
+        parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
+        imu.initialize(parameters);
+    }
 }

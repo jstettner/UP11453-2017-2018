@@ -30,17 +30,16 @@ public class NewAutoBlue extends NewAutonomous {
         lift = hardwareMap.get(DcMotor.class, "lift");
         SR = hardwareMap.get(Servo.class, "SR");
         SL = hardwareMap.get(Servo.class, "SL");
-        imu = hardwareMap.get(BNO055IMU.class, "imu");
-        final BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
-
-        parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
-        parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
         FR.setZeroPowerBehavior(ZERO_POWER_BEHAVIOR);
         FL.setZeroPowerBehavior(ZERO_POWER_BEHAVIOR);
         BR.setZeroPowerBehavior(ZERO_POWER_BEHAVIOR);
         BL.setZeroPowerBehavior(ZERO_POWER_BEHAVIOR);
         lift.setZeroPowerBehavior(ZERO_POWER_BEHAVIOR);
+        imu = hardwareMap.get(BNO055IMU.class, "imu");
+        final BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
 
+        parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
+        parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
 //        new Thread(new Runnable() {
 //            @Override
 //            public void run() {
