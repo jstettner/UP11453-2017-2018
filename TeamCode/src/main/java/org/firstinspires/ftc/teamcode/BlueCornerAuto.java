@@ -11,8 +11,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
 /**
  * Created by student on 11/9/17.
  */
-@Autonomous(name = "newAutoBlue2")
-public class NewAutoBlue2 extends NewAutonomous {
+@Autonomous(name = "BlueCornerAuto")
+public class BlueCornerAuto extends NewAutonomous {
     RelicRecoveryVuMark column = RelicRecoveryVuMark.UNKNOWN;
     public Alliance getAlliance() {
         return Alliance.BLUE;

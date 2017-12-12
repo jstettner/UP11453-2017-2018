@@ -57,6 +57,8 @@ public class NewAutoRed1 extends NewAutonomous {
 //                initialized = true;
 //            }
 //        }).start();
+        startingAngle = imu.getAngularOrientation().firstAngle;
+        telemetry.addData("start", startingAngle);
         telemetry.update();
         strafe(false);
         JS.setPosition(JEWEL_SERVO_UP);
@@ -115,16 +117,10 @@ public class NewAutoRed1 extends NewAutonomous {
             delay(500);
             openGrabberFlat();
             delay(1000);
-
-
-        } else if (state == 5) {
-            delay(500);
-            drive(0, .38, 0, 1200);
         } else if (state == 6) {
             drive(0, 0, .3, 1800);
         } else {
-            delay(500);
-            delay(500);
+            delay(1000);
             drive(0, 0, -.3, 200);
         }
     }
