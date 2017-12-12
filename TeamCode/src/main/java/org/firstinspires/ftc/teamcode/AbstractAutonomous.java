@@ -149,7 +149,6 @@ public abstract class AbstractAutonomous extends God3OpMode {
      */
     private void getGlyph() {
         closeGrabber();
-
         double startTime = clock.milliseconds();
         while (clock.milliseconds() - startTime < 500) {
         }
@@ -176,7 +175,7 @@ public abstract class AbstractAutonomous extends God3OpMode {
 
         telemetry.addData("result", get_colors());
 
-        if (!isBlue()) {
+        if (isRed()) {
             if (get_colors() == JewelPosition.RED_JEWEL_LEFT) {
                 drive(.5, 0, 0, JEWEL_TURN_TIME);
                 JS.setPosition(JEWEL_SERVO_UP);
@@ -287,18 +286,6 @@ public abstract class AbstractAutonomous extends God3OpMode {
         } else  if (CBL.red() < CBL.blue()) {
             return JewelPosition.RED_JEWEL_LEFT;
         }
-        /*if (CBR.red() > CBL.red() && CBR.blue() < CBL.blue()) {
-            return JewelPosition.RED_JEWEL_RIGHT;
-        } else if (CBR.red() < CBL.red() && CBR.blue() > CBL.blue()) {
-            return JewelPosition.RED_JEWEL_LEFT;
-        }
-
-        if (CBR.red() > CBR.blue() && CBL.red() < CBL.blue()) {
-            return JewelPosition.RED_JEWEL_RIGHT;
-        } else if (CBL.red() > CBL.blue() && CBR.red() < CBR.blue()) {
-            return JewelPosition.RED_JEWEL_LEFT;
-        }*/
-
         return JewelPosition.JEWEL_INCONCLUSIVE;
     }
 
@@ -440,7 +427,6 @@ public abstract class AbstractAutonomous extends God3OpMode {
     public void initGyro() {
         imu = hardwareMap.get(BNO055IMU.class, "imu");
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
-
         parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
         parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
         imu.initialize(parameters);

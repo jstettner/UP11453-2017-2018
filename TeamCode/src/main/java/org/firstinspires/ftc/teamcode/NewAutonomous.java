@@ -36,7 +36,6 @@ public abstract class NewAutonomous extends AbstractAutonomous {
     /**
      * The REV imu
      */
-    BNO055IMU imu = null;
     private double fullAngle = 0;
     boolean turned = false;
     volatile boolean started = false;
