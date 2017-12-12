@@ -6,14 +6,12 @@ import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 
-import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
-
 /**
  * Created by student on 11/9/17.
  */
-@Autonomous(name = "newAutoRed1")
-public class NewAutoRed1 extends NewAutonomous {
-    RelicRecoveryVuMark column = RelicRecoveryVuMark.UNKNOWN;
+@Autonomous(name = "RedCornerAuto")
+public class RedCornerAuto extends NewAutonomous {
+
     public Alliance getAlliance() {
         return Alliance.RED;
     }
@@ -30,19 +28,6 @@ public class NewAutoRed1 extends NewAutonomous {
         lift = hardwareMap.get(DcMotor.class, "lift");
         SR = hardwareMap.get(Servo.class, "SR");
         SL = hardwareMap.get(Servo.class, "SL");
-        imu = hardwareMap.get(BNO055IMU.class, "imu");
-        final BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
-
-        parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
-        parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
-//        new Thread(new Runnable() {
-//            @Override
-//            public void run() {
-//                imu.initialize(parameters);
-//                initialized = true;
-//            }
-//        }).start();
-        imu.initialize(parameters);
 
         FR.setZeroPowerBehavior(ZERO_POWER_BEHAVIOR);
         FL.setZeroPowerBehavior(ZERO_POWER_BEHAVIOR);
@@ -62,7 +47,6 @@ public class NewAutoRed1 extends NewAutonomous {
         telemetry.update();
         strafe(false);
         JS.setPosition(JEWEL_SERVO_UP);
-
         waitForStart();
 
         while (opModeIsActive()) {
@@ -86,30 +70,13 @@ public class NewAutoRed1 extends NewAutonomous {
             delay(800);
             lift.setPower(0);
         } else if (state == 1) {
-            column = getPicto();
-            telemetry.addData("column", column);
-            telemetry.update();
-            delay(1000);
-        } else if (state == 2) {
-            delay(1000);
             pushJewel();
+        } else if (state == 2) {
+            delay(500);
+            drive(0, .38, 0, 1200);
         } else if (state == 3) {
-            delay(1000);
-            if (column == RelicRecoveryVuMark.CENTER || column == RelicRecoveryVuMark.UNKNOWN) {
-                drive(0, -.38, 0, 1200);
-            } else if (column == RelicRecoveryVuMark.LEFT) {
-                drive(0, .38, 0, 2000);
-            } else if (column == RelicRecoveryVuMark.RIGHT) {
-                drive(0, -.38, 0, 1350);
-            }
+            drive(.2, 0, 0, 1450);
         } else if (state == 4) {
-            if (column == RelicRecoveryVuMark.CENTER || column == RelicRecoveryVuMark.UNKNOWN) {
-                turn(-.2, 154);
-            } else if (column == RelicRecoveryVuMark.LEFT) {
-                turn(-.2, 174);
-            } else if (column == RelicRecoveryVuMark.RIGHT) {
-                turn(-.2, 147);
-            }
         } else if (state == 5) {
             lift.setPower(-.4);
             delay(600);
@@ -117,12 +84,7 @@ public class NewAutoRed1 extends NewAutonomous {
             delay(500);
             openGrabberFlat();
             delay(1000);
-
-
-        } else if (state == 5) {
-            delay(500);
-            drive(0, .38, 0, 1200);
-        } else if (state == 6) {
+        } else if (state == 6){
             drive(0, 0, .3, 1800);
         } else {
             delay(500);
