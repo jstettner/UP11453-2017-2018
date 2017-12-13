@@ -96,17 +96,20 @@ public class NewAutoRed1 extends NewAutonomous {
         } else if (state == 3) {
             delay(1000);
             if (column == RelicRecoveryVuMark.CENTER || column == RelicRecoveryVuMark.UNKNOWN) {
-                drive(0, -.38, 0, 1200);
+                drive(0, -.38, 0, 2000);
+                drive(0, 0, .4, 200);
             } else if (column == RelicRecoveryVuMark.LEFT) {
-                drive(0, .38, 0, 2000);
+                drive(0, .38, 0, 2300);
+                drive(0, 0, .4, 200);
             } else if (column == RelicRecoveryVuMark.RIGHT) {
-                drive(0, -.38, 0, 1350);
+                drive(0, -.38, 0, 2000);
+                drive(0, 0, .4, 200);
             }
         } else if (state == 4) {
             if (column == RelicRecoveryVuMark.CENTER || column == RelicRecoveryVuMark.UNKNOWN) {
-                turn(-.2, 154);
+                turn(-.2, 164);;
             } else if (column == RelicRecoveryVuMark.LEFT) {
-                turn(-.2, 174);
+                turn(-.2, 167);
             } else if (column == RelicRecoveryVuMark.RIGHT) {
                 turn(-.2, 147);
             }
