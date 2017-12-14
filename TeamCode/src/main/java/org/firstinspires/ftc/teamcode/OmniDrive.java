@@ -199,10 +199,11 @@ public class OmniDrive extends God3OpMode {
 //            FR.setPower(rightPower);
 //            BR.setPower(rightPower);
 //        }
-            telemetry.addData("read", read);
+           /* telemetry.addData("read", read);
             telemetry.addData("gripped", gripped);
             telemetry.addData("relic pos: ", SRelicRotate.getPosition());
-            telemetry.addData("relic pos: ", SRelicPickup.getPosition());
+            telemetry.addData("relic pos: ", SRelicPickup.getPosition());*/
+            telemetry.addData("relicPos", relic.getCurrentPosition());
 
             if (gamepad2.left_trigger > .2) {
                 if (SR.getPosition() != RIGHT_SERVO_OPEN) {
@@ -238,6 +239,13 @@ public class OmniDrive extends God3OpMode {
             } else if (gamepad2.x) {
                 if (!read) {
                     read = true;
+                   /* relic.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    while (relic.getTargetPosition() > -6000 + 25) {
+                        relic.setTargetPosition(-6000);
+                        relic.setPower(.8);
+                    }
+                    relic.setPower(0);*/
+                    relic.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
                     if (SRelicRotate.getPosition() < RELIC_GRIPPED + .01) {
                         SRelicRotate.setPosition(RELIC_UNGRIPPED);
                     } else if (SRelicRotate.getPosition() > RELIC_UNGRIPPED - .01) {

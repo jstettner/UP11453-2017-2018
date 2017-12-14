@@ -380,8 +380,7 @@ public abstract class AbstractAutonomous extends God3OpMode {
         }
         int turnTime = 0;
         double outsideTimer = clock.milliseconds();
-        while (clock.milliseconds() - outsideTimer < 10000) {
-            while (vuMark == RelicRecoveryVuMark.UNKNOWN) {
+        while (clock.milliseconds() - outsideTimer < 10000 && vuMark == RelicRecoveryVuMark.UNKNOWN) {
                 turnTime += 20;
                 drive(-.3, 0, 0, 20);
                 delay(200);
@@ -391,8 +390,6 @@ public abstract class AbstractAutonomous extends God3OpMode {
                 }
                 telemetry.addData("VuMark", "not visible");
                 telemetry.update();
-            }
-            break;
         }
         delay(100);
         if (turnTime > 0)

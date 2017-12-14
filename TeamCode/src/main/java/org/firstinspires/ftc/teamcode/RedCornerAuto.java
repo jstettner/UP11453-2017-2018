@@ -73,10 +73,14 @@ public class RedCornerAuto extends NewAutonomous {
             pushJewel();
         } else if (state == 2) {
             delay(500);
-            drive(0, .38, 0, 1200);
+            drive(0, .2, 0, 2000);
         } else if (state == 3) {
-            drive(.2, 0, 0, 1450);
+            delay(1000);
+            turn(.2, 86);
         } else if (state == 4) {
+            delay(500);
+            drive(0, -.3, 0, 1500);
+            delay(500);
         } else if (state == 5) {
             lift.setPower(-.4);
             delay(600);
