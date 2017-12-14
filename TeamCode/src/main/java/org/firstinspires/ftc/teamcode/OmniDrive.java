@@ -101,11 +101,6 @@ public class OmniDrive extends God3OpMode {
         runtime.reset();
         waitForStart();
         while (opModeIsActive()) {
-            if (startingAngle == 0) {
-                startingAngle = angle();
-            }
-            telemetry.addData("gyro", angle());
-            telemetry.addData("difference in angle", getAngleDiff(startingAngle, angle()));
             JS.setPosition(JEWEL_SERVO_UP);
 
             // left stick controls direction
@@ -144,7 +139,6 @@ public class OmniDrive extends God3OpMode {
             FL.setPower(frontLeft);
             BR.setPower(backRight);
             BL.setPower(backLeft);
-            telemetry.update();
 
             // Setup a variable for each drive wheel to save power level for telemetry
 //        double leftPower;
@@ -265,11 +259,6 @@ public class OmniDrive extends God3OpMode {
                 //SRelicPickup.setPosition(RELIC_PICKUP);
             } else if (gamepad2.left_bumper) {
                 SL.setPosition(LEFT_SERVO_OPEN);
-            } else if (gamepad1.b) {
-                if (!read) {
-                    read = true;
-                    turn(.2, 90.0);
-                }
             } else {
                 gripped = false;
                 read = false;
@@ -312,9 +301,7 @@ public class OmniDrive extends God3OpMode {
             // rightPower = -gamepad1.right_stick_y ;
 
             // Send calculated power to wheels
-
-            // Show the elapsed game time and wheel power.
-            telemetry.addData("Status", "Run Time: " + runtime.toString());
+            telemetry.update();
             //telemetry.addData("Motors", "left (%.2f), right (%.2f)", leftPower, rightPower);
         }
         FL.setPower(0);
@@ -336,7 +323,6 @@ public class OmniDrive extends God3OpMode {
                 } else {
                     drive(power, 0, 0);
                 }
-                telemetry.update();
             }
         } else {
             while (getAngleDiff(startingAngle, angle()) < Math.abs(angle)) {
@@ -469,7 +455,6 @@ public class OmniDrive extends God3OpMode {
             BR.setPower(rightPower);
 
         }
-        telemetry.update();
     }
     /*
      * Code to run ONCE after the driver hits STOP

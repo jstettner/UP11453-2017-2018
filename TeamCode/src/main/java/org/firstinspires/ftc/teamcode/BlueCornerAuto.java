@@ -128,7 +128,7 @@ public class BlueCornerAuto extends NewAutonomous {
             delay(500);
             openGrabberFlat();
             delay(1000);
-        } else if (state == 8){
+        } else if (state == 8) {
             drive(0, 0, .3, 1800);
         } else {
             delay(500);
