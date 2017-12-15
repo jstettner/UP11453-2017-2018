@@ -77,16 +77,9 @@ public class RedCornerAuto extends NewAutonomous {
             delay(500);
             drive(0, .2, 0, 2500);
         } else if (state == 3) {
-            if (column == RelicRecoveryVuMark.CENTER || column == RelicRecoveryVuMark.UNKNOWN) {
-                delay(1000);
-                turn(.2, 86);
-            } else if (column == RelicRecoveryVuMark.LEFT) {
-                drive(0, .38, 0, 2000);
-            } else if (column == RelicRecoveryVuMark.RIGHT) {
-                drive(0, .38, 0, 1500);
-
-                delay(1000);
+            delay(500);
             turn(.2, 86);
+                delay(500);
         } else if (state == 4) {
                 delay(500);
                 if (column == RelicRecoveryVuMark.CENTER || column == RelicRecoveryVuMark.UNKNOWN) {
@@ -96,7 +89,8 @@ public class RedCornerAuto extends NewAutonomous {
                     drive(0, -.3, 0, 2500);
                     turn(.2, 13);
                 } else if (column == RelicRecoveryVuMark.RIGHT) {
-                    turn(-.2, 152);
+                    drive(0, -.3, 0, 1500);
+                    turn(.2, 13);
                 }
             delay(500);
         } else if (state == 5) {
