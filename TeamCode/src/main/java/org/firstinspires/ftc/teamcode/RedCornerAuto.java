@@ -6,12 +6,14 @@ import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 
+import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
+
 /**
  * Created by student on 11/9/17.
  */
 @Autonomous(name = "RedCornerAuto")
 public class RedCornerAuto extends NewAutonomous {
-
+    RelicRecoveryVuMark column = RelicRecoveryVuMark.UNKNOWN;
     public Alliance getAlliance() {
         return Alliance.RED;
     }
@@ -73,13 +75,29 @@ public class RedCornerAuto extends NewAutonomous {
             pushJewel();
         } else if (state == 2) {
             delay(500);
-            drive(0, .2, 0, 2000);
+            drive(0, .2, 0, 2500);
         } else if (state == 3) {
-            delay(1000);
+            if (column == RelicRecoveryVuMark.CENTER || column == RelicRecoveryVuMark.UNKNOWN) {
+                delay(1000);
+                turn(.2, 86);
+            } else if (column == RelicRecoveryVuMark.LEFT) {
+                drive(0, .38, 0, 2000);
+            } else if (column == RelicRecoveryVuMark.RIGHT) {
+                drive(0, .38, 0, 1500);
+
+                delay(1000);
             turn(.2, 86);
         } else if (state == 4) {
-            delay(500);
-            drive(0, -.3, 0, 1500);
+                delay(500);
+                if (column == RelicRecoveryVuMark.CENTER || column == RelicRecoveryVuMark.UNKNOWN) {
+                    drive(0, -.3, 0, 2000);
+                    turn(.2, 13);
+                } else if (column == RelicRecoveryVuMark.LEFT) {
+                    drive(0, -.3, 0, 2500);
+                    turn(.2, 13);
+                } else if (column == RelicRecoveryVuMark.RIGHT) {
+                    turn(-.2, 152);
+                }
             delay(500);
         } else if (state == 5) {
             lift.setPower(-.4);
