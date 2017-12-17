@@ -54,6 +54,7 @@ public class RedCornerAuto extends NewAutonomous {
         while (opModeIsActive()) {
             run(0);
             run(1);
+            run(10);
             run(2);
             run(3);
             run(4);
@@ -72,6 +73,8 @@ public class RedCornerAuto extends NewAutonomous {
             delay(800);
             lift.setPower(0);
         } else if (state == 1) {
+            column = getPicto();
+        } else if (state == 10) {
             pushJewel();
         } else if (state == 2) {
             delay(500);

@@ -92,7 +92,6 @@ public class OmniDrive extends God3OpMode {
         // Reverse the motor that runs backwards when connected directly to the battery
 //        strafe(false);
         JS.setPosition(JEWEL_SERVO_UP);
-
         lift.setDirection(DcMotorSimple.Direction.FORWARD);
         lift.setZeroPowerBehavior(ZERO_POWER_BEHAVIOR);
         double startingAngle = 0;
@@ -101,8 +100,8 @@ public class OmniDrive extends God3OpMode {
         runtime.reset();
         waitForStart();
         while (opModeIsActive()) {
+            telemetry.addData("relicPos", SRelicRotate.getPosition());
             JS.setPosition(JEWEL_SERVO_UP);
-
             // left stick controls direction
             // right stick X controls rotation
 
@@ -245,7 +244,7 @@ public class OmniDrive extends God3OpMode {
                         relic.setPower(.8);
                     }
                     relic.setPower(0);*/
-                    relic.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                 //   relic.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
                     if (SRelicRotate.getPosition() < RELIC_GRIPPED + .01) {
                         SRelicRotate.setPosition(RELIC_UNGRIPPED);
                     } else if (SRelicRotate.getPosition() > RELIC_UNGRIPPED - .01) {
@@ -404,6 +403,7 @@ public class OmniDrive extends God3OpMode {
         BR = hardwareMap.get(DcMotor.class, "BL");
         BL = hardwareMap.get(DcMotor.class, "FL");
         SRelicRotate.setPosition(RELIC_GRIPPED);
+        SRelicPickup.setPosition(RELIC_DROP);
     }
     public void switchToLift() {
        // SBlock.setPosition(.9);

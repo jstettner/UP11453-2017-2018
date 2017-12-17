@@ -51,9 +51,10 @@ public class BlueCornerAuto extends NewAutonomous {
         JS.setPosition(JEWEL_SERVO_UP);
         waitForStart();
 
-        while (opModeIsActive()) {
+        while (opModeIsActive() && !isStopRequested()) {
             run(0);
             run(1);
+            run(10);
             run(2);
             run(3);
             run(4);
@@ -62,6 +63,7 @@ public class BlueCornerAuto extends NewAutonomous {
             run(7);
             break;
         }
+        return;
     }
 
     public void run(int state) {
@@ -72,25 +74,27 @@ public class BlueCornerAuto extends NewAutonomous {
             delay(800);
             lift.setPower(0);
         } else if (state == 1) {
+            column = getPicto();
+        } else  if (state == 10) {
             pushJewel();
-        } else if (state == 2) {
+        }if (state == 2) {
             delay(500);
             drive(0, -.2, 0, 2500);
         } else if (state == 3) {
             delay(500);
-            turn(.2, 90);
+            turn(-.2, 90);
             delay(500);
             } else if (state == 4) {
                 delay(500);
                 if (column == RelicRecoveryVuMark.CENTER || column == RelicRecoveryVuMark.UNKNOWN) {
                     drive(0, .3, 0, 2000);
-                    turn(-.2, 167);
+                    turn(-.2, 13);
                 } else if (column == RelicRecoveryVuMark.LEFT) {
                     drive(0, .3, 0, 1500);
-                    turn(-.2, 167);
+                    turn(-.2, 10);
                 } else if (column == RelicRecoveryVuMark.RIGHT) {
                     drive(0, .3, 0, 2500);
-                    turn(-.2, 167);
+                    turn(-.2, 10);
                 }
                 delay(500);
             } else if (state == 5) {

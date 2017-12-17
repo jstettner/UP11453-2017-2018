@@ -99,11 +99,11 @@ public class NewAutoBlue1 extends NewAutonomous {
         } else if (state == 3) {
             delay(1000);
             if (column == RelicRecoveryVuMark.CENTER || column == RelicRecoveryVuMark.UNKNOWN) {
-                drive(0, -.38, 0, 1200);
+                drive(0, -.3, 0, 1500);
             } else if (column == RelicRecoveryVuMark.LEFT) {
-                drive(0, -.38, 0, 1050);
+                drive(0, -.3, 0, 1400);
             } else if (column == RelicRecoveryVuMark.RIGHT) {
-                drive(0, -.38, 0, 1350);
+                drive(0, -.3, 0, 1700);
             }
         } else if (state == 4) {
             if (column == RelicRecoveryVuMark.CENTER || column == RelicRecoveryVuMark.UNKNOWN) {
