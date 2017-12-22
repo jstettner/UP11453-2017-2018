@@ -241,8 +241,6 @@ public class OmniDrive extends God3OpMode {
             } else if (gamepad2.left_bumper) {
                 SL.setPosition(LEFT_SERVO_OPEN);
             } else {
-                gripped = false;
-                read = false;
                 relic.setPower(0.0);
                 // servo test
                 SR.setPosition(RIGHT_SERVO_CLOSED);
@@ -292,6 +290,9 @@ public class OmniDrive extends God3OpMode {
                     }
                 }
                 // SRelicRotate.setPosition(RELIC_GRIPPED);
+            } else {
+                gripped = false;
+                read = false;
             }
             if (gamepad1.y) {
                 if (!modeBool) {
