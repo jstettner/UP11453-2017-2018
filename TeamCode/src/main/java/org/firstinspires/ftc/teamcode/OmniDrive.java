@@ -100,7 +100,9 @@ public class OmniDrive extends God3OpMode {
         runtime.reset();
         waitForStart();
         while (opModeIsActive()) {
-            telemetry.addData("relicPos", SRelicRotate.getPosition());
+            telemetry.addData("relicRotatePos", SRelicRotate.getPosition());
+            telemetry.addData("relicPickupPos", SRelicPickup.getPosition());
+            telemetry.addData("rounded pos", Math.round(SRelicPickup.getPosition() * 100.0) / 100.0);
             JS.setPosition(JEWEL_SERVO_UP);
             // left stick controls direction
             // right stick X controls rotation
@@ -115,6 +117,7 @@ public class OmniDrive extends God3OpMode {
             double frontRight = gamepad1LeftY - gamepad1LeftX - gamepad1RightX;
             double backRight = gamepad1LeftY + gamepad1LeftX - gamepad1RightX;
             double backLeft = -gamepad1LeftY + gamepad1LeftX - gamepad1RightX;
+            telemetry.addData("read", read);
             if (Math.abs(gamepad1LeftX) > .2 || Math.abs(gamepad1LeftY) > .2 || Math.abs(gamepad1RightX) > .2) {
                 // holonomic formulas
 
@@ -231,37 +234,8 @@ public class OmniDrive extends God3OpMode {
                 if (SL.getPosition() != LEFT_SERVO_AJAR) {
                     SL.setPosition(LEFT_SERVO_AJAR);
                 }
-            } else if (Math.abs(gamepad2.left_stick_y) > .2) {
-                lift.setPower(map(gamepad2.right_stick_y, -1.0, 1.0, -.85, .85));
             } else if (Math.abs(gamepad2.right_stick_y) > .2) {
                 relic.setPower(map(gamepad2.right_stick_y, -1.0, 1.0, -.7, .7));
-            } else if (gamepad2.x) {
-                if (!read) {
-                    read = true;
-                   /* relic.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                    while (relic.getTargetPosition() > -6000 + 25) {
-                        relic.setTargetPosition(-6000);
-                        relic.setPower(.8);
-                    }
-                    relic.setPower(0);*/
-                 //   relic.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-                    if (SRelicRotate.getPosition() < RELIC_GRIPPED + .01) {
-                        SRelicRotate.setPosition(RELIC_UNGRIPPED);
-                    } else if (SRelicRotate.getPosition() > RELIC_UNGRIPPED - .01) {
-                        SRelicRotate.setPosition(RELIC_GRIPPED);
-                    }
-                }
-               // SRelicRotate.setPosition(RELIC_GRIPPED);
-            } else if (gamepad2.b) {
-          //      SRelicPickup.setPosition(RELIC_DROP);
-                if (!gripped) {
-                    gripped = true;
-                    if (SRelicPickup.getPosition() < RELIC_PICKUP + .01) {
-                        SRelicPickup.setPosition(RELIC_DROP);
-                    } else if (SRelicPickup.getPosition() > RELIC_DROP - .01) {
-                        SRelicPickup.setPosition(RELIC_PICKUP);
-                    }
-                }
             } else if (gamepad2.y) {
                 //SRelicPickup.setPosition(RELIC_PICKUP);
             } else if (gamepad2.left_bumper) {
@@ -278,16 +252,47 @@ public class OmniDrive extends God3OpMode {
             // Raise or lower the lift
 
             if (gamepad2.dpad_up && !gamepad2.dpad_down) {
-                lift.setPower(.8);
+                lift.setPower(1);
                 telemetry.addData("Lift", "Lowering");
             } else if (!gamepad2.dpad_up && gamepad2.dpad_down) {
-                lift.setPower(-.8);
+                lift.setPower(-1);
                 telemetry.addData("Lift", "Raising");
             } else {
                 lift.setPower(0);
                 telemetry.addData("Lift", "Stationary");
             }
-
+            if (gamepad2.b) {
+                //      SRelicPickup.setPosition(RELIC_DROP);
+                if (!gripped) {
+                    gripped = true;
+                    if (Math.round(SRelicPickup.getPosition() * 100.0) / 100.0 == RELIC_PICKUP) {
+                        SRelicPickup.setPosition(RELIC_DROP);
+                    } else if (Math.round(SRelicPickup.getPosition() * 100.0) / 100.0 == RELIC_DROP) {
+                        SRelicPickup.setPosition(RELIC_PICKUP);
+                    } else {
+                        SRelicPickup.setPosition(RELIC_DROP);
+                    }
+                }
+            } else if (gamepad2.x) {
+                if (!read) {
+                    read = true;
+                   /* relic.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    while (relic.getTargetPosition() > -6000 + 25) {
+                        relic.setTargetPosition(-6000);
+                        relic.setPower(.8);
+                    }
+                    relic.setPower(0);*/
+                    //   relic.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                    if (Math.round(SRelicRotate.getPosition() * 100.0) / 100.0 == RELIC_FLIPDOWN) {
+                        SRelicRotate.setPosition(RELIC_FLIPUP);
+                    } else if (Math.round(SRelicRotate.getPosition() * 100.0) / 100.0 == RELIC_FLIPUP) {
+                        SRelicRotate.setPosition(RELIC_FLIPDOWN);
+                    } else {
+                        SRelicRotate.setPosition(RELIC_FLIPUP);
+                    }
+                }
+                // SRelicRotate.setPosition(RELIC_GRIPPED);
+            }
             if (gamepad1.y) {
                 if (!modeBool) {
                     modeBool = true;
@@ -402,7 +407,7 @@ public class OmniDrive extends God3OpMode {
         FL = hardwareMap.get(DcMotor.class, "FR");
         BR = hardwareMap.get(DcMotor.class, "BL");
         BL = hardwareMap.get(DcMotor.class, "FL");
-        SRelicRotate.setPosition(RELIC_GRIPPED);
+        SRelicRotate.setPosition(RELIC_FLIPDOWN);
         SRelicPickup.setPosition(RELIC_DROP);
     }
     public void switchToLift() {
