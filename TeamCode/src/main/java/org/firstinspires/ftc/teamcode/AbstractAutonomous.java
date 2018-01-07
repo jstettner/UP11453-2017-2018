@@ -240,11 +240,11 @@ public abstract class AbstractAutonomous extends God3OpMode {
 
             telemetry.addData("CBL R,G,B", "(" + CBL.red() + ", " + CBL.green() + ", " + CBL.blue() + ")");
 
-            if (Math.abs(turn) < .2) {
+            if (Math.abs(turn) < .15) {
                 turn = 0;
             }
 
-            if (Math.abs(drive_y) > .2) {
+            if (Math.abs(drive_y) > .15) {
                 telemetry.addData("Status", "Driving");
                 strafe(false);
 
@@ -255,7 +255,7 @@ public abstract class AbstractAutonomous extends God3OpMode {
                 BL.setPower(leftPower);
                 FR.setPower(rightPower);
                 BR.setPower(rightPower);
-            } else if (Math.abs(drive_x) > .2) {
+            } else if (Math.abs(drive_x) > .15) {
                 telemetry.addData("Status", "Strafing");
                 strafe(true);
 
@@ -397,7 +397,7 @@ public abstract class AbstractAutonomous extends God3OpMode {
                 telemetry.addData("angleDiff", getAngleDiff(startingAngle, angle()));
                 telemetry.addData("startingAngle", startingAngle);
                 if (angle() - getAngleDiff(startingAngle, angle()) < 20.0) {
-                    drive((power / Math.abs(power))*.2, 0, 0, 50);
+                    drive((power / Math.abs(power))*.15, 0, 0);
                 } else {
                     drive(power, 0, 0);
                 }
