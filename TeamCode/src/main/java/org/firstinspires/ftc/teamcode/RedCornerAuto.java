@@ -37,6 +37,7 @@ public class RedCornerAuto extends NewAutonomous {
         BL.setZeroPowerBehavior(ZERO_POWER_BEHAVIOR);
         lift.setZeroPowerBehavior(ZERO_POWER_BEHAVIOR);
         initGyro();
+        initVuforia();
 //        new Thread(new Runnable() {
 //            @Override
 //            public void run() {

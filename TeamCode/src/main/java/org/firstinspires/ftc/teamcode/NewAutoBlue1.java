@@ -49,6 +49,7 @@ public class NewAutoBlue1 extends NewAutonomous {
 //        }).start();
         imu.initialize(parameters);
         startingAngle = imu.getAngularOrientation().firstAngle;
+        initVuforia();
         telemetry.addData("start", startingAngle);
         telemetry.update();
         strafe(false);
