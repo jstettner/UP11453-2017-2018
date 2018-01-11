@@ -24,7 +24,7 @@ public class OmniDrive extends God3OpMode {
     private DcMotor relic = null;
     private Servo SRelicRotate = null;
     private Servo SBlock = null;
-    private String mode = "lift";
+    private Orientation mode = Orientation.LIFT;
     private Servo SRelicPickup = null;
     private boolean read = false;
     private DcMotor BR = null;
@@ -42,8 +42,8 @@ public class OmniDrive extends God3OpMode {
     private ElapsedTime clock = new ElapsedTime();
     private double startTime = 0.0;
     int counter = 0;
-    BNO055IMU imu = null;
 
+    @Override
     public void strafe(boolean strafe) {
         FR.setDirection(strafe ? DcMotor.Direction.FORWARD : DcMotor.Direction.REVERSE);
         FL.setDirection(strafe ? DcMotor.Direction.FORWARD : DcMotor.Direction.FORWARD);
@@ -59,8 +59,9 @@ public class OmniDrive extends God3OpMode {
      * Code to run ONCE when the driver hits INIT
      */
     public void runOpMode() throws InterruptedException {
+        // Tell the driver that the Op Mode has started
         telemetry.addData("Status", "Initialized");
-        initGyro();
+
         // Initialize the hardware variables. Note that the strings used here as parameters
         // to 'get' must correspond to the names assigned during the robot configuration
         // step (using the FTC Robot Controller app on the phone).
@@ -78,48 +79,65 @@ public class OmniDrive extends God3OpMode {
         SBlock = hardwareMap.get(Servo.class, "SBlock");
         lift = hardwareMap.get(DcMotor.class, "lift");
 
+        // Set the initial directions of the motors
         FL.setDirection(DcMotor.Direction.REVERSE);
         BL.setDirection(DcMotor.Direction.REVERSE);
         BR.setDirection(DcMotor.Direction.REVERSE);
         FR.setDirection(DcMotor.Direction.REVERSE);
+        lift.setDirection(DcMotorSimple.Direction.FORWARD);
+
+        // Set the behaviour when motors' power is set to zero -- whether to brake
         FR.setZeroPowerBehavior(ZERO_POWER_BEHAVIOR);
         FL.setZeroPowerBehavior(ZERO_POWER_BEHAVIOR);
         BR.setZeroPowerBehavior(ZERO_POWER_BEHAVIOR);
         BL.setZeroPowerBehavior(ZERO_POWER_BEHAVIOR);
         relic.setZeroPowerBehavior(ZERO_POWER_BEHAVIOR);
-
-        // Most robots need the motor on one side to be reversed to drive forward
-        // Reverse the motor that runs backwards when connected directly to the battery
-//        strafe(false);
-        JS.setPosition(JEWEL_SERVO_UP);
-        lift.setDirection(DcMotorSimple.Direction.FORWARD);
         lift.setZeroPowerBehavior(ZERO_POWER_BEHAVIOR);
-        double startingAngle = 0;
+
+        // Set the initial position of the jewel servo
+        JS.setPosition(JEWEL_SERVO_UP);
+
         // Tell the driver that initialization is complete.
         telemetry.addData("Status", "Initialized");
+
+        // Reset the timer to zero.
         runtime.reset();
+
+        // Wait for the start button to be pressed on the phone.
         waitForStart();
+
+        // Loop until the op mode is stopped.
         while (opModeIsActive()) {
+
+            // Send the driver the positions of the relic servos.
             telemetry.addData("relicRotatePos", SRelicRotate.getPosition());
             telemetry.addData("relicPickupPos", SRelicPickup.getPosition());
             telemetry.addData("rounded pos", Math.round(SRelicPickup.getPosition() * 100.0) / 100.0);
+
+            // Pull up the jewel arm.
             JS.setPosition(JEWEL_SERVO_UP);
+
             // left stick controls direction
             // right stick X controls rotation
 
+            // Get data from the gamepad and scale it appropriately. The scale is based upon whether the right bumper is pressed.
             double scale = (gamepad1.right_bumper ? .3 : .7);
             double drive_scale = (gamepad1.right_bumper ? .3 : 1);
-
             double gamepad1LeftY = -gamepad1.left_stick_y * drive_scale;
             double gamepad1LeftX = gamepad1.left_stick_x * drive_scale;
             double gamepad1RightX = gamepad1.right_stick_x * scale;
+
+            // Apply the holonomic formulas to calculate the powers of the motors
             double frontLeft = -gamepad1LeftY - gamepad1LeftX - gamepad1RightX;
             double frontRight = gamepad1LeftY - gamepad1LeftX - gamepad1RightX;
             double backRight = gamepad1LeftY + gamepad1LeftX - gamepad1RightX;
             double backLeft = -gamepad1LeftY + gamepad1LeftX - gamepad1RightX;
+
             telemetry.addData("read", read);
+
+            // If the joystick values are past the threshold, set the power variables to the clipped calculated power.
+            // Otherwise, set them to zero.
             if (Math.abs(gamepad1LeftX) > .2 || Math.abs(gamepad1LeftY) > .2 || Math.abs(gamepad1RightX) > .2) {
-                // holonomic formulas
 
                 // clip the right/left values so that the values never exceed +/- 1
                 frontRight = Range.clip(frontRight, -1, 1);
@@ -132,81 +150,23 @@ public class OmniDrive extends God3OpMode {
                 backRight = 0;
                 backLeft = 0;
             }
+
+            // Send the power variables to the driver.
             telemetry.addData("FR", frontRight);
             telemetry.addData("FL", frontLeft);
             telemetry.addData("BR", backRight);
             telemetry.addData("BL", backLeft);
-            double tolerance = .1;
+
+            // Set the powers of the motors to the power variables.
             FR.setPower(frontRight);
             FL.setPower(frontLeft);
             BR.setPower(backRight);
             BL.setPower(backLeft);
 
-            // Setup a variable for each drive wheel to save power level for telemetry
-//        double leftPower;
-//        double rightPower;
-//        double scale = (gamepad1.right_bumper ? .3 : .7);
-//        double drive_scale = (gamepad1.right_bumper ? .3 : 1);
-//
-//        telemetry.addData("CBR R,G,B", "(" + CBR.red() + ", " + CBR.green() + ", " + CBR.blue() + ")");
-//        telemetry.addData("CBL R,G,B", "(" + CBL.red() + ", " + CBL.green() + ", " + CBL.blue() + ")");
-//
-//        // Choose to drive using either Tank Mode, or POV Mode
-//        // Comment out the method that's not used.  The default below is POV.
-//
-//        // POV Mode uses left stick to go forward, and right stick to turn.
-//        // - This uses basic math to combine motions and is easier to drive straight.
-//        double drive_y = -gamepad1.left_stick_y * drive_scale;
-//        double drive_x = gamepad1.left_stick_x * drive_scale;
-//        telemetry.addData("drive_y", drive_y);
-//        telemetry.addData("drive_x", drive_x);
-//        double turn = gamepad1.right_stick_x * scale;
-//        telemetry.addData("turn", turn);
-//
-//        if (Math.abs(turn) < .2) {
-//            turn = 0;
-//        }
-//
-//        if (Math.abs(drive_y) > .2) {
-//            telemetry.addData("Status", "Driving");
-//            strafe(false);
-//
-//            leftPower = Range.clip(drive_y + turn, -1.0, 1.0);
-//            rightPower = Range.clip(drive_y - turn, -1.0, 1.0);
-//
-//            FL.setPower(leftPower);
-//            BL.setPower(leftPower);
-//            FR.setPower(rightPower);
-//            BR.setPower(rightPower);
-//        } else if (Math.abs(drive_x) > .2) {
-//            telemetry.addData("Status", "Strafing");
-//            strafe(true);
-//
-//            leftPower = Range.clip(drive_x + turn, -1.0, 1.0);
-//            rightPower = Range.clip(drive_x - turn, -1.0, 1.0);
-//
-//            FL.setPower(leftPower);
-//            BL.setPower(rightPower);
-//            FR.setPower(leftPower);
-//            BR.setPower(rightPower);
-//        } else {
-//            telemetry.addData("Status", "Turning");
-//            strafe(false);
-//
-//            leftPower = Range.clip(turn, -1.0, 1.0);
-//            rightPower = Range.clip(-turn, -1.0, 1.0);
-//
-//            FL.setPower(leftPower);
-//            BL.setPower(leftPower);
-//            FR.setPower(rightPower);
-//            BR.setPower(rightPower);
-//        }
-           /* telemetry.addData("read", read);
-            telemetry.addData("gripped", gripped);
-            telemetry.addData("relic pos: ", SRelicRotate.getPosition());
-            telemetry.addData("relic pos: ", SRelicPickup.getPosition());*/
+            // Send the relic servo's position to the driver.
             telemetry.addData("relicPos", relic.getCurrentPosition());
 
+            // Open and close the lift servos based upon the second gamepad.
             if (gamepad2.left_trigger > .2) {
                 if (SR.getPosition() != RIGHT_SERVO_OPEN) {
                     SR.setPosition(RIGHT_SERVO_OPEN);
@@ -236,8 +196,6 @@ public class OmniDrive extends God3OpMode {
                 }
             } else if (Math.abs(gamepad2.right_stick_y) > .2) {
                 relic.setPower(map(gamepad2.right_stick_y, -1.0, 1.0, -.7, .7));
-            } else if (gamepad2.y) {
-                //SRelicPickup.setPosition(RELIC_PICKUP);
             } else if (gamepad2.left_bumper) {
                 SL.setPosition(LEFT_SERVO_OPEN);
             } else {
@@ -247,8 +205,7 @@ public class OmniDrive extends God3OpMode {
                 SL.setPosition(LEFT_SERVO_CLOSED);
             }
 
-            // Raise or lower the lift
-
+            // Raise or lower the lift based upon the second gamepad's D-pad.
             if (gamepad2.dpad_up && !gamepad2.dpad_down) {
                 lift.setPower(1);
                 telemetry.addData("Lift", "Lowering");
@@ -259,8 +216,9 @@ public class OmniDrive extends God3OpMode {
                 lift.setPower(0);
                 telemetry.addData("Lift", "Stationary");
             }
+
+            // Open or close the relic servos based upon the second gamepad.
             if (gamepad2.b) {
-                //      SRelicPickup.setPosition(RELIC_DROP);
                 if (!gripped) {
                     gripped = true;
                     if (Math.round(SRelicPickup.getPosition() * 100.0) / 100.0 == RELIC_PICKUP) {
@@ -274,13 +232,7 @@ public class OmniDrive extends God3OpMode {
             } else if (gamepad2.x) {
                 if (!read) {
                     read = true;
-                   /* relic.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                    while (relic.getTargetPosition() > -6000 + 25) {
-                        relic.setTargetPosition(-6000);
-                        relic.setPower(.8);
-                    }
-                    relic.setPower(0);*/
-                    //   relic.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
                     if (Math.round(SRelicRotate.getPosition() * 100.0) / 100.0 == RELIC_FLIPDOWN) {
                         SRelicRotate.setPosition(RELIC_FLIPUP);
                     } else if (Math.round(SRelicRotate.getPosition() * 100.0) / 100.0 == RELIC_FLIPUP) {
@@ -294,116 +246,47 @@ public class OmniDrive extends God3OpMode {
                 gripped = false;
                 read = false;
             }
+
+            // If y is pressed, toggle whether the robot is in relic or lift mode. This changes
+            // which direction is "forward" to better suit the task at hand.
             if (gamepad1.y) {
                 if (!modeBool) {
                     modeBool = true;
-                    if (mode == "lift") {
+                    if (mode == Orientation.LIFT) {
                         switchToRelic();
                     } else {
                         switchToLift();
                     }
                 }
-                // SRelicRotate.setPosition(RELIC_GRIPPED);
             } else {
                 modeBool = false;
             }
 
-            // Tank Mode uses one stick to control each wheel.
-            // - This requires no math, but it is hard to drive forward slowly and keep straight.
-            // leftPower  = -gamepad1.left_stick_y ;
-            // rightPower = -gamepad1.right_stick_y ;
-
-            // Send calculated power to wheels
+            // Update the displayed values on the driver phone.
             telemetry.update();
-            //telemetry.addData("Motors", "left (%.2f), right (%.2f)", leftPower, rightPower);
         }
+
+        // When the op mode is told to stop, stop the motors.
         FL.setPower(0);
         BL.setPower(0);
         FR.setPower(0);
         BR.setPower(0);
     }
-    public void turn(double power, double angle) {
-        telemetry.addData("test", "test");
-        double startingAngle = angle();
-        power = Math.abs(power);
-        if (angle > 0) {
-            while (getAngleDiff(startingAngle, angle()) < angle) {
-                telemetry.addData("not working", "plz");
-                telemetry.addData("angleDiff", getAngleDiff(startingAngle, angle()));
-                telemetry.addData("startingAngle", startingAngle);
-                if (angle() - getAngleDiff(startingAngle, angle()) < 20.0) {
-                    drive(.2, 0, 0, 100);
-                } else {
-                    drive(power, 0, 0);
-                }
-            }
-        } else {
-            while (getAngleDiff(startingAngle, angle()) < Math.abs(angle)) {
-                drive(-power, 0, 0, 0);
-            }
-        }
-        FL.setPower(0);
-        BL.setPower(0);
-        FR.setPower(0);
-        BR.setPower(0);
-    }
+
     /*
-     * Code to run REPEATEDLY after the driver hits INIT, but before they hit PLAY
+     * Scales a value to the appropriate range--used for calculating motor powers/servo positions.
+     * For instance, you could use this to map 5 in the range (0,10) to 0.25 in the range (0,0.5)
      */
     public double map(double x, double in_min, double in_max, double out_min, double out_max) {
         return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
     }
-    public void drive(double turn, double drive_x, double drive_y, double time) {
-        double leftPower;
-        double rightPower;
-        double startTime = clock.milliseconds();
 
-        while (clock.milliseconds() - startTime < time) {
-             telemetry.addData("CBL R,G,B", "(" + CBL.red() + ", " + CBL.green() + ", " + CBL.blue() + ")");
-
-            if (Math.abs(turn) < .2) {
-                turn = 0;
-            }
-
-            if (Math.abs(drive_y) > .2) {
-                telemetry.addData("Status", "Driving");
-                strafe(false);
-
-                leftPower = Range.clip(drive_y + turn, -1.0, 1.0);
-                rightPower = Range.clip(drive_y - turn, -1.0, 1.0);
-
-                FL.setPower(leftPower);
-                BL.setPower(leftPower);
-                FR.setPower(rightPower);
-                BR.setPower(rightPower);
-            } else if (Math.abs(drive_x) > .2) {
-                telemetry.addData("Status", "Strafing");
-                strafe(true);
-
-                leftPower = Range.clip(drive_x + turn, -1.0, 1.0);
-                rightPower = Range.clip(drive_x - turn, -1.0, 1.0);
-
-                FL.setPower(leftPower);
-                BL.setPower(rightPower);
-                FR.setPower(leftPower);
-                BR.setPower(rightPower);
-            } else {
-                telemetry.addData("Status", "Turning");
-                strafe(false);
-
-                leftPower = Range.clip(turn, -1.0, 1.0);
-                rightPower = Range.clip(-turn, -1.0, 1.0);
-
-                FL.setPower(leftPower);
-                BL.setPower(leftPower);
-                FR.setPower(rightPower);
-                BR.setPower(rightPower);
-            }
-        }
-    }
+    /**
+     * Switch to relic orientation
+     */
     public void switchToRelic() {
         SBlock.setPosition(.5);
-        mode = "relic";
+        mode = Orientation.RELIC;
         FR = hardwareMap.get(DcMotor.class, "BR");
         FL = hardwareMap.get(DcMotor.class, "FR");
         BR = hardwareMap.get(DcMotor.class, "BL");
@@ -411,75 +294,23 @@ public class OmniDrive extends God3OpMode {
         SRelicRotate.setPosition(RELIC_FLIPDOWN);
         SRelicPickup.setPosition(RELIC_DROP);
     }
+
+    /**
+     * Switch to lift orientation
+     */
     public void switchToLift() {
-       // SBlock.setPosition(.9);
-        mode = "lift";
+        mode = Orientation.LIFT;
         FR = hardwareMap.get(DcMotor.class, "FR");
         FL = hardwareMap.get(DcMotor.class, "FL");
         BR = hardwareMap.get(DcMotor.class, "BR");
         BL = hardwareMap.get(DcMotor.class, "BL");
     }
-    double angle() {
-        Orientation angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
-        return AngleUnit.DEGREES.fromUnit(angles.angleUnit, angles.firstAngle);
-    }
-    public void drive(double turn, double drive_x, double drive_y) {
-        double leftPower;
-        double rightPower;
-        double startTime = clock.milliseconds();
 
-        telemetry.addData("CBL R,G,B", "(" + CBL.red() + ", " + CBL.green() + ", " + CBL.blue() + ")");
-
-        if (Math.abs(turn) < .2) {
-            turn = 0;
-        }
-
-        if (Math.abs(drive_y) > .2) {
-            telemetry.addData("Status", "Driving");
-            strafe(false);
-
-            leftPower = Range.clip(drive_y + turn, -1.0, 1.0);
-            rightPower = Range.clip(drive_y - turn, -1.0, 1.0);
-
-            FL.setPower(leftPower);
-            BL.setPower(leftPower);
-            FR.setPower(rightPower);
-            BR.setPower(rightPower);
-        } else if (Math.abs(drive_x) > .2) {
-            telemetry.addData("Status", "Strafing");
-            strafe(true);
-
-            leftPower = Range.clip(drive_x + turn, -1.0, 1.0);
-            rightPower = Range.clip(drive_x - turn, -1.0, 1.0);
-
-            FL.setPower(leftPower);
-            BL.setPower(rightPower);
-            FR.setPower(leftPower);
-            BR.setPower(rightPower);
-        } else {
-            telemetry.addData("Status", "Turning");
-            strafe(false);
-
-            leftPower = Range.clip(turn, -1.0, 1.0);
-            rightPower = Range.clip(-turn, -1.0, 1.0);
-
-            FL.setPower(leftPower);
-            BL.setPower(leftPower);
-            FR.setPower(rightPower);
-            BR.setPower(rightPower);
-
-        }
-    }
-    /*
-     * Code to run ONCE after the driver hits STOP
+    /**
+     * Represents which direction is "forward;" this can be changed
+     * based upon whether the relic mechanism or lift is being used.
      */
-
-    public void initGyro() {
-        imu = hardwareMap.get(BNO055IMU.class, "imu");
-        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
-
-        parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
-        parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
-        imu.initialize(parameters);
+    private static enum Orientation {
+        RELIC, LIFT
     }
 }
