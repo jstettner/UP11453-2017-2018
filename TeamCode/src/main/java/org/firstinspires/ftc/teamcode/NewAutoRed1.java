@@ -90,18 +90,16 @@ public class NewAutoRed1 extends NewAutonomous {
             column = getPicto();
             telemetry.addData("column", column);
             telemetry.update();
-            delay(1000);
         } else if (state == 2) {
-            delay(1000);
             pushJewel();
         } else if (state == 3) {
-            delay(1000);
+            delay(500);
             if (column == RelicRecoveryVuMark.CENTER || column == RelicRecoveryVuMark.UNKNOWN) {
-                drive(0, .3, 0, 2000);
+                drive(0, .3, 0, 1500);
             } else if (column == RelicRecoveryVuMark.LEFT) {
-                drive(0, .3, 0, 1800);
+                drive(0, .3, 0, 1500);
             } else if (column == RelicRecoveryVuMark.RIGHT) {
-                drive(0, .3, 0, 2200);
+                drive(0, .3, 0, 1500);
             }
         } else if (state == 4) {
             if (column == RelicRecoveryVuMark.CENTER || column == RelicRecoveryVuMark.UNKNOWN) {
