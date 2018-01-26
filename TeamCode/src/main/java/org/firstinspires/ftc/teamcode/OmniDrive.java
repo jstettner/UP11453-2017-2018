@@ -41,7 +41,15 @@ public class OmniDrive extends God3OpMode {
     private double short_drive_y;
     private ElapsedTime clock = new ElapsedTime();
     private double startTime = 0.0;
-    int counter = 0;
+    double scale;
+    double drive_scale;
+    double gamepad1LeftY;
+    double gamepad1LeftX;
+    double gamepad1RightX;
+    double frontLeft;
+    double frontRight;
+    double backRight;
+    double backLeft;
 
     @Override
     public void strafe(boolean strafe) {
@@ -107,13 +115,7 @@ public class OmniDrive extends God3OpMode {
         waitForStart();
 
         // Loop until the op mode is stopped.
-        while (opModeIsActive()) {
-
-            // Send the driver the positions of the relic servos.
-            telemetry.addData("relicRotatePos", SRelicRotate.getPosition());
-            telemetry.addData("relicPickupPos", SRelicPickup.getPosition());
-            telemetry.addData("rounded pos", Math.round(SRelicPickup.getPosition() * 100.0) / 100.0);
-
+        while (!isStopRequested() && opModeIsActive()) {
             // Pull up the jewel arm.
             JS.setPosition(JEWEL_SERVO_UP);
 
@@ -121,19 +123,17 @@ public class OmniDrive extends God3OpMode {
             // right stick X controls rotation
 
             // Get data from the gamepad and scale it appropriately. The scale is based upon whether the right bumper is pressed.
-            double scale = (gamepad1.right_bumper ? .3 : .7);
-            double drive_scale = (gamepad1.right_bumper ? .3 : 1);
-            double gamepad1LeftY = -gamepad1.left_stick_y * drive_scale;
-            double gamepad1LeftX = gamepad1.left_stick_x * drive_scale;
-            double gamepad1RightX = gamepad1.right_stick_x * scale;
+            scale = (gamepad1.right_bumper ? .3 : .7);
+            drive_scale = (gamepad1.right_bumper ? .3 : 1);
+            gamepad1LeftY = -gamepad1.left_stick_y * drive_scale;
+            gamepad1LeftX = gamepad1.left_stick_x * drive_scale;
+            gamepad1RightX = gamepad1.right_stick_x * scale;
 
             // Apply the holonomic formulas to calculate the powers of the motors
-            double frontLeft = -gamepad1LeftY - gamepad1LeftX - gamepad1RightX;
-            double frontRight = gamepad1LeftY - gamepad1LeftX - gamepad1RightX;
-            double backRight = gamepad1LeftY + gamepad1LeftX - gamepad1RightX;
-            double backLeft = -gamepad1LeftY + gamepad1LeftX - gamepad1RightX;
-
-            telemetry.addData("read", read);
+            frontLeft = -gamepad1LeftY - gamepad1LeftX - gamepad1RightX;
+            frontRight = gamepad1LeftY - gamepad1LeftX - gamepad1RightX;
+            backRight = gamepad1LeftY + gamepad1LeftX - gamepad1RightX;
+            backLeft = -gamepad1LeftY + gamepad1LeftX - gamepad1RightX;
 
             // If the joystick values are past the threshold, set the power variables to the clipped calculated power.
             // Otherwise, set them to zero.
@@ -162,9 +162,6 @@ public class OmniDrive extends God3OpMode {
             FL.setPower(frontLeft);
             BR.setPower(backRight);
             BL.setPower(backLeft);
-
-            // Send the relic servo's position to the driver.
-            telemetry.addData("relicPos", relic.getCurrentPosition());
 
             // Open and close the lift servos based upon the second gamepad.
             if (gamepad2.left_trigger > .2) {
@@ -195,7 +192,7 @@ public class OmniDrive extends God3OpMode {
                     SL.setPosition(LEFT_SERVO_AJAR);
                 }
             } else if (Math.abs(gamepad2.right_stick_y) > .2) {
-                relic.setPower(map(gamepad2.right_stick_y, -1.0, 1.0, -.7, .7));
+                relic.setPower(Range.clip(gamepad2.right_stick_y, -1.0, 1.0));
             } else if (gamepad2.left_bumper) {
                 SL.setPosition(LEFT_SERVO_OPEN);
             } else {
@@ -241,7 +238,6 @@ public class OmniDrive extends God3OpMode {
                         SRelicRotate.setPosition(RELIC_FLIPUP);
                     }
                 }
-                // SRelicRotate.setPosition(RELIC_GRIPPED);
             } else {
                 gripped = false;
                 read = false;
@@ -261,9 +257,9 @@ public class OmniDrive extends God3OpMode {
             } else {
                 modeBool = false;
             }
-
             // Update the displayed values on the driver phone.
             telemetry.update();
+            idle();
         }
 
         // When the op mode is told to stop, stop the motors.
