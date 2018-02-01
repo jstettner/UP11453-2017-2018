@@ -67,8 +67,6 @@ public class OmniDrive extends God3OpMode {
      * Code to run ONCE when the driver hits INIT
      */
     public void runOpMode() throws InterruptedException {
-        // Tell the driver that the Op Mode has started
-        telemetry.addData("Status", "Initialized");
 
         // Initialize the hardware variables. Note that the strings used here as parameters
         // to 'get' must correspond to the names assigned during the robot configuration
@@ -116,6 +114,8 @@ public class OmniDrive extends God3OpMode {
 
         // Loop until the op mode is stopped.
         while (!isStopRequested() && opModeIsActive()) {
+            telemetry.addData("relicPos", SRelicRotate.getPosition());
+            telemetry.addData("read", read);
             // Pull up the jewel arm.
             JS.setPosition(JEWEL_SERVO_UP);
 
@@ -229,15 +229,16 @@ public class OmniDrive extends God3OpMode {
             } else if (gamepad2.x) {
                 if (!read) {
                     read = true;
-
                     if (Math.round(SRelicRotate.getPosition() * 100.0) / 100.0 == RELIC_FLIPDOWN) {
                         SRelicRotate.setPosition(RELIC_FLIPUP);
                     } else if (Math.round(SRelicRotate.getPosition() * 100.0) / 100.0 == RELIC_FLIPUP) {
                         SRelicRotate.setPosition(RELIC_FLIPDOWN);
                     } else {
-                        SRelicRotate.setPosition(RELIC_FLIPUP);
+                        SRelicRotate.setPosition(RELIC_FLIPDOWN);
                     }
                 }
+            } else if (gamepad2.y) {
+                SRelicRotate.setPosition(RELIC_FLIPDOWN);
             } else {
                 gripped = false;
                 read = false;
