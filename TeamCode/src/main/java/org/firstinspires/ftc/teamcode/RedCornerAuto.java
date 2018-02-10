@@ -51,19 +51,37 @@ public class RedCornerAuto extends NewAutonomous {
         strafe(false);
         JS.setPosition(JEWEL_SERVO_UP);
         waitForStart();
-
-        while (opModeIsActive()) {
-            run(0);
-            run(1);
-            run(10);
-            run(2);
-            run(3);
-            run(4);
-            run(5);
-            run(6);
-            run(7);
-            break;
+        closeGrabber();
+        delay(1000);
+        lift.setPower(.4);
+        delay(800);
+        lift.setPower(0);
+        pushJewel();
+        delay(500);
+        drive(0, .2, 0, 2500);
+        delay(500);
+        turn(.2, 86);
+        delay(500);
+        if (column == RelicRecoveryVuMark.CENTER || column == RelicRecoveryVuMark.UNKNOWN) {
+            drive(0, -.3, 0, 2000);
+            turn(.2, 13);
+        } else if (column == RelicRecoveryVuMark.LEFT) {
+            drive(0, -.3, 0, 2500);
+            turn(.2, 13);
+        } else if (column == RelicRecoveryVuMark.RIGHT) {
+            drive(0, -.3, 0, 1500);
+            turn(.2, 13);
         }
+        delay(500);
+        lift.setPower(-.4);
+        delay(600);
+        lift.setPower(0);
+        delay(500);
+        openGrabberFlat();
+        delay(1000);
+        drive(0, 0, .3, 1800);
+        delay(500);
+        drive(0, 0, -.3, 200);
     }
 
     public void run(int state) {

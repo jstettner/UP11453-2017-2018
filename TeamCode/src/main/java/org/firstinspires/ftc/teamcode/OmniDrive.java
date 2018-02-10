@@ -214,6 +214,7 @@ public class OmniDrive extends God3OpMode {
                 telemetry.addData("Lift", "Stationary");
             }
 
+
             // Open or close the relic servos based upon the second gamepad.
             if (gamepad2.b) {
                 if (!gripped) {
@@ -238,7 +239,16 @@ public class OmniDrive extends God3OpMode {
                     }
                 }
             } else if (gamepad2.y) {
-                SRelicRotate.setPosition(RELIC_FLIPDOWN);
+                if (!read) {
+                    read = true;
+                    if (Math.round((SRelicRotate.getPosition() + .05) * 100.0) / 100.0 == RELIC_FLIPDOWN + .05) {
+                        SRelicRotate.setPosition(RELIC_FLIPUP);
+                    } else if (Math.round(SRelicRotate.getPosition() * 100.0) / 100.0 == RELIC_FLIPUP) {
+                        SRelicRotate.setPosition(RELIC_FLIPDOWN + .05);
+                    } else {
+                        SRelicRotate.setPosition(RELIC_FLIPDOWN + .05);
+                    }
+                }
             } else {
                 gripped = false;
                 read = false;

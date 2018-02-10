@@ -37,7 +37,7 @@ public class BlueCornerAuto extends NewAutonomous {
         BL.setZeroPowerBehavior(ZERO_POWER_BEHAVIOR);
         lift.setZeroPowerBehavior(ZERO_POWER_BEHAVIOR);
         initGyro();
-        initVuforia();
+      //  initVuforia();
 //        new Thread(new Runnable() {
 //            @Override
 //            public void run() {
@@ -51,20 +51,35 @@ public class BlueCornerAuto extends NewAutonomous {
         strafe(false);
         JS.setPosition(JEWEL_SERVO_UP);
         waitForStart();
-
-        while (opModeIsActive() && !isStopRequested()) {
-            run(0);
-            run(1);
-            run(10);
-            run(2);
-            run(3);
-            run(4);
-            run(5);
-            run(6);
-            run(7);
-            break;
+        closeGrabber();
+        delay(1000);
+        lift.setPower(.4);
+        delay(800);
+        lift.setPower(0);
+        pushJewel();
+        delay(500);
+        drive(0, -.2, 0, 2500);
+        delay(500);
+        if (column == RelicRecoveryVuMark.CENTER || column == RelicRecoveryVuMark.UNKNOWN) {
+            drive(0, 0, .3, 2000);
+            turn(-.2, 105);
+        } else if (column == RelicRecoveryVuMark.LEFT) {
+            drive(0, 0, .3, 1500);
+            turn(-.2, 105);
+        } else if (column == RelicRecoveryVuMark.RIGHT) {
+            drive(0, 0, .3, 2500);
+            turn(-.2, 105);
         }
-        return;
+        delay(500);
+        lift.setPower(-.4);
+        delay(600);
+        lift.setPower(0);
+        delay(500);
+        openGrabberFlat();
+        delay(1000);
+        drive(0, 0, .3, 1800);
+        delay(500);
+        drive(0, 0, -.3, 200);
     }
 
     public void run(int state) {

@@ -224,8 +224,8 @@ public abstract class AbstractAutonomous extends God3OpMode {
         }
     }
     public void delay(int time) {
-        double startTime = clock.milliseconds();
-        while (clock.milliseconds() - startTime < time) {
+        clock.reset();
+        while (time > clock.milliseconds()) {
         }
     }
     public void drive(double turn, double drive_x, double drive_y, int time) {

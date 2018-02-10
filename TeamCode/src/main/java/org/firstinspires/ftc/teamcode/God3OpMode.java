@@ -17,7 +17,7 @@ abstract class God3OpMode extends LinearOpMode {
     /**
      * The power with which to turn when knocking off the jewel.
      */
-    private static final double JEWEL_TURN_TIME = 125;
+    static final double JEWEL_TURN_TIME = 125;
 
     /**
      * Clock to time operations

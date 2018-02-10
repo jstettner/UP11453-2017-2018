@@ -24,7 +24,7 @@ public class FlexSensorTest extends God3OpMode {
 
         // Loop until the op mode is stopped.
         while (!isStopRequested() && opModeIsActive()) {
-            telemetry.addData("flex", flex.getVoltage());
+            telemetry.addData("flex", flex.getVoltage() / 1000);
             telemetry.update();
             idle();
         }

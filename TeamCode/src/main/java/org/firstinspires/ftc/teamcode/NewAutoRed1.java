@@ -50,7 +50,7 @@ public class NewAutoRed1 extends NewAutonomous {
         BL.setZeroPowerBehavior(ZERO_POWER_BEHAVIOR);
         lift.setZeroPowerBehavior(ZERO_POWER_BEHAVIOR);
         initGyro();
-        initVuforia();
+       // initVuforia();
 //        new Thread(new Runnable() {
 //            @Override
 //            public void run() {
@@ -63,20 +63,38 @@ public class NewAutoRed1 extends NewAutonomous {
         telemetry.update();
         strafe(false);
         JS.setPosition(JEWEL_SERVO_UP);
-
         waitForStart();
-
-        while (opModeIsActive()) {
-            run(0);
-            run(1);
-            run(2);
-            run(3);
-            run(4);
-            run(5);
-            run(6);
-            run(7);
-            break;
+        if(opModeIsActive() && !isStopRequested()) closeGrabber();
+        if(opModeIsActive() && !isStopRequested())delay(800);
+        if(opModeIsActive() && !isStopRequested())lift.setPower(.4);
+        if(opModeIsActive() && !isStopRequested())delay(500);
+        if(opModeIsActive() && !isStopRequested())lift.setPower(0);
+        if(opModeIsActive() && !isStopRequested())pushJewel();
+        if(opModeIsActive() && !isStopRequested())delay(500);
+        if(opModeIsActive() && !isStopRequested())if (column == RelicRecoveryVuMark.CENTER || column == RelicRecoveryVuMark.UNKNOWN) {
+            drive(0, .3, 0, 1500);
+        } else if (column == RelicRecoveryVuMark.LEFT) {
+            drive(0, .3, 0, 1500);
+        } else if (column == RelicRecoveryVuMark.RIGHT) {
+            drive(0, .3, 0, 1500);
         }
+        if(opModeIsActive() && !isStopRequested())delay(500);
+        if(opModeIsActive() && !isStopRequested()) if (column == RelicRecoveryVuMark.CENTER || column == RelicRecoveryVuMark.UNKNOWN) {
+            turn(.2, 155);
+        } else if (column == RelicRecoveryVuMark.LEFT) {
+            turn(.2, 175);
+        } else if (column == RelicRecoveryVuMark.RIGHT) {
+            turn(.2, 152);
+        }
+        if(opModeIsActive() && !isStopRequested()) lift.setPower(-.4);
+        if(opModeIsActive() && !isStopRequested())delay(600);
+        if(opModeIsActive() && !isStopRequested())lift.setPower(0);
+        if(opModeIsActive() && !isStopRequested())delay(500);
+        if(opModeIsActive() && !isStopRequested())openGrabberFlat();
+        if(opModeIsActive() && !isStopRequested())delay(500);
+        if(opModeIsActive() && !isStopRequested())drive(0, 0, .3, 1800);
+        if(opModeIsActive() && !isStopRequested())delay(1000);
+        if(opModeIsActive() && !isStopRequested())drive(0, 0, -.3, 200);
     }
 
     public void run(int state) {
@@ -87,7 +105,7 @@ public class NewAutoRed1 extends NewAutonomous {
             delay(800);
             lift.setPower(0);
         } else if (state == 1) {
-            column = getPicto();
+        //    column = getPicto();
             telemetry.addData("column", column);
             telemetry.update();
         } else if (state == 2) {
