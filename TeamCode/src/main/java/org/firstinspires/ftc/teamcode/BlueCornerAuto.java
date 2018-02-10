@@ -37,6 +37,7 @@ public class BlueCornerAuto extends NewAutonomous {
         BL.setZeroPowerBehavior(ZERO_POWER_BEHAVIOR);
         lift.setZeroPowerBehavior(ZERO_POWER_BEHAVIOR);
         initGyro();
+        initVuforia();
       //  initVuforia();
 //        new Thread(new Runnable() {
 //            @Override
@@ -56,6 +57,8 @@ public class BlueCornerAuto extends NewAutonomous {
         lift.setPower(.4);
         delay(800);
         lift.setPower(0);
+        column = getPicto();
+        telemetry.addData("column", column);
         pushJewel();
         delay(500);
         drive(0, -.2, 0, 2500);
@@ -64,10 +67,10 @@ public class BlueCornerAuto extends NewAutonomous {
             drive(0, 0, .3, 2000);
             turn(-.2, 105);
         } else if (column == RelicRecoveryVuMark.LEFT) {
-            drive(0, 0, .3, 1500);
+            drive(0, 0, .3, 1700);
             turn(-.2, 105);
         } else if (column == RelicRecoveryVuMark.RIGHT) {
-            drive(0, 0, .3, 2500);
+            drive(0, 0, .3, 2300);
             turn(-.2, 105);
         }
         delay(500);

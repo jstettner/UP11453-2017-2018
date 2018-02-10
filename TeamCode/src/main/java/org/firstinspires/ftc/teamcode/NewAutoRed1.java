@@ -50,6 +50,7 @@ public class NewAutoRed1 extends NewAutonomous {
         BL.setZeroPowerBehavior(ZERO_POWER_BEHAVIOR);
         lift.setZeroPowerBehavior(ZERO_POWER_BEHAVIOR);
         initGyro();
+        initVuforia();
        // initVuforia();
 //        new Thread(new Runnable() {
 //            @Override
@@ -69,14 +70,16 @@ public class NewAutoRed1 extends NewAutonomous {
         if(opModeIsActive() && !isStopRequested())lift.setPower(.4);
         if(opModeIsActive() && !isStopRequested())delay(500);
         if(opModeIsActive() && !isStopRequested())lift.setPower(0);
+        if(opModeIsActive() && !isStopRequested()) column = getPicto();
+        telemetry.addData("column", column);
         if(opModeIsActive() && !isStopRequested())pushJewel();
         if(opModeIsActive() && !isStopRequested())delay(500);
         if(opModeIsActive() && !isStopRequested())if (column == RelicRecoveryVuMark.CENTER || column == RelicRecoveryVuMark.UNKNOWN) {
             drive(0, .3, 0, 1500);
         } else if (column == RelicRecoveryVuMark.LEFT) {
-            drive(0, .3, 0, 1500);
+            drive(0, .3, 0, 1750);
         } else if (column == RelicRecoveryVuMark.RIGHT) {
-            drive(0, .3, 0, 1500);
+            drive(0, .3, 0, 1250);
         }
         if(opModeIsActive() && !isStopRequested())delay(500);
         if(opModeIsActive() && !isStopRequested()) if (column == RelicRecoveryVuMark.CENTER || column == RelicRecoveryVuMark.UNKNOWN) {

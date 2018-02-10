@@ -56,6 +56,9 @@ public class RedCornerAuto extends NewAutonomous {
         lift.setPower(.4);
         delay(800);
         lift.setPower(0);
+        column = getPicto();
+        telemetry.addData("column", column);
+        telemetry.update();
         pushJewel();
         delay(500);
         drive(0, .2, 0, 2500);
@@ -66,10 +69,10 @@ public class RedCornerAuto extends NewAutonomous {
             drive(0, -.3, 0, 2000);
             turn(.2, 13);
         } else if (column == RelicRecoveryVuMark.LEFT) {
-            drive(0, -.3, 0, 2500);
+            drive(0, -.3, 0, 2250);
             turn(.2, 13);
         } else if (column == RelicRecoveryVuMark.RIGHT) {
-            drive(0, -.3, 0, 1500);
+            drive(0, -.3, 0, 1600);
             turn(.2, 13);
         }
         delay(500);

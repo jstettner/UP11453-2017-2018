@@ -7,6 +7,9 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
+
 import static com.qualcomm.robotcore.hardware.DcMotor.ZeroPowerBehavior;
 
 /**
@@ -116,6 +119,13 @@ abstract class God3OpMode extends LinearOpMode {
     static final double SHORT_DRIVE_POWER = .5;
     static final double JEWEL_SERVO_DOWN = .66;
     static final double JEWEL_SERVO_UP = .2;
+    OpenGLMatrix lastLocation = null;
+
+    /**
+     * {@link #vuforia} is the variable we will use to store our instance of the Vuforia
+     * localization engine.
+     */
+    VuforiaLocalizer vuforia;
     /**
      * Behaviour when the motors are stopped
      */
