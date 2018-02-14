@@ -75,19 +75,19 @@ public class NewAutoRed1 extends NewAutonomous {
         if(opModeIsActive() && !isStopRequested())pushJewel();
         if(opModeIsActive() && !isStopRequested())delay(500);
         if(opModeIsActive() && !isStopRequested())if (column == RelicRecoveryVuMark.CENTER || column == RelicRecoveryVuMark.UNKNOWN) {
-            drive(0, .3, 0, 1500);
+            drive(0, .3, 0, 2000);
         } else if (column == RelicRecoveryVuMark.LEFT) {
-            drive(0, .3, 0, 1750);
+            drive(0, .3, 0, 2600);
         } else if (column == RelicRecoveryVuMark.RIGHT) {
-            drive(0, .3, 0, 1250);
+            drive(0, .3, 0, 1600);
         }
         if(opModeIsActive() && !isStopRequested())delay(500);
         if(opModeIsActive() && !isStopRequested()) if (column == RelicRecoveryVuMark.CENTER || column == RelicRecoveryVuMark.UNKNOWN) {
-            turn(.2, 155);
+            turn(.2, 148);
         } else if (column == RelicRecoveryVuMark.LEFT) {
-            turn(.2, 175);
+            turn(.2, 148);
         } else if (column == RelicRecoveryVuMark.RIGHT) {
-            turn(.2, 152);
+            turn(.2, 157);
         }
         if(opModeIsActive() && !isStopRequested()) lift.setPower(-.4);
         if(opModeIsActive() && !isStopRequested())delay(600);

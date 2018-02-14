@@ -83,7 +83,7 @@ abstract class God3OpMode extends LinearOpMode {
     static final double LEFT_SERVO_OPEN = 0.36;
 
     /**
-     * Right servo open position[]p
+     * Right servo open position
      */
     static final double RIGHT_SERVO_CLOSED = 1 - 0.73;
 

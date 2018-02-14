@@ -63,18 +63,14 @@ public class RedCornerAuto extends NewAutonomous {
         delay(500);
         drive(0, .2, 0, 2500);
         delay(500);
-        turn(.2, 86);
-        delay(500);
         if (column == RelicRecoveryVuMark.CENTER || column == RelicRecoveryVuMark.UNKNOWN) {
-            drive(0, -.3, 0, 2000);
-            turn(.2, 13);
+            drive(0, 0, .3, 2000);
         } else if (column == RelicRecoveryVuMark.LEFT) {
-            drive(0, -.3, 0, 2250);
-            turn(.2, 13);
+            drive(0, 0, .3, 2250);
         } else if (column == RelicRecoveryVuMark.RIGHT) {
-            drive(0, -.3, 0, 1600);
-            turn(.2, 13);
+            drive(0, 0, .3, 1450);
         }
+        turn(.2, 103);
         delay(500);
         lift.setPower(-.4);
         delay(600);

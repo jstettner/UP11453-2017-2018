@@ -38,8 +38,8 @@ public abstract class AbstractAutonomous extends God3OpMode {
     /**
      * The power with which to turn when knocking off the jewel.
      */
-    private static final int JEWEL_TURN_TIME = 50;
-
+    private static final int JEWEL_TURN_TIME = 125;
+    double counter = 0;
     /**
      * Clock to time operations
      */
@@ -152,7 +152,7 @@ public abstract class AbstractAutonomous extends God3OpMode {
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
         while (opModeIsActive()) {
-            getGlyph();
+        //    getGlyph();
             pushJewel();
             break;
         }
@@ -180,7 +180,9 @@ public abstract class AbstractAutonomous extends God3OpMode {
      */
     void pushJewel() {
         double power = 0.6;
-
+        telemetry.addData("jewel time", JEWEL_TURN_TIME);
+        telemetry.update();
+        delay(3000);
         JS.setPosition(JEWEL_SERVO_DOWN);
         double startTime = clock.milliseconds();
 
@@ -224,13 +226,27 @@ public abstract class AbstractAutonomous extends God3OpMode {
         }
     }
     public void delay(int time) {
+        telemetry.addData("delay", "started delay");
         clock.reset();
         while (time > clock.milliseconds()) {
+            telemetry.addData("time: ", clock.milliseconds());
+            telemetry.update();
         }
     }
-    public void drive(double turn, double drive_x, double drive_y, int time) {
-        drive(turn, drive_x, drive_y);
-        delay(time);
+    public void drive(double turn, double drive_x, double drive_y, double time) {
+        counter = getRuntime() * 1000.0;
+        while (getRuntime() * 1000.0 < counter + time) {
+            drive(turn, drive_x, drive_y);
+        }
+        stopRobot();
+    }
+    public void stopRobot(double time) {
+        counter = getRuntime() * 1000.0;
+        while (getRuntime() * 1000.0 < counter + time) {
+            drive(0, 0, 0);
+        }
+    }
+    public void stopRobot() {
         drive(0, 0, 0);
     }
     public void drive(double turn, double drive_x, double drive_y) {
