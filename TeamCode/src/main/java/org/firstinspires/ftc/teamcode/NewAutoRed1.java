@@ -75,7 +75,7 @@ public class NewAutoRed1 extends NewAutonomous {
         if(opModeIsActive() && !isStopRequested())pushJewel();
         if(opModeIsActive() && !isStopRequested())delay(500);
         if(opModeIsActive() && !isStopRequested())if (column == RelicRecoveryVuMark.CENTER || column == RelicRecoveryVuMark.UNKNOWN) {
-            drive(0, .3, 0, 2000);
+            drive(0, .3, 0, 2200);
         } else if (column == RelicRecoveryVuMark.LEFT) {
             drive(0, .3, 0, 2600);
         } else if (column == RelicRecoveryVuMark.RIGHT) {
@@ -85,7 +85,7 @@ public class NewAutoRed1 extends NewAutonomous {
         if(opModeIsActive() && !isStopRequested()) if (column == RelicRecoveryVuMark.CENTER || column == RelicRecoveryVuMark.UNKNOWN) {
             turn(.2, 148);
         } else if (column == RelicRecoveryVuMark.LEFT) {
-            turn(.2, 148);
+            turn(.2, 143);
         } else if (column == RelicRecoveryVuMark.RIGHT) {
             turn(.2, 157);
         }
@@ -100,48 +100,48 @@ public class NewAutoRed1 extends NewAutonomous {
         if(opModeIsActive() && !isStopRequested())drive(0, 0, -.3, 200);
     }
 
-    public void run(int state) {
-        if (state == 0) {
-            closeGrabber();
-            delay(1000);
-            lift.setPower(.4);
-            delay(800);
-            lift.setPower(0);
-        } else if (state == 1) {
-        //    column = getPicto();
-            telemetry.addData("column", column);
-            telemetry.update();
-        } else if (state == 2) {
-            pushJewel();
-        } else if (state == 3) {
-            delay(500);
-            if (column == RelicRecoveryVuMark.CENTER || column == RelicRecoveryVuMark.UNKNOWN) {
-                drive(0, .3, 0, 1500);
-            } else if (column == RelicRecoveryVuMark.LEFT) {
-                drive(0, .3, 0, 1500);
-            } else if (column == RelicRecoveryVuMark.RIGHT) {
-                drive(0, .3, 0, 1500);
-            }
-        } else if (state == 4) {
-            if (column == RelicRecoveryVuMark.CENTER || column == RelicRecoveryVuMark.UNKNOWN) {
-                turn(.2, 155);
-            } else if (column == RelicRecoveryVuMark.LEFT) {
-                turn(.2, 175);
-            } else if (column == RelicRecoveryVuMark.RIGHT) {
-                turn(.2, 152);
-            }
-        } else if (state == 5) {
-            lift.setPower(-.4);
-            delay(600);
-            lift.setPower(0);
-            delay(500);
-            openGrabberFlat();
-            delay(1000);
-        } else if (state == 6) {
-            drive(0, 0, .3, 1800);
-        } else {
-            delay(1000);
-            drive(0, 0, -.3, 200);
-        }
-    }
+//    public void run(int state) {
+//        if (state == 0) {
+//            closeGrabber();
+//            delay(1000);
+//            lift.setPower(.4);
+//            delay(800);
+//            lift.setPower(0);
+//        } else if (state == 1) {
+//        //    column = getPicto();
+//            telemetry.addData("column", column);
+//            telemetry.update();
+//        } else if (state == 2) {
+//            pushJewel();
+//        } else if (state == 3) {
+//            delay(500);
+//            if (column == RelicRecoveryVuMark.CENTER || column == RelicRecoveryVuMark.UNKNOWN) {
+//                drive(0, .3, 0, 1500);
+//            } else if (column == RelicRecoveryVuMark.LEFT) {
+//                drive(0, .3, 0, 1500);
+//            } else if (column == RelicRecoveryVuMark.RIGHT) {
+//                drive(0, .3, 0, 1500);
+//            }
+//        } else if (state == 4) {
+//            if (column == RelicRecoveryVuMark.CENTER || column == RelicRecoveryVuMark.UNKNOWN) {
+//                turn(.2, 155);
+//            } else if (column == RelicRecoveryVuMark.LEFT) {
+//                turn(.2, 175);
+//            } else if (column == RelicRecoveryVuMark.RIGHT) {
+//                turn(.2, 152);
+//            }
+//        } else if (state == 5) {
+//            lift.setPower(-.4);
+//            delay(600);
+//            lift.setPower(0);
+//            delay(500);
+//            openGrabberFlat();
+//            delay(1000);
+//        } else if (state == 6) {
+//            drive(0, 0, .3, 1800);
+//        } else {
+//            delay(1000);
+//            drive(0, 0, -.3, 200);
+//        }
+//    }
 }

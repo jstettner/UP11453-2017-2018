@@ -74,26 +74,27 @@ public class NewAutoBlue1 extends NewAutonomous {
         if(opModeIsActive() && !isStopRequested())closeGrabber();
         if(opModeIsActive() && !isStopRequested())delay(500);
         if(opModeIsActive() && !isStopRequested())lift.setPower(.4);
-        if(opModeIsActive() && !isStopRequested())delay(500);
+        if(opModeIsActive() && !isStopRequested())delay(800);
         if(opModeIsActive() && !isStopRequested())lift.setPower(0);
         column = getPicto();
         telemetry.addData("column", column);
        // telemetry.update();
-        if(opModeIsActive() && !isStopRequested())delay(500);
+        if(opModeIsActive() && !isStopRequested())delay(1000);
         if(opModeIsActive() && !isStopRequested())pushJewel();
+        delay(1000);
         if(opModeIsActive() && !isStopRequested())if (column == RelicRecoveryVuMark.CENTER || column == RelicRecoveryVuMark.UNKNOWN) {
-            drive(0, -.3, 0, 1500);
+            drive(0, -.25, 0, 30100);
         } else if (column == RelicRecoveryVuMark.LEFT) {
-            drive(0, -.3, 0, 1400);
+            drive(0, -.2, 0, 2600);
         } else if (column == RelicRecoveryVuMark.RIGHT) {
-            drive(0, -.3, 0, 1700);
+            drive(0, -.25, 0, 3000);
         }
-        if(opModeIsActive() && !isStopRequested())if (column == RelicRecoveryVuMark.CENTER || column == RelicRecoveryVuMark.UNKNOWN) {
-            turn(-.2, 154);
-        } else if (column == RelicRecoveryVuMark.LEFT) {
-            turn(-.2, 163);
-        } else if (column == RelicRecoveryVuMark.RIGHT) {
-            turn(-.2, 147);
+        if(opModeIsActive() && !isStopRequested()) if (column == RelicRecoveryVuMark.RIGHT) {
+            turn(-.2, 130);
+        } else if (column == RelicRecoveryVuMark.CENTER || column == RelicRecoveryVuMark.UNKNOWN){
+            turn(-.2, 140);
+        } else {
+            turn(-.2, 150);
         }
         if(opModeIsActive() && !isStopRequested())lift.setPower(-.4);
         if(opModeIsActive() && !isStopRequested())delay(600);
@@ -105,7 +106,7 @@ public class NewAutoBlue1 extends NewAutonomous {
         if(opModeIsActive() && !isStopRequested())delay(1000);
         if(opModeIsActive() && !isStopRequested())drive(0, 0, -.3, 200);
     }
-
+/*
     public void run(int state) {
         if (state == 0) {
             closeGrabber();
@@ -132,7 +133,7 @@ public class NewAutoBlue1 extends NewAutonomous {
             if (column == RelicRecoveryVuMark.CENTER || column == RelicRecoveryVuMark.UNKNOWN) {
                 turn(-.2, 154);
             } else if (column == RelicRecoveryVuMark.LEFT) {
-                turn(-.2, 163);
+                turn(-.2, 175);
             } else if (column == RelicRecoveryVuMark.RIGHT) {
                 turn(-.2, 147);
             }
@@ -150,4 +151,5 @@ public class NewAutoBlue1 extends NewAutonomous {
             drive(0, 0, -.3, 200);
         }
     }
+    */
 }
