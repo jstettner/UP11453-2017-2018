@@ -83,50 +83,50 @@ public class RedCornerAuto extends NewAutonomous {
         drive(0, 0, -.3, 200);
     }
 
-    public void run(int state) {
-        if (state == 0) {
-            closeGrabber();
-            delay(1000);
-            lift.setPower(.4);
-            delay(800);
-            lift.setPower(0);
-        } else if (state == 1) {
-            column = getPicto();
-        } else if (state == 10) {
-            pushJewel();
-        } else if (state == 2) {
-            delay(500);
-            drive(0, .2, 0, 2500);
-        } else if (state == 3) {
-            delay(500);
-            turn(.2, 86);
-                delay(500);
-        } else if (state == 4) {
-                delay(500);
-                if (column == RelicRecoveryVuMark.CENTER || column == RelicRecoveryVuMark.UNKNOWN) {
-                    drive(0, -.3, 0, 2000);
-                    turn(.2, 13);
-                } else if (column == RelicRecoveryVuMark.LEFT) {
-                    drive(0, -.3, 0, 2500);
-                    turn(.2, 13);
-                } else if (column == RelicRecoveryVuMark.RIGHT) {
-                    drive(0, -.3, 0, 1500);
-                    turn(.2, 13);
-                }
-            delay(500);
-        } else if (state == 5) {
-            lift.setPower(-.4);
-            delay(600);
-            lift.setPower(0);
-            delay(500);
-            openGrabberFlat();
-            delay(1000);
-        } else if (state == 6){
-            drive(0, 0, .3, 1800);
-        } else {
-            delay(500);
-            delay(500);
-            drive(0, 0, -.3, 200);
-        }
-    }
+//    public void run(int state) {
+//        if (state == 0) {
+//            closeGrabber();
+//            delay(1000);
+//            lift.setPower(.4);
+//            delay(800);
+//            lift.setPower(0);
+//        } else if (state == 1) {
+//            column = getPicto();
+//        } else if (state == 10) {
+//            pushJewel();
+//        } else if (state == 2) {
+//            delay(500);
+//            drive(0, .2, 0, 2500);
+//        } else if (state == 3) {
+//            delay(500);
+//            turn(.2, 86);
+//                delay(500);
+//        } else if (state == 4) {
+//                delay(500);
+//                if (column == RelicRecoveryVuMark.CENTER || column == RelicRecoveryVuMark.UNKNOWN) {
+//                    drive(0, -.3, 0, 2000);
+//                    turn(.2, 13);
+//                } else if (column == RelicRecoveryVuMark.LEFT) {
+//                    drive(0, -.3, 0, 2500);
+//                    turn(.2, 13);
+//                } else if (column == RelicRecoveryVuMark.RIGHT) {
+//                    drive(0, -.3, 0, 1500);
+//                    turn(.2, 13);
+//                }
+//            delay(500);
+//        } else if (state == 5) {
+//            lift.setPower(-.4);
+//            delay(600);
+//            lift.setPower(0);
+//            delay(500);
+//            openGrabberFlat();
+//            delay(1000);
+//        } else if (state == 6){
+//            drive(0, 0, .3, 1800);
+//        } else {
+//            delay(500);
+//            delay(500);
+//            drive(0, 0, -.3, 200);
+//        }
+//    }
 }

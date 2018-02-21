@@ -83,11 +83,11 @@ public class NewAutoBlue1 extends NewAutonomous {
         if(opModeIsActive() && !isStopRequested())pushJewel();
         delay(1000);
         if(opModeIsActive() && !isStopRequested())if (column == RelicRecoveryVuMark.CENTER || column == RelicRecoveryVuMark.UNKNOWN) {
-            drive(0, -.25, 0, 30100);
+            drive(0, -.25, 0, 3100);
         } else if (column == RelicRecoveryVuMark.LEFT) {
             drive(0, -.2, 0, 2600);
         } else if (column == RelicRecoveryVuMark.RIGHT) {
-            drive(0, -.25, 0, 3000);
+            drive(0, -.25, 0, 3400);
         }
         if(opModeIsActive() && !isStopRequested()) if (column == RelicRecoveryVuMark.RIGHT) {
             turn(-.2, 130);

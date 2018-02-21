@@ -11,7 +11,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
 @TeleOp(name = "JackSucks")
-//@Disabled
+@Disabled
 public class FlexSensorTest extends God3OpMode {
     // Declare OpMode members.
     ElapsedTime clock = new ElapsedTime();

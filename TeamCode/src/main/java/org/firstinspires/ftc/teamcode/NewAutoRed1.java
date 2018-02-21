@@ -14,6 +14,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
 @Autonomous(name = "newAutoRed1")
 public class NewAutoRed1 extends NewAutonomous {
     RelicRecoveryVuMark column = RelicRecoveryVuMark.UNKNOWN;
+    double beforeAngle = 0;
     public Alliance getAlliance() {
         return Alliance.RED;
     }
@@ -74,6 +75,7 @@ public class NewAutoRed1 extends NewAutonomous {
         telemetry.addData("column", column);
         if(opModeIsActive() && !isStopRequested())pushJewel();
         if(opModeIsActive() && !isStopRequested())delay(500);
+        beforeAngle = angle();
         if(opModeIsActive() && !isStopRequested())if (column == RelicRecoveryVuMark.CENTER || column == RelicRecoveryVuMark.UNKNOWN) {
             drive(0, .3, 0, 2200);
         } else if (column == RelicRecoveryVuMark.LEFT) {
@@ -82,6 +84,7 @@ public class NewAutoRed1 extends NewAutonomous {
             drive(0, .3, 0, 1600);
         }
         if(opModeIsActive() && !isStopRequested())delay(500);
+        if(opModeIsActive() && !isStopRequested()) if (Math.abs(beforeAngle - angle()) > 5) turn(-.15, Math.abs(angle() - beforeAngle) / 2.0);
         if(opModeIsActive() && !isStopRequested()) if (column == RelicRecoveryVuMark.CENTER || column == RelicRecoveryVuMark.UNKNOWN) {
             turn(.2, 148);
         } else if (column == RelicRecoveryVuMark.LEFT) {

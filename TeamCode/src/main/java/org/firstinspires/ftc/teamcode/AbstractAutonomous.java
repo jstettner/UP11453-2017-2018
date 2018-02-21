@@ -180,13 +180,14 @@ public abstract class AbstractAutonomous extends God3OpMode {
      */
     void pushJewel() {
         double power = 0.6;
+        initGyro();
         telemetry.addData("jewel time", JEWEL_TURN_TIME);
         telemetry.update();
         delay(3000);
         JS.setPosition(JEWEL_SERVO_DOWN);
         double startTime = clock.milliseconds();
 
-        while (clock.milliseconds() - startTime < 2000) {
+       while (clock.milliseconds() - startTime < 2000) {
             telemetry.addData("CBL R,G,B", "(" + CBL.red() + ", " + CBL.green() + ", " + CBL.blue() + ")");
             telemetry.update();
         }
@@ -195,30 +196,30 @@ public abstract class AbstractAutonomous extends God3OpMode {
 
         if (isRed()) {
             if (get_colors() == JewelPosition.RED_JEWEL_LEFT) {
-                drive(.5, 0, 0, JEWEL_TURN_TIME);
+                turn(.15, 15);
                 JS.setPosition(JEWEL_SERVO_UP);
                 delay(1500);
-                drive(-.5, 0, 0, JEWEL_TURN_TIME);
+                turn(-.15, 14.5);
             } else if (get_colors() == JewelPosition.RED_JEWEL_RIGHT) {
-                drive(-.5, 0, 0, JEWEL_TURN_TIME);
+                turn(-.15, 14.5);
                 JS.setPosition(JEWEL_SERVO_UP);
                 delay(1500);
-                drive(.5, 0, 0, JEWEL_TURN_TIME);
+                turn(.15, 15);
             } else {
                 JS.setPosition(JEWEL_SERVO_UP);
                 delay(1500);
             }
         } else {
             if (get_colors() == JewelPosition.RED_JEWEL_RIGHT) {
-                drive(.5, 0, 0, JEWEL_TURN_TIME);
+                turn(.15, 15);
                 JS.setPosition(JEWEL_SERVO_UP);
                 delay(1500);
-                drive(-.5, 0, 0, JEWEL_TURN_TIME);
+                turn(-.15, 14.5);
             } else if (get_colors() == JewelPosition.RED_JEWEL_LEFT) {
-                drive(-.5, 0, 0, JEWEL_TURN_TIME);
+                turn(-.15, 14.5);;
                 JS.setPosition(JEWEL_SERVO_UP);
                 delay(1500);
-                drive(.5, 0, 0, JEWEL_TURN_TIME);
+                turn(.15, 15);
             } else {
                 JS.setPosition(JEWEL_SERVO_UP);
                 delay(1500);
