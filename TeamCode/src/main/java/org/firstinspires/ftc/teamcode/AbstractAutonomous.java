@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
+import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -43,7 +44,7 @@ public abstract class AbstractAutonomous extends God3OpMode {
     /**
      * Clock to time operations
      */
-     ElapsedTime clock = new ElapsedTime();
+    ElapsedTime clock = new ElapsedTime();
 
     /**
      * Right color sensor
@@ -52,44 +53,47 @@ public abstract class AbstractAutonomous extends God3OpMode {
     /**
      * Left color sensor
      */
-     ColorSensor CBL;
+    ColorSensor CBL;
 
     /**
      * Front-right Servo
      */
-     DcMotor FR = null;
+    DcMotor FR = null;
 
     /**
      * Front-left Servo
      */
-     DcMotor FL = null;
+    DcMotor FL = null;
 
     /**
      * Back-right Servo
      */
-     DcMotor BR = null;
+    DcMotor BR = null;
 
     /**
      * Back-left Servo
      */
-     DcMotor BL = null;
+    DcMotor BL = null;
 
     /**
      * Jewel Servo
      */
-     Servo JS = null;
+    Servo JS = null;
 
     /**
      * Left grabber servo
      */
-     Servo SL = null;
+    Servo SL = null;
 
     /**
      * Right grabber servo
      */
-     Servo SR = null;
+    Servo SR = null;
 
-     DcMotor lift = null;
+    DcMotor lift = null;
+    AnalogInput ultrasonicLeft;
+    AnalogInput ultrasonicBack;
+
 
     /**
      * Vuforia variables
@@ -137,6 +141,7 @@ public abstract class AbstractAutonomous extends God3OpMode {
         lift = hardwareMap.get(DcMotor.class, "lift");
         SR = hardwareMap.get(Servo.class, "SR");
         SL = hardwareMap.get(Servo.class, "SL");
+        ultrasonicLeft = hardwareMap.get(AnalogInput.class, "ultrasonicLeft");
 
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
@@ -152,7 +157,7 @@ public abstract class AbstractAutonomous extends God3OpMode {
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
         while (opModeIsActive()) {
-        //    getGlyph();
+            //    getGlyph();
             pushJewel();
             break;
         }
@@ -187,7 +192,7 @@ public abstract class AbstractAutonomous extends God3OpMode {
         JS.setPosition(JEWEL_SERVO_DOWN);
         double startTime = clock.milliseconds();
 
-       while (clock.milliseconds() - startTime < 2000) {
+        while (clock.milliseconds() - startTime < 2000) {
             telemetry.addData("CBL R,G,B", "(" + CBL.red() + ", " + CBL.green() + ", " + CBL.blue() + ")");
             telemetry.update();
         }
@@ -216,7 +221,8 @@ public abstract class AbstractAutonomous extends God3OpMode {
                 delay(1500);
                 turn(-.15, 14.5);
             } else if (get_colors() == JewelPosition.RED_JEWEL_LEFT) {
-                turn(-.15, 14.5);;
+                turn(-.15, 14.5);
+                ;
                 JS.setPosition(JEWEL_SERVO_UP);
                 delay(1500);
                 turn(.15, 15);
@@ -226,6 +232,7 @@ public abstract class AbstractAutonomous extends God3OpMode {
             }
         }
     }
+
     public void delay(int time) {
         telemetry.addData("delay", "started delay");
         clock.reset();
@@ -234,6 +241,7 @@ public abstract class AbstractAutonomous extends God3OpMode {
             telemetry.update();
         }
     }
+
     public void drive(double turn, double drive_x, double drive_y, double time) {
         counter = getRuntime() * 1000.0;
         while (getRuntime() * 1000.0 < counter + time) {
@@ -241,59 +249,62 @@ public abstract class AbstractAutonomous extends God3OpMode {
         }
         stopRobot();
     }
+
     public void stopRobot(double time) {
         counter = getRuntime() * 1000.0;
         while (getRuntime() * 1000.0 < counter + time) {
             drive(0, 0, 0);
         }
     }
+
     public void stopRobot() {
         drive(0, 0, 0);
     }
+
     public void drive(double turn, double drive_x, double drive_y) {
         double leftPower;
         double rightPower;
         double startTime = clock.milliseconds();
 
-            telemetry.addData("CBL R,G,B", "(" + CBL.red() + ", " + CBL.green() + ", " + CBL.blue() + ")");
+        telemetry.addData("CBL R,G,B", "(" + CBL.red() + ", " + CBL.green() + ", " + CBL.blue() + ")");
 
-            if (Math.abs(turn) < .15) {
-                turn = 0;
-            }
+        if (Math.abs(turn) < .15) {
+            turn = 0;
+        }
 
-            if (Math.abs(drive_y) > .15) {
-                telemetry.addData("Status", "Driving");
-                strafe(false);
+        if (Math.abs(drive_y) > .15) {
+            telemetry.addData("Status", "Driving");
+            strafe(false);
 
-                leftPower = Range.clip(drive_y + turn, -1.0, 1.0);
-                rightPower = Range.clip(drive_y - turn, -1.0, 1.0);
+            leftPower = Range.clip(drive_y + turn, -1.0, 1.0);
+            rightPower = Range.clip(drive_y - turn, -1.0, 1.0);
 
-                FL.setPower(leftPower);
-                BL.setPower(leftPower);
-                FR.setPower(rightPower);
-                BR.setPower(rightPower);
-            } else if (Math.abs(drive_x) > .15) {
-                telemetry.addData("Status", "Strafing");
-                strafe(true);
+            FL.setPower(leftPower);
+            BL.setPower(leftPower);
+            FR.setPower(rightPower);
+            BR.setPower(rightPower);
+        } else if (Math.abs(drive_x) > .15) {
+            telemetry.addData("Status", "Strafing");
+            strafe(true);
 
-                leftPower = Range.clip(drive_x + turn, -1.0, 1.0);
-                rightPower = Range.clip(drive_x - turn, -1.0, 1.0);
+            leftPower = Range.clip(drive_x + turn, -1.0, 1.0);
+            rightPower = Range.clip(drive_x - turn, -1.0, 1.0);
 
-                FL.setPower(leftPower);
-                BL.setPower(rightPower);
-                FR.setPower(leftPower);
-                BR.setPower(rightPower);
-            } else {
-                telemetry.addData("Status", "Turning");
-                strafe(false);
+            FL.setPower(leftPower);
+            BL.setPower(rightPower);
+            FR.setPower(leftPower);
+            BR.setPower(rightPower);
+        } else {
+            telemetry.addData("Status", "Turning");
+            strafe(false);
 
-                leftPower = Range.clip(turn, -1.0, 1.0);
-                rightPower = Range.clip(-turn, -1.0, 1.0);
+            leftPower = Range.clip(turn, -1.0, 1.0);
+            rightPower = Range.clip(-turn, -1.0, 1.0);
 
-                FL.setPower(leftPower);
-                BL.setPower(leftPower);
-                FR.setPower(rightPower);
-                BR.setPower(rightPower);
+            FL.setPower(leftPower);
+            BL.setPower(leftPower);
+            FR.setPower(rightPower);
+            BR.setPower(rightPower);
 
         }
         telemetry.update();
@@ -316,7 +327,7 @@ public abstract class AbstractAutonomous extends God3OpMode {
     public JewelPosition get_colors() {
         if (CBL.red() > CBL.blue()) {
             return JewelPosition.RED_JEWEL_RIGHT;
-        } else  if (CBL.red() < CBL.blue()) {
+        } else if (CBL.red() < CBL.blue()) {
             return JewelPosition.RED_JEWEL_LEFT;
         }
         return JewelPosition.JEWEL_INCONCLUSIVE;
@@ -349,10 +360,12 @@ public abstract class AbstractAutonomous extends God3OpMode {
         SR.setPosition(RIGHT_SERVO_OPEN);
         SL.setPosition(LEFT_SERVO_OPEN);
     }
+
     void openGrabberFlat() {
         SR.setPosition(RIGHT_SERVO_FLAT);
         SL.setPosition(LEFT_SERVO_FLAT);
     }
+
     public enum Alliance {
         BLUE, RED
     }
@@ -360,6 +373,7 @@ public abstract class AbstractAutonomous extends God3OpMode {
     public enum JewelPosition {
         RED_JEWEL_LEFT, RED_JEWEL_RIGHT, JEWEL_INCONCLUSIVE
     }
+
     public void initVuforia() {
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         vufParameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
@@ -401,6 +415,7 @@ public abstract class AbstractAutonomous extends God3OpMode {
         relicTrackables.activate();
         telemetry.addData("relic", "activated");
     }
+
     public RelicRecoveryVuMark getPicto() {
         RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
         if (vuMark != RelicRecoveryVuMark.UNKNOWN) {
@@ -415,6 +430,7 @@ public abstract class AbstractAutonomous extends God3OpMode {
         }
         return vuMark;
     }
+
     double angle() {
         Orientation angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
         return AngleUnit.DEGREES.fromUnit(angles.angleUnit, angles.firstAngle);
@@ -423,27 +439,62 @@ public abstract class AbstractAutonomous extends God3OpMode {
     public void turn(double power, double angle) {
         telemetry.addData("test", "test");
         double startingAngle = angle();
-            while (getAngleDiff(startingAngle, angle()) < angle) {
-                telemetry.addData("not working", "plz");
-                telemetry.addData("angleDiff", getAngleDiff(startingAngle, angle()));
-                telemetry.addData("startingAngle", startingAngle);
-                if (angle() - getAngleDiff(startingAngle, angle()) < 20.0) {
-                    drive((power / Math.abs(power))*.15, 0, 0);
-                } else {
-                    drive(power, 0, 0);
-                }
-                telemetry.update();
+        while (getAngleDiff(startingAngle, angle()) < angle) {
+            telemetry.addData("not working", "plz");
+            telemetry.addData("angleDiff", getAngleDiff(startingAngle, angle()));
+            telemetry.addData("startingAngle", startingAngle);
+            if (angle() - getAngleDiff(startingAngle, angle()) < 20.0) {
+                drive((power / Math.abs(power)) * .15, 0, 0);
+            } else {
+                drive(power, 0, 0);
             }
+            telemetry.update();
+        }
         FL.setPower(0);
         BL.setPower(0);
         FR.setPower(0);
         BR.setPower(0);
     }
+
     public void initGyro() {
         imu = hardwareMap.get(BNO055IMU.class, "imu");
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
         parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
         parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
         imu.initialize(parameters);
+        ultrasonicLeft = hardwareMap.get(AnalogInput.class, "ultrasonicLeft");
+        ultrasonicBack = hardwareMap.get(AnalogInput.class, "ultrasonicBack");
+    }
+
+    public double getLeftDist() {
+        return ultrasonicLeft.getVoltage() * 1000 / 6.4;
+    }
+    public double getBackDist() {
+        return ultrasonicBack.getVoltage() * 1000 / 6.4;
+    }
+
+    public void driveUntilLeft(double power, double desiredDist, double tolerance) {
+        while (!(getLeftDist() < desiredDist + tolerance && getLeftDist() > desiredDist - tolerance)) {
+            telemetry.addData("yeet", getLeftDist());
+            if (getLeftDist() < desiredDist - tolerance) {
+                drive(0, -power, 0);
+            } else {
+                drive(0, power, 0);
+            }
+            telemetry.update();
+        }
+        drive(0, 0, 0);
+    }
+    public void driveUntilBack(double power, double desiredDist, double tolerance) {
+        while (!(getBackDist() < desiredDist + tolerance && getBackDist() > desiredDist - tolerance)) {
+            telemetry.addData("back", getBackDist());
+            if (getBackDist() < desiredDist - tolerance) {
+                drive(0, 0, power);
+            } else {
+                drive(0, 0, -power);
+            }
+            telemetry.update();
+        }
+        drive(0, 0, 0);
     }
 }

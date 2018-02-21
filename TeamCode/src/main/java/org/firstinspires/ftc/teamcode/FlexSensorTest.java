@@ -11,7 +11,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
 @TeleOp(name = "JackSucks")
-@Disabled
+//@Disabled
 public class FlexSensorTest extends God3OpMode {
     // Declare OpMode members.
     ElapsedTime clock = new ElapsedTime();
@@ -19,19 +19,16 @@ public class FlexSensorTest extends God3OpMode {
     public void runOpMode() throws InterruptedException {
         // Tell the driver that the Op Mode has started
         telemetry.addData("Status", "Initialized");
-        AnalogInput flex = hardwareMap.get(AnalogInput.class, "flex");
 
         // Wait for the start button to be pressed on the phone.
         clock.reset();
+        AnalogInput ultrasonic = hardwareMap.get(AnalogInput.class, "ultrasonicLeft");
         waitForStart();
-
-        // Loop until the op mode is stopped.
-     //   while (!isStopRequested() && opModeIsActive()) {
-        while (opModeIsActive()) {
-            telemetry.addData("runtime", getRuntime() * 1000.0);
-            telemetry.addData("runtime", clock.milliseconds());
-            telemetry.update();
-        }
+          while (opModeIsActive() && !isStopRequested()) {
+              // We multiply the voltage by 1000 since the given conversion rate is in millivolts.
+              telemetry.addData("distance in inches", ultrasonic.getVoltage() * 1000 / 6.4);
+              telemetry.update();
+          }
 
       //  }
 
