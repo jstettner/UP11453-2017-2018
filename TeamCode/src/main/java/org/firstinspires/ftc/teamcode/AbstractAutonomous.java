@@ -475,7 +475,7 @@ public abstract class AbstractAutonomous extends God3OpMode {
 
     public void driveUntilLeft(double power, double desiredDist, double tolerance) {
         while (!(getLeftDist() < desiredDist + tolerance && getLeftDist() > desiredDist - tolerance)) {
-            telemetry.addData("yeet", getLeftDist());
+            telemetry.addData("left", getLeftDist());
             if (getLeftDist() < desiredDist - tolerance) {
                 drive(0, -power, 0);
             } else {
