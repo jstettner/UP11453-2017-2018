@@ -46,7 +46,7 @@ public class BlueCornerAuto extends NewAutonomous {
 //                initialized = true;
 //            }
 //        }).start();
-        startingAngle = imu.getAngularOrientation().firstAngle;
+        startingAngle = imu.getAngularOrientation().firstAngle; //grabbers facing away from wall
         telemetry.addData("start", startingAngle);
         telemetry.update();
         strafe(false);
@@ -63,16 +63,27 @@ public class BlueCornerAuto extends NewAutonomous {
         delay(500);
         driveUntilLeft(-.2, 6.5, .25);
         delay(500);
+
+        // TURN TO FACE THE BOX
+        turnTo(-.2, -90, startingAngle);
+
+        // these should become until left
         if (column == RelicRecoveryVuMark.CENTER || column == RelicRecoveryVuMark.UNKNOWN) {
-            drive(0, 0, .3, 1700);
-            turn(-.2, 105);
+            //drive(0, 0, .3, 1700);
+            //turn(-.2, 105);
+            driveUntilLeft(-.2, 6.5, .25);
         } else if (column == RelicRecoveryVuMark.LEFT) {
-            drive(0, 0, .3, 1100);
-            turn(-.2, 105);
+//            drive(0, 0, .3, 1100);
+//            turn(-.2, 105);
+            driveUntilLeft(-.2, 6.5, .25);
         } else if (column == RelicRecoveryVuMark.RIGHT) {
-            drive(0, 0, .3, 2200);
-            turn(-.2, 105);
+//            drive(0, 0, .3, 2200);
+//            turn(-.2, 105);
+            driveUntilLeft(-.2, 6.5, .25);
         }
+
+        turnTo(-.2, -90, startingAngle); // confirm gyro position as -90 from starting.
+
         delay(500);
         lift.setPower(-.4);
         delay(600);

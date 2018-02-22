@@ -456,6 +456,25 @@ public abstract class AbstractAutonomous extends God3OpMode {
         BR.setPower(0);
     }
 
+    public void turnTo(double power, double angle, double startingAngle) {
+        telemetry.addData("test", "test");
+        while (getAngleDiff(startingAngle, angle()) < angle) {
+            telemetry.addData("not working", "plz");
+            telemetry.addData("angleDiff", getAngleDiff(startingAngle, angle()));
+            telemetry.addData("startingAngle", startingAngle);
+            if (angle() - getAngleDiff(startingAngle, angle()) < 20.0) {
+                drive((power / Math.abs(power)) * .15, 0, 0);
+            } else {
+                drive(power, 0, 0);
+            }
+            telemetry.update();
+        }
+        FL.setPower(0);
+        BL.setPower(0);
+        FR.setPower(0);
+        BR.setPower(0);
+    }
+
     public void initGyro() {
         imu = hardwareMap.get(BNO055IMU.class, "imu");
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
