@@ -10,9 +10,9 @@ import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
-@TeleOp(name = "JackSucks")
+@TeleOp(name = "Sensor Test")
 //@Disabled
-public class FlexSensorTest extends God3OpMode {
+public class SensorTest extends God3OpMode {
     // Declare OpMode members.
     ElapsedTime clock = new ElapsedTime();
 
@@ -26,7 +26,7 @@ public class FlexSensorTest extends God3OpMode {
         waitForStart();
           while (opModeIsActive() && !isStopRequested()) {
               // We multiply the voltage by 1000 since the given conversion rate is in millivolts.
-              telemetry.addData("distance in inches", ultrasonic.getVoltage() * 1000 / 6.4);
+              telemetry.addData("distance", ultrasonic.getVoltage() * 1000 / 6.4);
               telemetry.update();
           }
 
