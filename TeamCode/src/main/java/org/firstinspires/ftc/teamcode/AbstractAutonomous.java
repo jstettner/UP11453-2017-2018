@@ -567,23 +567,15 @@ public abstract class AbstractAutonomous extends God3OpMode {
     }
     ColorSensor CBOT;
     public void driveUntilColorRed(double power) {
-        while (true) {
-            if (CBOT.red() < 130) {
-                drive(0, power, 0);
-            } else {
-                drive(0, 0, 0);
-                break;
-            }
+        while (CBOT.red() < 130) {
+            drive(0, power, 0);
         }
+        drive(0, 0, 0);
     }
         public void driveUntilColorBlue(double power) {
-            while (true) {
-                if (CBOT.blue() < 130) {
-                    drive(0, power, 0);
-                } else {
-                    drive(0, 0, 0);
-                    break;
-                }
+            while (CBOT.blue() < 130) {
+                drive(0, power, 0);
             }
+            drive(0, 0, 0);
         }
 }
