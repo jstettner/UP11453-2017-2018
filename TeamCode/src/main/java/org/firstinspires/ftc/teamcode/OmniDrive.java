@@ -241,12 +241,12 @@ public class OmniDrive extends God3OpMode {
             } else if (gamepad2.y) {
                 if (!read) {
                     read = true;
-                    if (Math.round((SRelicRotate.getPosition() + .05) * 100.0) / 100.0 == RELIC_FLIPDOWN + .05) {
+                    if (Math.round((SRelicRotate.getPosition() + .03) * 100.0) / 100.0 == RELIC_FLIPDOWN + .03) {
                         SRelicRotate.setPosition(RELIC_FLIPUP);
                     } else if (Math.round(SRelicRotate.getPosition() * 100.0) / 100.0 == RELIC_FLIPUP) {
-                        SRelicRotate.setPosition(RELIC_FLIPDOWN + .05);
+                        SRelicRotate.setPosition(RELIC_FLIPDOWN + .03);
                     } else {
-                        SRelicRotate.setPosition(RELIC_FLIPDOWN + .05);
+                        SRelicRotate.setPosition(RELIC_FLIPDOWN + .03);
                     }
                 }
             } else {

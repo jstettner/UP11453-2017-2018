@@ -61,29 +61,21 @@ public class BlueCornerAuto extends NewAutonomous {
         telemetry.addData("column", column);
         pushJewel();
         delay(500);
-        driveUntilLeft(-.2, 6.5, .25);
+        drive(0,-.3,0,1250);
         delay(500);
-
-        // TURN TO FACE THE BOX
-        turnTo(-.2, -90, startingAngle);
+        driveUntilLeft(.3, 7.5, .5);
+        delay(500);
 
         // these should become until left
         if (column == RelicRecoveryVuMark.CENTER || column == RelicRecoveryVuMark.UNKNOWN) {
-            //drive(0, 0, .3, 1700);
-            //turn(-.2, 105);
-            driveUntilLeft(-.2, 6.5, .25);
+            driveUntilBack(.3, 10, .5); //center
         } else if (column == RelicRecoveryVuMark.LEFT) {
-//            drive(0, 0, .3, 1100);
-//            turn(-.2, 105);
-            driveUntilLeft(-.2, 6.5, .25);
+            driveUntilBack(.25, 15, .5); //left
         } else if (column == RelicRecoveryVuMark.RIGHT) {
-//            drive(0, 0, .3, 2200);
-//            turn(-.2, 105);
-            driveUntilLeft(-.2, 6.5, .25);
+            driveUntilBack(.2, 23, .5); //right
         }
 
-        turnTo(-.2, -90, startingAngle); // confirm gyro position as -90 from starting.
-
+        turn(.2, 110);
         delay(500);
         lift.setPower(-.4);
         delay(600);

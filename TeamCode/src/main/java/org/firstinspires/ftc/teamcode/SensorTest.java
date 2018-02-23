@@ -24,13 +24,13 @@ public class SensorTest extends God3OpMode {
         clock.reset();
         AnalogInput ultrasonic_left = hardwareMap.get(AnalogInput.class, "ultrasonicLeft");
         AnalogInput ultrasonic_right = hardwareMap.get(AnalogInput.class, "ultrasonicRight");
-        AnalogInput ultrasonic_front = hardwareMap.get(AnalogInput.class, "ultrasonicFront");
+        AnalogInput ultrasonic_back = hardwareMap.get(AnalogInput.class, "ultrasonicBack");
         waitForStart();
           while (opModeIsActive() && !isStopRequested()) {
               // We multiply the voltage by 1000 since the given conversion rate is in millivolts.
               telemetry.addData("distance left", ultrasonic_left.getVoltage() * 1000 / 6.4);
               telemetry.addData("distance right", ultrasonic_right.getVoltage() * 1000 / 6.4);
-              telemetry.addData("distance front", ultrasonic_front.getVoltage() * 1000 / 6.4);
+              telemetry.addData("distance back", ultrasonic_back.getVoltage() * 1000 / 6.4);
               telemetry.update();
           }
 

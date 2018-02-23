@@ -20,7 +20,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
-
+import java.util.Queue;
+import java.util.LinkedList;
 
 /**
  * Created by student on 10/19/17.
@@ -39,7 +40,7 @@ public abstract class AbstractAutonomous extends God3OpMode {
     /**
      * The power with which to turn when knocking off the jewel.
      */
-    private static final int JEWEL_TURN_TIME = 125;
+    private static final int JEWEL_TURN_TIME = 200;
     double counter = 0;
     /**
      * Clock to time operations
@@ -93,6 +94,7 @@ public abstract class AbstractAutonomous extends God3OpMode {
     DcMotor lift = null;
     AnalogInput ultrasonicLeft;
     AnalogInput ultrasonicBack;
+    AnalogInput ultrasonicRight;
 
 
     /**
@@ -110,6 +112,11 @@ public abstract class AbstractAutonomous extends God3OpMode {
     VuforiaTrackables relicTrackables = null;
     VuforiaTrackable relicTemplate = null;
 
+
+    /*
+    Data smoothing memory
+     */
+    Queue<Double> smooth_left = new LinkedList<Double>();
 
     public void strafe(boolean strafe) {
         FR.setDirection(strafe ? DcMotor.Direction.FORWARD : DcMotor.Direction.REVERSE);
@@ -201,31 +208,30 @@ public abstract class AbstractAutonomous extends God3OpMode {
 
         if (isRed()) {
             if (get_colors() == JewelPosition.RED_JEWEL_LEFT) {
-                turn(.15, 15);
+                drive(.15, 0, 0, JEWEL_TURN_TIME);
                 JS.setPosition(JEWEL_SERVO_UP);
                 delay(1500);
-                turn(-.15, 14.5);
+                drive(-.15, 0, 0, JEWEL_TURN_TIME);
             } else if (get_colors() == JewelPosition.RED_JEWEL_RIGHT) {
-                turn(-.15, 14.5);
+                drive(-.15, 0, 0, JEWEL_TURN_TIME);
                 JS.setPosition(JEWEL_SERVO_UP);
                 delay(1500);
-                turn(.15, 15);
+                drive(.15, 0, 0, JEWEL_TURN_TIME);
             } else {
                 JS.setPosition(JEWEL_SERVO_UP);
                 delay(1500);
             }
         } else {
             if (get_colors() == JewelPosition.RED_JEWEL_RIGHT) {
-                turn(.15, 15);
+                drive(.15, 0, 0, JEWEL_TURN_TIME);
                 JS.setPosition(JEWEL_SERVO_UP);
                 delay(1500);
-                turn(-.15, 14.5);
+                drive(-.15, 0, 0, JEWEL_TURN_TIME);
             } else if (get_colors() == JewelPosition.RED_JEWEL_LEFT) {
-                turn(-.15, 14.5);
-                ;
+                drive(-.15, 0, 0, JEWEL_TURN_TIME);
                 JS.setPosition(JEWEL_SERVO_UP);
                 delay(1500);
-                turn(.15, 15);
+                drive(.15, 0, 0, JEWEL_TURN_TIME);
             } else {
                 JS.setPosition(JEWEL_SERVO_UP);
                 delay(1500);
@@ -456,25 +462,6 @@ public abstract class AbstractAutonomous extends God3OpMode {
         BR.setPower(0);
     }
 
-    public void turnTo(double power, double angle, double startingAngle) {
-        telemetry.addData("test", "test");
-        while (getAngleDiff(startingAngle, angle()) < angle) {
-            telemetry.addData("not working", "plz");
-            telemetry.addData("angleDiff", getAngleDiff(startingAngle, angle()));
-            telemetry.addData("startingAngle", startingAngle);
-            if (angle() - getAngleDiff(startingAngle, angle()) < 20.0) {
-                drive((power / Math.abs(power)) * .15, 0, 0);
-            } else {
-                drive(power, 0, 0);
-            }
-            telemetry.update();
-        }
-        FL.setPower(0);
-        BL.setPower(0);
-        FR.setPower(0);
-        BR.setPower(0);
-    }
-
     public void initGyro() {
         imu = hardwareMap.get(BNO055IMU.class, "imu");
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
@@ -483,9 +470,32 @@ public abstract class AbstractAutonomous extends God3OpMode {
         imu.initialize(parameters);
         ultrasonicLeft = hardwareMap.get(AnalogInput.class, "ultrasonicLeft");
         ultrasonicBack = hardwareMap.get(AnalogInput.class, "ultrasonicBack");
+        ultrasonicRight = hardwareMap.get(AnalogInput.class, "ultrasonicRight");
     }
 
+    public double averageQueue(Queue<Double> q) {
+        double sum = 0.0;
+        for(double d : q) {
+            sum += d;
+        }
+        return sum/q.size();
+    }
+
+    int i;
     public double getLeftDist() {
+//        if(smooth_left == null) {
+//            smooth_left.add(0.0);
+//            smooth_left.add(0.0);
+//            smooth_left.add(0.0);
+//            smooth_left.add(0.0);
+//            smooth_left.add(0.0);
+//        }
+//        smooth_left.remove();
+//        smooth_left.add(ultrasonicLeft.getVoltage() * 1000 / 6.4);
+//        return averageQueue(smooth_left);
+        return ultrasonicLeft.getVoltage() * 1000 / 6.4;
+    }
+    public double getRightDist() {
         return ultrasonicLeft.getVoltage() * 1000 / 6.4;
     }
     public double getBackDist() {
@@ -493,24 +503,60 @@ public abstract class AbstractAutonomous extends God3OpMode {
     }
 
     public void driveUntilLeft(double power, double desiredDist, double tolerance) {
-        while (!(getLeftDist() < desiredDist + tolerance && getLeftDist() > desiredDist - tolerance)) {
-            telemetry.addData("left", getLeftDist());
-            if (getLeftDist() < desiredDist - tolerance) {
-                drive(0, -power, 0);
+        int counts = 0;
+        while(counts < 3) {
+            if(!(getLeftDist() < desiredDist + tolerance && getLeftDist() > desiredDist - tolerance)) {
+                counts = 0;
+                telemetry.addData("left", getLeftDist());
+                if (getLeftDist() < desiredDist - tolerance) {
+                    drive(0, power, 0);
+                } else {
+                    drive(0, -power, 0);
+                }
+                telemetry.addData("count", counts);
             } else {
-                drive(0, power, 0);
+                counts++;
+                telemetry.addData("count", counts);
+            }
+            telemetry.update();
+        }
+        drive(0, 0, 0);
+    }
+    public void driveUntilRight(double power, double desiredDist, double tolerance) {
+        int counts = 0;
+        while(counts < 3) {
+            if (!(getRightDist() < desiredDist + tolerance && getRightDist() > desiredDist - tolerance)) {
+                counts = 0;
+                telemetry.addData("right", getRightDist());
+                if (getRightDist() < desiredDist - tolerance) {
+                    drive(0, -power, 0);
+                } else {
+                    drive(0, power, 0);
+                }
+                telemetry.addData("count", counts);
+            } else {
+                counts++;
+                telemetry.addData("count", counts);
             }
             telemetry.update();
         }
         drive(0, 0, 0);
     }
     public void driveUntilBack(double power, double desiredDist, double tolerance) {
-        while (!(getBackDist() < desiredDist + tolerance && getBackDist() > desiredDist - tolerance)) {
-            telemetry.addData("back", getBackDist());
-            if (getBackDist() < desiredDist - tolerance) {
-                drive(0, 0, power);
+        int counts = 0;
+        while(counts < 3) {
+            if (!(getBackDist() < desiredDist + tolerance && getBackDist() > desiredDist - tolerance)) {
+                counts = 0;
+                telemetry.addData("back", getBackDist());
+                if (getBackDist() < desiredDist - tolerance) {
+                    drive(0, 0, power);
+                } else {
+                    drive(0, 0, -power);
+                }
+                telemetry.addData("count", counts);
             } else {
-                drive(0, 0, -power);
+                counts++;
+                telemetry.addData("count", counts);
             }
             telemetry.update();
         }
