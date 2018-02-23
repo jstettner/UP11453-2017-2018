@@ -26,6 +26,7 @@ public class BlueCornerAuto extends NewAutonomous {
         BR = hardwareMap.get(DcMotor.class, "BR");
         BL = hardwareMap.get(DcMotor.class, "BL");
         CBL = hardwareMap.get(ColorSensor.class, "CBL");
+        CBOT = hardwareMap.get(ColorSensor.class, "CBOT");
         JS = hardwareMap.get(Servo.class, "JS");
         lift = hardwareMap.get(DcMotor.class, "lift");
         SR = hardwareMap.get(Servo.class, "SR");
@@ -52,6 +53,7 @@ public class BlueCornerAuto extends NewAutonomous {
         strafe(false);
         JS.setPosition(JEWEL_SERVO_UP);
         waitForStart();
+
         closeGrabber();
         delay(1000);
         lift.setPower(.4);
@@ -63,7 +65,7 @@ public class BlueCornerAuto extends NewAutonomous {
         delay(500);
         drive(0,-.3,0,1250);
         delay(500);
-        driveUntilLeft(.3, 7.5, .5);
+        driveUntilLeft(.2, 7.5, .7);
         delay(500);
 
         // these should become until left

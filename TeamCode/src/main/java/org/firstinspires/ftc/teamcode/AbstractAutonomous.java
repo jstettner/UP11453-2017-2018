@@ -96,6 +96,8 @@ public abstract class AbstractAutonomous extends God3OpMode {
     AnalogInput ultrasonicBack;
     AnalogInput ultrasonicRight;
 
+    ColorSensor CBOT;
+
 
     /**
      * Vuforia variables
@@ -565,10 +567,10 @@ public abstract class AbstractAutonomous extends God3OpMode {
         }
         drive(0, 0, 0);
     }
-    ColorSensor CBOT;
+
     public void driveUntilColorRed(double power) {
         while (true) {
-            if (CBOT.red() < 130) {
+            if (CBOT.red() < 17) {
                 drive(0, power, 0);
             } else {
                 drive(0, 0, 0);
@@ -578,7 +580,7 @@ public abstract class AbstractAutonomous extends God3OpMode {
     }
         public void driveUntilColorBlue(double power) {
             while (true) {
-                if (CBOT.blue() < 130) {
+                if (CBOT.blue() < 12) {
                     drive(0, power, 0);
                 } else {
                     drive(0, 0, 0);
