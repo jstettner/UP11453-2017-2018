@@ -515,6 +515,7 @@ public abstract class AbstractAutonomous extends God3OpMode {
                 }
                 telemetry.addData("count", counts);
             } else {
+                drive(0, 0, 0);
                 counts++;
                 telemetry.addData("count", counts);
             }
@@ -535,6 +536,7 @@ public abstract class AbstractAutonomous extends God3OpMode {
                 }
                 telemetry.addData("count", counts);
             } else {
+                drive(0, 0, 0);
                 counts++;
                 telemetry.addData("count", counts);
             }
@@ -555,6 +557,7 @@ public abstract class AbstractAutonomous extends God3OpMode {
                 }
                 telemetry.addData("count", counts);
             } else {
+                drive(0, 0, 0);
                 counts++;
                 telemetry.addData("count", counts);
             }
