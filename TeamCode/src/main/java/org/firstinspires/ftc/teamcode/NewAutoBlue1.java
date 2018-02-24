@@ -40,14 +40,7 @@ public class NewAutoBlue1 extends NewAutonomous {
         lift.setZeroPowerBehavior(ZERO_POWER_BEHAVIOR);
         initGyro();
         initVuforia();
-        //  initVuforia();
-//        new Thread(new Runnable() {
-//            @Override
-//            public void run() {
-//                imu.initialize(parameters);
-//                initialized = true;
-//            }
-//        }).start();
+
         startingAngle = imu.getAngularOrientation().firstAngle; //grabbers facing away from wall
         telemetry.addData("start", startingAngle);
         telemetry.update();
@@ -56,38 +49,41 @@ public class NewAutoBlue1 extends NewAutonomous {
         waitForStart();
 
         closeGrabber();
-        delay(1000);
+        delay(500);
         lift.setPower(.4);
         delay(800);
         lift.setPower(0);
         column = getPicto();
         telemetry.addData("column", column);
         telemetry.update();
-//        pushJewel();
+        pushJewel();
         delay(500);
         drive(0,-.3,0,1400);
         delay(500);
         drive(0,0,-.3,250);
-//        driveUntilBack(.25, 7, .6); //center
         delay(500);
-        driveUntilColorRed(-.3);
+        driveUntilColorBlue(-.3);
         delay(500);
         drive(0,0,.3,250);
         delay(500);
 
         // these should become until left
         if (column == RelicRecoveryVuMark.CENTER || column == RelicRecoveryVuMark.UNKNOWN) {
-//            drive(0,0.3,0,325);
-            drive(0,0.5,0,700);
+            drive(0,0.3,0,400);
+            delay(500);
+            turn(-.3, 145);
+            delay(500);
         } else if (column == RelicRecoveryVuMark.LEFT) {
-            drive(0,0.5,0,700);
+            drive(0,-0.3,0,300);
+            delay(500);
+            turn(.3, 145);
+            delay(500);
         } else if (column == RelicRecoveryVuMark.RIGHT) {
-            drive(0,0.3,0,100);
+            drive(0,-0.3,0,200);
+            delay(500);
+            turn(-.3, 140);
+            delay(500);
         }
-
-        delay(500);
-        turn(-.3, 145);
-        delay(500);
 
         lift.setPower(-.4);
         delay(600);

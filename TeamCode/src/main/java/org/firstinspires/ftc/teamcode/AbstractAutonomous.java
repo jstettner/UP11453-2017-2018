@@ -195,9 +195,6 @@ public abstract class AbstractAutonomous extends God3OpMode {
     void pushJewel() {
         double power = 0.6;
         initGyro();
-        telemetry.addData("jewel time", JEWEL_TURN_TIME);
-        telemetry.update();
-        delay(3000);
         JS.setPosition(JEWEL_SERVO_DOWN);
         telemetry.addData("jewel position", JS.getPosition());
         telemetry.update();
