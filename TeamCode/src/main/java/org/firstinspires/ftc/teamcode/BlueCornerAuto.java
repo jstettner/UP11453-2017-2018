@@ -63,21 +63,23 @@ public class BlueCornerAuto extends NewAutonomous {
         telemetry.addData("column", column);
         pushJewel();
         delay(500);
-        drive(0,-.3,0,1250);
+        drive(0,-.3,0,1400);
         delay(500);
-        driveUntilLeft(.2, 7.5, .7);
+        driveUntilBack(.25, 7.2, .6); //center
+        delay(500);
+        driveUntilLeft(.3, 7.5, .7);
         delay(500);
 
         // these should become until left
         if (column == RelicRecoveryVuMark.CENTER || column == RelicRecoveryVuMark.UNKNOWN) {
-            driveUntilBack(.3, 10, .5); //center
+            driveUntilBack(.25, 10.5, .5); //center
         } else if (column == RelicRecoveryVuMark.LEFT) {
-            driveUntilBack(.25, 15, .5); //left
+            driveUntilBack(.25, 6.5, .5); //left
         } else if (column == RelicRecoveryVuMark.RIGHT) {
-            driveUntilBack(.2, 23, .5); //right
+            driveUntilBack(.25, 14, .5); //right
         }
 
-        turn(.2, 110);
+        turn(-.2, 45);
         delay(500);
         lift.setPower(-.4);
         delay(600);

@@ -27,20 +27,20 @@ public class NewAutoBlue1 extends NewAutonomous {
         BR = hardwareMap.get(DcMotor.class, "BR");
         BL = hardwareMap.get(DcMotor.class, "BL");
         CBL = hardwareMap.get(ColorSensor.class, "CBL");
+        CBOT = hardwareMap.get(ColorSensor.class, "CBOT");
         JS = hardwareMap.get(Servo.class, "JS");
         lift = hardwareMap.get(DcMotor.class, "lift");
         SR = hardwareMap.get(Servo.class, "SR");
         SL = hardwareMap.get(Servo.class, "SL");
+
         FR.setZeroPowerBehavior(ZERO_POWER_BEHAVIOR);
         FL.setZeroPowerBehavior(ZERO_POWER_BEHAVIOR);
         BR.setZeroPowerBehavior(ZERO_POWER_BEHAVIOR);
         BL.setZeroPowerBehavior(ZERO_POWER_BEHAVIOR);
         lift.setZeroPowerBehavior(ZERO_POWER_BEHAVIOR);
-        imu = hardwareMap.get(BNO055IMU.class, "imu");
-        final BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
-
-        parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
-        parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
+        initGyro();
+        initVuforia();
+        //  initVuforia();
 //        new Thread(new Runnable() {
 //            @Override
 //            public void run() {
@@ -48,63 +48,56 @@ public class NewAutoBlue1 extends NewAutonomous {
 //                initialized = true;
 //            }
 //        }).start();
-        imu.initialize(parameters);
-        initGyro();
-        initVuforia();
-        startingAngle = imu.getAngularOrientation().firstAngle;
+        startingAngle = imu.getAngularOrientation().firstAngle; //grabbers facing away from wall
         telemetry.addData("start", startingAngle);
         telemetry.update();
         strafe(false);
         JS.setPosition(JEWEL_SERVO_UP);
         waitForStart();
 
-           /* closeGrabber();
-            delay(1000);
-            lift.setPower(.4);
-            delay(800);
-            lift.setPower(0);
-            pushJewel();
-            drive(0, -.38, 0, 750);
-            drive(-.2, 0, 0, 1700);
-            drive(0, 0, .3, 1800);
-            delay(500);
-            openGrabber();
-            delay(500);
-            drive(0, 0, -.3, 200);*/
-        if(opModeIsActive() && !isStopRequested())closeGrabber();
-        if(opModeIsActive() && !isStopRequested())delay(500);
-        if(opModeIsActive() && !isStopRequested())lift.setPower(.4);
-        if(opModeIsActive() && !isStopRequested())delay(800);
-        if(opModeIsActive() && !isStopRequested())lift.setPower(0);
+        closeGrabber();
+        delay(1000);
+        lift.setPower(.4);
+        delay(800);
+        lift.setPower(0);
         column = getPicto();
         telemetry.addData("column", column);
-       // telemetry.update();
-        if(opModeIsActive() && !isStopRequested())delay(1000);
-        if(opModeIsActive() && !isStopRequested())pushJewel();
-        delay(1000);
-        if(opModeIsActive() && !isStopRequested())if (column == RelicRecoveryVuMark.CENTER || column == RelicRecoveryVuMark.UNKNOWN) {
-            drive(0, -.25, 0, 3100);
+        telemetry.update();
+//        pushJewel();
+        delay(500);
+        drive(0,-.3,0,1400);
+        delay(500);
+        drive(0,0,-.3,250);
+//        driveUntilBack(.25, 7, .6); //center
+        delay(500);
+        driveUntilColorRed(-.3);
+        delay(500);
+        drive(0,0,.3,250);
+        delay(500);
+
+        // these should become until left
+        if (column == RelicRecoveryVuMark.CENTER || column == RelicRecoveryVuMark.UNKNOWN) {
+//            drive(0,0.3,0,325);
+            drive(0,0.5,0,700);
         } else if (column == RelicRecoveryVuMark.LEFT) {
-            drive(0, -.2, 0, 2600);
+            drive(0,0.5,0,700);
         } else if (column == RelicRecoveryVuMark.RIGHT) {
-            drive(0, -.25, 0, 3400);
+            drive(0,0.3,0,100);
         }
-        if(opModeIsActive() && !isStopRequested()) if (column == RelicRecoveryVuMark.RIGHT) {
-            turn(-.2, 130);
-        } else if (column == RelicRecoveryVuMark.CENTER || column == RelicRecoveryVuMark.UNKNOWN){
-            turn(-.2, 140);
-        } else {
-            turn(-.2, 150);
-        }
-        if(opModeIsActive() && !isStopRequested())lift.setPower(-.4);
-        if(opModeIsActive() && !isStopRequested())delay(600);
-        if(opModeIsActive() && !isStopRequested())lift.setPower(0);
-        if(opModeIsActive() && !isStopRequested())delay(500);
-        if(opModeIsActive() && !isStopRequested())openGrabberFlat();
-        if(opModeIsActive() && !isStopRequested())delay(800);
-        if(opModeIsActive() && !isStopRequested())drive(0, 0, .3, 1800);
-        if(opModeIsActive() && !isStopRequested())delay(1000);
-        if(opModeIsActive() && !isStopRequested())drive(0, 0, -.3, 200);
+
+        delay(500);
+        turn(-.3, 145);
+        delay(500);
+
+        lift.setPower(-.4);
+        delay(600);
+        lift.setPower(0);
+        delay(500);
+        openGrabberFlat();
+        delay(1000);
+        drive(0, 0, .3, 1800);
+        delay(500);
+        drive(0, 0, -.3, 200);
     }
 /*
     public void run(int state) {

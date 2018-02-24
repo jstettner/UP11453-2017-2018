@@ -40,7 +40,7 @@ public abstract class AbstractAutonomous extends God3OpMode {
     /**
      * The power with which to turn when knocking off the jewel.
      */
-    private static final int JEWEL_TURN_TIME = 200;
+    private static final int JEWEL_TURN_TIME = 300;
     double counter = 0;
     /**
      * Clock to time operations
@@ -199,6 +199,8 @@ public abstract class AbstractAutonomous extends God3OpMode {
         telemetry.update();
         delay(3000);
         JS.setPosition(JEWEL_SERVO_DOWN);
+        telemetry.addData("jewel position", JS.getPosition());
+        telemetry.update();
         double startTime = clock.milliseconds();
 
         while (clock.milliseconds() - startTime < 2000) {
@@ -446,8 +448,9 @@ public abstract class AbstractAutonomous extends God3OpMode {
 
     public void turn(double power, double angle) {
         telemetry.addData("test", "test");
+        clock.reset();
         double startingAngle = angle();
-        while (getAngleDiff(startingAngle, angle()) < angle) {
+        while (6000 > clock.milliseconds() && getAngleDiff(startingAngle, angle()) < angle) {
             telemetry.addData("not working", "plz");
             telemetry.addData("angleDiff", getAngleDiff(startingAngle, angle()));
             telemetry.addData("startingAngle", startingAngle);
@@ -569,13 +572,13 @@ public abstract class AbstractAutonomous extends God3OpMode {
     }
 
     public void driveUntilColorRed(double power) {
-        while (CBOT.red() < 130) {
+        while (CBOT.red() < 15) {
             drive(0, power, 0);
         }
         drive(0, 0, 0);
     }
         public void driveUntilColorBlue(double power) {
-            while (CBOT.blue() < 130) {
+            while (CBOT.blue() < 12) {
                 drive(0, power, 0);
             }
             drive(0, 0, 0);
