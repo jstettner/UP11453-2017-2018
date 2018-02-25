@@ -238,17 +238,6 @@ public class OmniDrive extends God3OpMode {
                         SRelicRotate.setPosition(RELIC_FLIPDOWN);
                     }
                 }
-            } else if (gamepad2.y) {
-                if (!read) {
-                    read = true;
-                    if (Math.round((SRelicRotate.getPosition() + .03) * 100.0) / 100.0 == RELIC_FLIPDOWN + .03) {
-                        SRelicRotate.setPosition(RELIC_FLIPUP);
-                    } else if (Math.round(SRelicRotate.getPosition() * 100.0) / 100.0 == RELIC_FLIPUP) {
-                        SRelicRotate.setPosition(RELIC_FLIPDOWN + .03);
-                    } else {
-                        SRelicRotate.setPosition(RELIC_FLIPDOWN + .03);
-                    }
-                }
             } else {
                 gripped = false;
                 read = false;
@@ -292,7 +281,7 @@ public class OmniDrive extends God3OpMode {
      * Switch to relic orientation
      */
     public void switchToRelic() {
-        SBlock.setPosition(.5);
+        SBlock.setPosition(.1);
         mode = Orientation.RELIC;
         FR = hardwareMap.get(DcMotor.class, "BR");
         FL = hardwareMap.get(DcMotor.class, "FR");

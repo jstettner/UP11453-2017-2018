@@ -64,22 +64,22 @@ public class NewAutoRed1 extends NewAutonomous {
         delay(500);
         driveUntilColorRed(.3);
         delay(500);
-        drive(0,0,.3,250);
+        drive(0,0,.3,350);
         delay(500);
 
         // these should become until left
         if (column == RelicRecoveryVuMark.CENTER || column == RelicRecoveryVuMark.UNKNOWN) {
-            drive(0,-0.3,0,400);
+            drive(0,-0.3,0,520);
             delay(500);
-            turn(-.3, 145);
+            turn(.3, 130);
             delay(500);
         } else if (column == RelicRecoveryVuMark.LEFT) {
-            drive(0,0.3,0,300);
+            drive(0,0.3,0,400);
             delay(500);
-            turn(.3, 145);
+            turn(.3, 130);
             delay(500);
         } else if (column == RelicRecoveryVuMark.RIGHT) {
-            drive(0,0.3,0,200);
+            drive(0,0.3,0,950);
             delay(500);
             turn(-.3, 140);
             delay(500);

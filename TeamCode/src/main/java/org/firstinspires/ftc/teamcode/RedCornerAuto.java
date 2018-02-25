@@ -26,6 +26,7 @@ public class RedCornerAuto extends NewAutonomous {
         BR = hardwareMap.get(DcMotor.class, "BR");
         BL = hardwareMap.get(DcMotor.class, "BL");
         CBL = hardwareMap.get(ColorSensor.class, "CBL");
+        CBOT = hardwareMap.get(ColorSensor.class, "CBOT");
         JS = hardwareMap.get(Servo.class, "JS");
         lift = hardwareMap.get(DcMotor.class, "lift");
         SR = hardwareMap.get(Servo.class, "SR");
@@ -38,6 +39,7 @@ public class RedCornerAuto extends NewAutonomous {
         lift.setZeroPowerBehavior(ZERO_POWER_BEHAVIOR);
         initGyro();
         initVuforia();
+        //  initVuforia();
 //        new Thread(new Runnable() {
 //            @Override
 //            public void run() {
@@ -45,12 +47,13 @@ public class RedCornerAuto extends NewAutonomous {
 //                initialized = true;
 //            }
 //        }).start();
-        startingAngle = imu.getAngularOrientation().firstAngle;
+        startingAngle = imu.getAngularOrientation().firstAngle; //grabbers facing away from wall
         telemetry.addData("start", startingAngle);
         telemetry.update();
         strafe(false);
         JS.setPosition(JEWEL_SERVO_UP);
         waitForStart();
+
         closeGrabber();
         delay(1000);
         lift.setPower(.4);
@@ -58,19 +61,26 @@ public class RedCornerAuto extends NewAutonomous {
         lift.setPower(0);
         column = getPicto();
         telemetry.addData("column", column);
-        telemetry.update();
         pushJewel();
         delay(500);
-        drive(0, .2, 0, 2500);
+        drive(0,.3,0,1400);
         delay(500);
+        driveUntilBack(.25, 6.7, .6); //center
+        delay(500);
+//        driveUntilRight(.22, 8, .9);
+        drive(0,.3,0,150);
+        delay(500);
+
+        // these should become until left
         if (column == RelicRecoveryVuMark.CENTER || column == RelicRecoveryVuMark.UNKNOWN) {
-            drive(0, 0, .3, 2000);
+            driveUntilBack(.25, 12.4, .5); //center
         } else if (column == RelicRecoveryVuMark.LEFT) {
-            drive(0, 0, .3, 2250);
+            driveUntilBack(.25, 15.5, .5); //left
         } else if (column == RelicRecoveryVuMark.RIGHT) {
-            drive(0, 0, .3, 1450);
+            driveUntilBack(.25, 6.5, .5); //right
         }
-        turn(.2, 103);
+
+        turn(.2, 45);
         delay(500);
         lift.setPower(-.4);
         delay(600);
