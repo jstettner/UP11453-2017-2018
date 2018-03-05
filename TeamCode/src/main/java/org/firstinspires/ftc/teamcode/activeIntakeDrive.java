@@ -44,7 +44,10 @@ public class activeIntakeDrive extends God3OpMode {
     double backRight;
     double backLeft;
     CRServo leftBottom;
+    CRServo rightTop;
+    CRServo leftTop;
     CRServo rightBottom;
+    Servo liftServo = hardwareMap.get(Servo.class, "liftServo");
 
     @Override
     public void strafe(boolean strafe) {
@@ -75,6 +78,8 @@ public class activeIntakeDrive extends God3OpMode {
         CBL = hardwareMap.get(ColorSensor.class, "CBL");
         rightBottom = hardwareMap.get(CRServo.class, "rightBottom");
         leftBottom = hardwareMap.get(CRServo.class, "leftBottom");
+        rightTop = hardwareMap.get(CRServo.class, "rightTop");
+        leftTop = hardwareMap.get(CRServo.class, "leftTop");
         JS = hardwareMap.get(Servo.class, "JS");
         SRelicRotate = hardwareMap.get(Servo.class, "SRelicRotate");
         SRelicPickup = hardwareMap.get(Servo.class, "SRelicPickup");
@@ -163,10 +168,21 @@ public class activeIntakeDrive extends God3OpMode {
             if (gamepad2.left_trigger > .2) {
                 rightBottom.setPower(.81);
                 leftBottom.setPower(-.81);
-            } else if (gamepad2.right_trigger > .2) {
+            } else if (gamepad2.left_bumper) {
                 rightBottom.setPower(-.81);
                 leftBottom.setPower(.81);
-            } else if (Math.abs(gamepad2.right_stick_y) > .2) {
+            } else if (gamepad2.right_trigger > .2) {
+                rightTop.setPower(-.81);
+                leftTop.setPower(.81);
+            } else if (gamepad2.right_bumper) {
+                rightTop.setPower(.81);
+                leftTop.setPower(-.81);
+            } else if (Math.abs(gamepad2.left_stick_y) > .2) {
+                rightBottom.setPower(Range.clip(gamepad2.right_stick_y, -.81, -.81));
+                leftBottom.setPower(-Range.clip(gamepad2.right_stick_y, -.81, -.81));
+                rightTop.setPower(-Range.clip(gamepad2.right_stick_y, -.81, -.81));
+                leftTop.setPower(Range.clip(gamepad2.right_stick_y, -.81, -.81));
+            }  else if (Math.abs(gamepad2.right_stick_y) > .2) {
                 relic.setPower(Range.clip(gamepad2.right_stick_y, -1.0, 1.0));
             } else {
                 relic.setPower(0.0);
@@ -209,6 +225,17 @@ public class activeIntakeDrive extends God3OpMode {
                         SRelicRotate.setPosition(RELIC_FLIPDOWN);
                     } else {
                         SRelicRotate.setPosition(RELIC_FLIPDOWN);
+                    }
+                }
+            } else if (gamepad2.a) {
+                if (!read) {
+                    read = true;
+                    if (Math.round(liftServo.getPosition() * 100.0) / 100.0 == LIFT_FLIPDOWN) {
+                        liftServo.setPosition(LIFT_FLIPUP);
+                    } else if (Math.round(liftServo.getPosition() * 100.0) / 100.0 == LIFT_FLIPUP) {
+                        liftServo.setPosition(LIFT_FLIPDOWN);
+                    } else {
+                        liftServo.setPosition(LIFT_FLIPDOWN);
                     }
                 }
             } else {
