@@ -1,22 +1,17 @@
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
-import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
+@TeleOp(name = "ActiveIntakeDrive")
 
-@TeleOp(name = "OmniDriveJack")
-
-public class OmniDrive extends God3OpMode {
+public class activeIntakeDrive extends God3OpMode {
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
     private DcMotor FR = null;
@@ -29,8 +24,6 @@ public class OmniDrive extends God3OpMode {
     private boolean read = false;
     private DcMotor BR = null;
     private DcMotor BL = null;
-    private Servo SL = null;
-    private Servo SR = null;
     private Servo JS = null;
     private DcMotor lift = null;
     private ColorSensor CBL;
@@ -50,6 +43,8 @@ public class OmniDrive extends God3OpMode {
     double frontRight;
     double backRight;
     double backLeft;
+    CRServo leftBottom;
+    CRServo rightBottom;
 
     @Override
     public void strafe(boolean strafe) {
@@ -78,8 +73,8 @@ public class OmniDrive extends God3OpMode {
         relic = hardwareMap.get(DcMotor.class, "relic");
 
         CBL = hardwareMap.get(ColorSensor.class, "CBL");
-        SR = hardwareMap.get(Servo.class, "SR");
-        SL = hardwareMap.get(Servo.class, "SL");
+        rightBottom = hardwareMap.get(CRServo.class, "rightBottom");
+        leftBottom = hardwareMap.get(CRServo.class, "leftBottom");
         JS = hardwareMap.get(Servo.class, "JS");
         SRelicRotate = hardwareMap.get(Servo.class, "SRelicRotate");
         SRelicPickup = hardwareMap.get(Servo.class, "SRelicPickup");
@@ -166,41 +161,18 @@ public class OmniDrive extends God3OpMode {
 
             // Open and close the lift servos based upon the second gamepad.
             if (gamepad2.left_trigger > .2) {
-                if (SR.getPosition() != RIGHT_SERVO_OPEN) {
-                    SR.setPosition(RIGHT_SERVO_OPEN);
-                    SL.setPosition(LEFT_SERVO_OPEN);
-                }
+                rightBottom.setPower(.81);
+                leftBottom.setPower(-.81);
             } else if (gamepad2.right_trigger > .2) {
-                if (SR.getPosition() != RIGHT_SERVO_FLAT) {
-                    SR.setPosition(RIGHT_SERVO_FLAT);
-                }
-                if (SL.getPosition() != LEFT_SERVO_FLAT) {
-                    SL.setPosition(LEFT_SERVO_FLAT);
-                }
-            } else if (gamepad2.left_bumper) {
-                if (SL.getPosition() != LEFT_SERVO_OPEN) {
-                    SL.setPosition(LEFT_SERVO_OPEN);
-                }
-            } else if (gamepad2.right_bumper) {
-                if (SR.getPosition() != RIGHT_SERVO_OPEN) {
-                    SR.setPosition(RIGHT_SERVO_OPEN);
-                }
-            } else if (gamepad2.a) {
-                if (SR.getPosition() != RIGHT_SERVO_AJAR) {
-                    SR.setPosition(RIGHT_SERVO_AJAR);
-                }
-                if (SL.getPosition() != LEFT_SERVO_AJAR) {
-                    SL.setPosition(LEFT_SERVO_AJAR);
-                }
+                rightBottom.setPower(-.81);
+                leftBottom.setPower(.81);
             } else if (Math.abs(gamepad2.right_stick_y) > .2) {
                 relic.setPower(Range.clip(gamepad2.right_stick_y, -1.0, 1.0));
-            } else if (gamepad2.left_bumper) {
-                SL.setPosition(LEFT_SERVO_OPEN);
             } else {
                 relic.setPower(0.0);
                 // servo test
-                SR.setPosition(RIGHT_SERVO_CLOSED);
-                SL.setPosition(LEFT_SERVO_CLOSED);
+                rightBottom.setPower(0);
+                leftBottom.setPower(0);
             }
 
             // Raise or lower the lift based upon the second gamepad's D-pad.
