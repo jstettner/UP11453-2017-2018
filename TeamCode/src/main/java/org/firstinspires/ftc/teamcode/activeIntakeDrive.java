@@ -238,10 +238,10 @@ public class activeIntakeDrive extends God3OpMode {
                         leftBottom = hardwareMap.get(CRServo.class, "rightTop");
                     } else if (Math.round(liftServo.getPosition() * 100.0) / 100.0 == LIFT_FLIPUP) {
                         liftServo.setPosition(LIFT_FLIPDOWN);
-                        leftBottom = hardwareMap.get(CRServo.class, "rightTop");
-                        rightBottom = hardwareMap.get(CRServo.class, "leftTop");
-                        leftTop = hardwareMap.get(CRServo.class, "rightBottom");
-                        rightTop = hardwareMap.get(CRServo.class, "leftBottom");
+                        leftBottom = hardwareMap.get(CRServo.class, "leftBottom");
+                        rightBottom = hardwareMap.get(CRServo.class, "rightBottom");
+                        leftTop = hardwareMap.get(CRServo.class, "leftTop");
+                        rightTop = hardwareMap.get(CRServo.class, "rightTop");
                     } else {
                         liftServo.setPosition(LIFT_FLIPDOWN);
                     }
