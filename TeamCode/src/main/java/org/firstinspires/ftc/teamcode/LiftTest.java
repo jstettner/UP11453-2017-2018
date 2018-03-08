@@ -26,52 +26,24 @@ public class LiftTest extends God3OpMode {
      * Code to run ONCE when the driver hits INIT
      */
     public void runOpMode() throws InterruptedException {
-        CRServo leftBottom = hardwareMap.get(CRServo.class, "leftBottom");
-        CRServo rightBottom = hardwareMap.get(CRServo.class, "rightBottom");
-        CRServo leftTop = hardwareMap.get(CRServo.class, "leftTop");
-        CRServo rightTop = hardwareMap.get(CRServo.class, "rightTop");
         Servo flipServo = hardwareMap.get(Servo.class, "flipServo");
         boolean read = false;
         waitForStart();
         while (opModeIsActive()) {
-            if (gamepad2.left_trigger > .2) {
-                rightTop.setPower(-.81);
-                leftTop.setPower(.81);
-            } else if (gamepad2.right_trigger > .2) {
-                rightBottom.setPower(.81);
-                leftBottom.setPower(-.81);
-            } else if (Math.abs(gamepad2.left_stick_y) > .2) {
-                rightBottom.setPower(-Range.clip(gamepad2.left_stick_y, -.81, .81));
-                leftBottom.setPower(Range.clip(gamepad2.left_stick_y, -.81, .81));
-                rightTop.setPower(Range.clip(gamepad2.left_stick_y, -.81, .81));
-                leftTop.setPower(-Range.clip(gamepad2.left_stick_y, -.81, .81));
-            } else {
-                // servo test
-                rightBottom.setPower(0);
-                leftBottom.setPower(0);
-                rightTop.setPower(0);
-                leftTop.setPower(0);
-            }
             if (gamepad2.a) {
-                if (!read) {
-                    read = true;
-                    if (Math.round(flipServo.getPosition() * 100.0) / 100.0 == LIFT_FLIPDOWN) {
-                        flipServo.setPosition(LIFT_FLIPUP);
-                    } else if (Math.round(flipServo.getPosition() * 100.0) / 100.0 == LIFT_FLIPUP) {
-                        flipServo.setPosition(LIFT_FLIPDOWN);
-                    } else {
-                        flipServo.setPosition(LIFT_FLIPDOWN);
-                    }
-                }
-            } else {
-                read = false;
+                flipServo.setPosition(.95);
+            } else if (gamepad2.x) {
+                flipServo.setPosition(.05);
+            } else if (gamepad2.y) {
+               flipServo.setPosition(.99);
+            } else if (gamepad2.b){
+                flipServo.setPosition(0.01);
+            }
+            if (gamepad2.right_stick_y > .2) {
+                flipServo.setPosition(.91);
             }
 
-            rightBottom.setPower(-.81);
-            leftBottom.setPower(.81);
-            telemetry.addData("Right power", rightBottom.getPower());
-            telemetry.addData("Left power", leftBottom.getPower());
-            telemetry.update();
+
         }
     }
 

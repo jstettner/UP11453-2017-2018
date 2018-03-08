@@ -47,7 +47,7 @@ public class activeIntakeDrive extends God3OpMode {
     CRServo rightTop;
     CRServo leftTop;
     CRServo rightBottom;
-    Servo liftServo = hardwareMap.get(Servo.class, "liftServo");
+    Servo liftServo;
 
     @Override
     public void strafe(boolean strafe) {
@@ -85,6 +85,7 @@ public class activeIntakeDrive extends God3OpMode {
         SRelicPickup = hardwareMap.get(Servo.class, "SRelicPickup");
         SBlock = hardwareMap.get(Servo.class, "SBlock");
         lift = hardwareMap.get(DcMotor.class, "lift");
+        liftServo = hardwareMap.get(Servo.class, "liftServo");
 
         // Set the initial directions of the motors
         FL.setDirection(DcMotor.Direction.REVERSE);
@@ -109,13 +110,15 @@ public class activeIntakeDrive extends God3OpMode {
 
         // Reset the timer to zero.
         runtime.reset();
-
+        liftServo.setPosition(LIFT_FLIPDOWN);
         // Wait for the start button to be pressed on the phone.
         waitForStart();
 
         // Loop until the op mode is stopped.
         while (!isStopRequested() && opModeIsActive()) {
+
             telemetry.addData("relicPos", SRelicRotate.getPosition());
+            telemetry.addData("servoPos", liftServo.getPosition());
             telemetry.addData("read", read);
             // Pull up the jewel arm.
             JS.setPosition(JEWEL_SERVO_UP);
@@ -166,22 +169,22 @@ public class activeIntakeDrive extends God3OpMode {
 
             // Open and close the lift servos based upon the second gamepad.
             if (gamepad2.left_trigger > .2) {
-                rightBottom.setPower(.81);
-                leftBottom.setPower(-.81);
-            } else if (gamepad2.left_bumper) {
                 rightBottom.setPower(-.81);
                 leftBottom.setPower(.81);
+            } else if (gamepad2.left_bumper) {
+                rightBottom.setPower(.81);
+                leftBottom.setPower(-.81);
             } else if (gamepad2.right_trigger > .2) {
-                rightTop.setPower(-.81);
-                leftTop.setPower(.81);
-            } else if (gamepad2.right_bumper) {
                 rightTop.setPower(.81);
                 leftTop.setPower(-.81);
+            } else if (gamepad2.right_bumper) {
+                rightTop.setPower(-.81);
+                leftTop.setPower(.81);
             } else if (Math.abs(gamepad2.left_stick_y) > .2) {
-                rightBottom.setPower(Range.clip(gamepad2.right_stick_y, -.81, -.81));
-                leftBottom.setPower(-Range.clip(gamepad2.right_stick_y, -.81, -.81));
-                rightTop.setPower(-Range.clip(gamepad2.right_stick_y, -.81, -.81));
-                leftTop.setPower(Range.clip(gamepad2.right_stick_y, -.81, -.81));
+                rightBottom.setPower(-Range.clip(gamepad2.left_stick_y, -.81, .81));
+                leftBottom.setPower(Range.clip(gamepad2.left_stick_y, -.81, .81));
+                rightTop.setPower(Range.clip(gamepad2.left_stick_y, -.81, .81));
+                leftTop.setPower(-Range.clip(gamepad2.left_stick_y, -.81, .81));
             }  else if (Math.abs(gamepad2.right_stick_y) > .2) {
                 relic.setPower(Range.clip(gamepad2.right_stick_y, -1.0, 1.0));
             } else {
@@ -189,6 +192,8 @@ public class activeIntakeDrive extends God3OpMode {
                 // servo test
                 rightBottom.setPower(0);
                 leftBottom.setPower(0);
+                rightTop.setPower(0);
+                leftTop.setPower(0);
             }
 
             // Raise or lower the lift based upon the second gamepad's D-pad.
