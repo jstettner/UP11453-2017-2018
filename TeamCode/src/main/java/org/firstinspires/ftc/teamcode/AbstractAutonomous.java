@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.hardware.AnalogInput;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -97,6 +98,11 @@ public abstract class AbstractAutonomous extends God3OpMode {
     AnalogInput ultrasonicRight;
 
     ColorSensor CBOT;
+    CRServo leftBottom;
+    CRServo rightTop;
+    CRServo leftTop;
+    CRServo rightBottom;
+    Servo liftServo;
 
 
     /**
@@ -177,16 +183,56 @@ public abstract class AbstractAutonomous extends God3OpMode {
     /**
      * Get the preloaded glyph
      */
-    private void getGlyph() {
-        closeGrabber();
-        double startTime = clock.milliseconds();
-        while (clock.milliseconds() - startTime < 500) {
-        }
-        startTime = clock.milliseconds();
-        while (clock.milliseconds() - startTime < 500) {
-            lift.setPower(.7);
+    void lift(double power, double time) {
+        clock.reset();
+        while (clock.milliseconds() < time) {
+            lift.setPower(power);
         }
         lift.setPower(0);
+    }
+    void intake(double power) {
+        rightBottom.setPower(-power);
+        leftBottom.setPower(power);
+        rightTop.setPower(power);
+        leftTop.setPower(-power);
+    }
+    void intake(double power, double time) {
+        clock.reset();
+        while(clock.milliseconds() < time) {
+            rightBottom.setPower(-power);
+            leftBottom.setPower(power);
+            rightTop.setPower(power);
+            leftTop.setPower(-power);
+        }
+        rightBottom.setPower(0);
+        leftBottom.setPower(0);
+        rightTop.setPower(0);
+        leftTop.setPower(0);
+    }
+    void stopIntake() {
+        rightBottom.setPower(0);
+        leftBottom.setPower(0);
+        rightTop.setPower(0);
+        leftTop.setPower(0);
+    }
+    void outtake(double power) {
+        rightBottom.setPower(power);
+        leftBottom.setPower(-power);
+        rightTop.setPower(-power);
+        leftTop.setPower(power);
+    }
+    void outtake(double power, double time) {
+        clock.reset();
+        while(clock.milliseconds() < time) {
+            rightBottom.setPower(power);
+            leftBottom.setPower(-power);
+            rightTop.setPower(-power);
+            leftTop.setPower(power);
+        }
+        rightBottom.setPower(0);
+        leftBottom.setPower(0);
+        rightTop.setPower(0);
+        leftTop.setPower(0);
     }
 
     /**
@@ -196,14 +242,7 @@ public abstract class AbstractAutonomous extends God3OpMode {
         double power = 0.6;
         initGyro();
         JS.setPosition(JEWEL_SERVO_DOWN);
-        telemetry.addData("jewel position", JS.getPosition());
-        telemetry.update();
-        double startTime = clock.milliseconds();
-
-        while (clock.milliseconds() - startTime < 2000) {
-            telemetry.addData("CBL R,G,B", "(" + CBL.red() + ", " + CBL.green() + ", " + CBL.blue() + ")");
-            telemetry.update();
-        }
+        delay(1500);
 
         telemetry.addData("result", get_colors());
 
@@ -211,31 +250,31 @@ public abstract class AbstractAutonomous extends God3OpMode {
             if (get_colors() == JewelPosition.RED_JEWEL_LEFT) {
                 drive(.15, 0, 0, JEWEL_TURN_TIME);
                 JS.setPosition(JEWEL_SERVO_UP);
-                delay(1500);
+                delay(500);
                 drive(-.15, 0, 0, JEWEL_TURN_TIME);
             } else if (get_colors() == JewelPosition.RED_JEWEL_RIGHT) {
                 drive(-.15, 0, 0, JEWEL_TURN_TIME);
                 JS.setPosition(JEWEL_SERVO_UP);
-                delay(1500);
+                delay(500);
                 drive(.15, 0, 0, JEWEL_TURN_TIME);
             } else {
                 JS.setPosition(JEWEL_SERVO_UP);
-                delay(1500);
+                delay(500);
             }
         } else {
             if (get_colors() == JewelPosition.RED_JEWEL_RIGHT) {
                 drive(.15, 0, 0, JEWEL_TURN_TIME);
                 JS.setPosition(JEWEL_SERVO_UP);
-                delay(1500);
+                delay(500);
                 drive(-.15, 0, 0, JEWEL_TURN_TIME);
             } else if (get_colors() == JewelPosition.RED_JEWEL_LEFT) {
                 drive(-.15, 0, 0, JEWEL_TURN_TIME);
                 JS.setPosition(JEWEL_SERVO_UP);
-                delay(1500);
+                delay(500);
                 drive(.15, 0, 0, JEWEL_TURN_TIME);
             } else {
                 JS.setPosition(JEWEL_SERVO_UP);
-                delay(1500);
+                delay(500);
             }
         }
     }
@@ -424,16 +463,18 @@ public abstract class AbstractAutonomous extends God3OpMode {
     }
 
     public RelicRecoveryVuMark getPicto() {
+        int counts = 0;
         RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
         if (vuMark != RelicRecoveryVuMark.UNKNOWN) {
             return vuMark;
         }
         clock.reset();
-        while (clock.milliseconds() < 2000) {
+        while (clock.milliseconds() < 2000 && counts < 50) {
             vuMark = RelicRecoveryVuMark.from(relicTemplate);
             if (vuMark != RelicRecoveryVuMark.UNKNOWN) {
                 return vuMark;
             }
+            counts++;
         }
         return vuMark;
     }

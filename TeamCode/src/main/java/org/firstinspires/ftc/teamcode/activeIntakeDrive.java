@@ -87,6 +87,7 @@ public class activeIntakeDrive extends God3OpMode {
         lift = hardwareMap.get(DcMotor.class, "lift");
         liftServo = hardwareMap.get(Servo.class, "liftServo");
 
+
         // Set the initial directions of the motors
         FL.setDirection(DcMotor.Direction.REVERSE);
         BL.setDirection(DcMotor.Direction.REVERSE);
@@ -168,24 +169,17 @@ public class activeIntakeDrive extends God3OpMode {
             BL.setPower(backLeft);
 
             // Open and close the lift servos based upon the second gamepad.
-            if (gamepad2.left_trigger > .2) {
+            if (gamepad2.right_trigger > .2) {
                 rightBottom.setPower(-.81);
                 leftBottom.setPower(.81);
-            } else if (gamepad2.left_bumper) {
-                rightBottom.setPower(.81);
-                leftBottom.setPower(-.81);
-            } else if (gamepad2.right_trigger > .2) {
                 rightTop.setPower(.81);
                 leftTop.setPower(-.81);
-            } else if (gamepad2.right_bumper) {
+            } else if (gamepad2.left_trigger > .2) {
+                rightBottom.setPower(.81);
+                leftBottom.setPower(-.81);
                 rightTop.setPower(-.81);
                 leftTop.setPower(.81);
-            } else if (Math.abs(gamepad2.left_stick_y) > .2) {
-                rightBottom.setPower(-Range.clip(gamepad2.left_stick_y, -.81, .81));
-                leftBottom.setPower(Range.clip(gamepad2.left_stick_y, -.81, .81));
-                rightTop.setPower(Range.clip(gamepad2.left_stick_y, -.81, .81));
-                leftTop.setPower(-Range.clip(gamepad2.left_stick_y, -.81, .81));
-            }  else if (Math.abs(gamepad2.right_stick_y) > .2) {
+            }    else if (Math.abs(gamepad2.right_stick_y) > .2) {
                 relic.setPower(Range.clip(gamepad2.right_stick_y, -1.0, 1.0));
             } else {
                 relic.setPower(0.0);
