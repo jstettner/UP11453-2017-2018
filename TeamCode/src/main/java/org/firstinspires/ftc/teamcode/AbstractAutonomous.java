@@ -242,10 +242,7 @@ public abstract class AbstractAutonomous extends God3OpMode {
         double power = 0.6;
         initGyro();
         JS.setPosition(JEWEL_SERVO_DOWN);
-        delay(1500);
-
-        telemetry.addData("result", get_colors());
-
+        delay(2000);
         if (isRed()) {
             if (get_colors() == JewelPosition.RED_JEWEL_LEFT) {
                 drive(.15, 0, 0, JEWEL_TURN_TIME);
