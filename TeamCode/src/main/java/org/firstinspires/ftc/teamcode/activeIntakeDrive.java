@@ -47,6 +47,7 @@ public class activeIntakeDrive extends God3OpMode {
     CRServo rightTop;
     CRServo leftTop;
     CRServo rightBottom;
+    boolean openRelic = false;
     Servo liftServo;
 
     @Override
@@ -179,7 +180,7 @@ public class activeIntakeDrive extends God3OpMode {
                 leftBottom.setPower(-.81);
                 rightTop.setPower(-.81);
                 leftTop.setPower(.81);
-            }    else if (Math.abs(gamepad2.right_stick_y) > .2) {
+            } else if (openRelic && Math.abs(gamepad2.right_stick_y) > .2) {
                 relic.setPower(Range.clip(gamepad2.right_stick_y, -1.0, 1.0));
             } else {
                 relic.setPower(0.0);
@@ -205,7 +206,7 @@ public class activeIntakeDrive extends God3OpMode {
 
             // Open or close the relic servos based upon the second gamepad.
             if (gamepad2.b) {
-                if (!gripped) {
+                if (openRelic && !gripped) {
                     gripped = true;
                     if (Math.round(SRelicPickup.getPosition() * 100.0) / 100.0 == RELIC_PICKUP) {
                         SRelicPickup.setPosition(RELIC_DROP);
@@ -213,9 +214,10 @@ public class activeIntakeDrive extends God3OpMode {
                         SRelicPickup.setPosition(RELIC_PICKUP);
                     } else {
                         SRelicPickup.setPosition(RELIC_DROP);
+                        SRelicPickup.setPosition(RELIC_DROP);
                     }
                 }
-            } else if (gamepad2.x) {
+            } else if (openRelic && gamepad2.x) {
                 if (!read) {
                     read = true;
                     if (Math.round(SRelicRotate.getPosition() * 100.0) / 100.0 == RELIC_FLIPDOWN) {
@@ -223,6 +225,7 @@ public class activeIntakeDrive extends God3OpMode {
                     } else if (Math.round(SRelicRotate.getPosition() * 100.0) / 100.0 == RELIC_FLIPUP) {
                         SRelicRotate.setPosition(RELIC_FLIPDOWN);
                     } else {
+                        SRelicRotate.setPosition(RELIC_FLIPDOWN);
                         SRelicRotate.setPosition(RELIC_FLIPDOWN);
                     }
                 }
@@ -241,6 +244,19 @@ public class activeIntakeDrive extends God3OpMode {
                         rightBottom = hardwareMap.get(CRServo.class, "rightBottom");
                         leftTop = hardwareMap.get(CRServo.class, "leftTop");
                         rightTop = hardwareMap.get(CRServo.class, "rightTop");
+                    } else {
+                        liftServo.setPosition(LIFT_FLIPDOWN);
+                    }
+                }
+            } else if (gamepad2.y) {
+                if (!read) {
+                    read = true;
+                    if (Math.round(liftServo.getPosition() * 100.0) / 100.0 == LIFT_FLIPDOWN) {
+                        liftServo.setPosition(LIFT_FLIPUP);
+                        liftServo.setPosition(LIFT_FLIPDOWN);
+                    } else if (Math.round(liftServo.getPosition() * 100.0) / 100.0 == LIFT_FLIPUP) {
+                        liftServo.setPosition(LIFT_FLIPDOWN);
+                        liftServo.setPosition(LIFT_FLIPUP);
                     } else {
                         liftServo.setPosition(LIFT_FLIPDOWN);
                     }
@@ -288,6 +304,7 @@ public class activeIntakeDrive extends God3OpMode {
      * Switch to relic orientation
      */
     public void switchToRelic() {
+        openRelic = true;
         SBlock.setPosition(.1);
         mode = Orientation.RELIC;
         FR = hardwareMap.get(DcMotor.class, "BR");
@@ -295,6 +312,8 @@ public class activeIntakeDrive extends God3OpMode {
         BR = hardwareMap.get(DcMotor.class, "BL");
         BL = hardwareMap.get(DcMotor.class, "FL");
         SRelicRotate.setPosition(RELIC_FLIPDOWN);
+        SRelicRotate.setPosition(RELIC_FLIPDOWN);
+        SRelicPickup.setPosition(RELIC_DROP);
         SRelicPickup.setPosition(RELIC_DROP);
     }
 

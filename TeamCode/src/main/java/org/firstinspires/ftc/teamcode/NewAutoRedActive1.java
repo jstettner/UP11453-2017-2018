@@ -11,13 +11,13 @@ import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
 /**
  * Created by student on 11/9/17.
  */
-@Autonomous(name = "activeBlueSide")
-public class NewAutoBlueActive1 extends NewAutonomous {
+@Autonomous(name = "newAutoRedActive1")
+public class NewAutoRedActive1 extends NewAutonomous {
     RelicRecoveryVuMark column = RelicRecoveryVuMark.UNKNOWN;
+    double beforeAngle = 0;
     public Alliance getAlliance() {
-        return Alliance.BLUE;
+        return Alliance.RED;
     }
-    @Override
     public void runOpMode() {
         telemetry.addData("Status", "Initialized");
 
@@ -56,83 +56,82 @@ public class NewAutoBlueActive1 extends NewAutonomous {
         lift(.7, 500);
         stopIntake();
         pushJewel();
-        delay(250);
-        drive(0,-.3,0,1400);
-        delay(250);
-        drive(0,0,-.3,250);
-        delay(250);
-        driveUntilColorBlue(-.3);
-        delay(250);
-        drive(0,0,.3,250);
-        delay(250);
+        delay(500);
+        drive(0,.3,0,1400);
+        delay(500);
+        drive(0,0,-.3,600);
+        delay(500);
+        driveUntilColorRed(.3);
+        delay(500);
+        drive(0,0,.3,400);
+        delay(500);
 
         // these should become until left
         if (column == RelicRecoveryVuMark.CENTER || column == RelicRecoveryVuMark.UNKNOWN) {
-            drive(0,0.3,0,400);
-            delay(250);
-            turn(-.3, 145);
-        } else if (column == RelicRecoveryVuMark.LEFT) {
-            drive(0,-0.3,0,300);
-            delay(250);
-            turn(.3, 145);
-        } else if (column == RelicRecoveryVuMark.RIGHT) {
-            drive(0,-0.3,0,200);
+            drive(0,-0.3,0,520);
             delay(500);
-            turn(-250, 140);
+            turn(.3, 130);
+            delay(500);
+        } else if (column == RelicRecoveryVuMark.LEFT) {
+            drive(0,0.3,0,400);
+            delay(500);
+            turn(.3, 130);
+            delay(500);
+        } else if (column == RelicRecoveryVuMark.RIGHT) {
+            drive(0,0.3,0,950);
+            delay(500);
+            turn(-.3, 140);
+            delay(500);
         }
-
+        drive(0, 0, .3, 1800);
         lift(-.7, 500);
         outtake(.81);
-        delay(1500);
-        drive(0, 0, .3, 1800);
         delay(500);
-        stopIntake();
         drive(0, 0, -.3, 200);
     }
-/*
-    public void run(int state) {
-        if (state == 0) {
-            closeGrabber();
-            delay(500);
-            lift.setPower(.4);
-            delay(500);
-            lift.setPower(0);
-        } else if (state == 1) {
-            column = getPicto();
-            telemetry.addData("column", column);
-            telemetry.update();
-            delay(500);
-        } else if (state == 2) {
-            pushJewel();
-        } else if (state == 3) {
-            if (column == RelicRecoveryVuMark.CENTER || column == RelicRecoveryVuMark.UNKNOWN) {
-                drive(0, -.3, 0, 1500);
-            } else if (column == RelicRecoveryVuMark.LEFT) {
-                drive(0, -.3, 0, 1400);
-            } else if (column == RelicRecoveryVuMark.RIGHT) {
-                drive(0, -.3, 0, 1700);
-            }
-        } else if (state == 4) {
-            if (column == RelicRecoveryVuMark.CENTER || column == RelicRecoveryVuMark.UNKNOWN) {
-                turn(-.2, 154);
-            } else if (column == RelicRecoveryVuMark.LEFT) {
-                turn(-.2, 175);
-            } else if (column == RelicRecoveryVuMark.RIGHT) {
-                turn(-.2, 147);
-            }
-        } else if (state == 5) {
-            lift.setPower(-.4);
-            delay(600);
-            lift.setPower(0);
-            delay(500);
-            openGrabberFlat();
-            delay(800);
-        } else if (state == 6) {
-            drive(0, 0, .3, 1800);
-        } else {
-            delay(1000);
-            drive(0, 0, -.3, 200);
-        }
-    }
-    */
+
+//    public void run(int state) {
+//        if (state == 0) {
+//            closeGrabber();
+//            delay(1000);
+//            lift.setPower(.4);
+//            delay(800);
+//            lift.setPower(0);
+//        } else if (state == 1) {
+//        //    column = getPicto();
+//            telemetry.addData("column", column);
+//            telemetry.update();
+//        } else if (state == 2) {
+//            pushJewel();
+//        } else if (state == 3) {
+//            delay(500);
+//            if (column == RelicRecoveryVuMark.CENTER || column == RelicRecoveryVuMark.UNKNOWN) {
+//                drive(0, .3, 0, 1500);
+//            } else if (column == RelicRecoveryVuMark.LEFT) {
+//                drive(0, .3, 0, 1500);
+//            } else if (column == RelicRecoveryVuMark.RIGHT) {
+//                drive(0, .3, 0, 1500);
+//            }
+//        } else if (state == 4) {
+//            if (column == RelicRecoveryVuMark.CENTER || column == RelicRecoveryVuMark.UNKNOWN) {
+//                turn(.2, 155);
+//            } else if (column == RelicRecoveryVuMark.LEFT) {
+//                turn(.2, 175);
+//            } else if (column == RelicRecoveryVuMark.RIGHT) {
+//                turn(.2, 152);
+//            }
+//        } else if (state == 5) {
+//            lift.setPower(-.4);
+//            delay(600);
+//            lift.setPower(0);
+//            delay(500);
+//            openGrabberFlat();
+//            delay(1000);
+//        } else if (state == 6) {
+//            drive(0, 0, .3, 1800);
+//        } else {
+//            delay(1000);
+//            drive(0, 0, -.3, 200);
+//        }
+//    }
 }

@@ -185,7 +185,7 @@ public abstract class AbstractAutonomous extends God3OpMode {
      */
     void lift(double power, double time) {
         clock.reset();
-        while (clock.milliseconds() < time) {
+        while (opModeIsActive() && clock.milliseconds() < time) {
             lift.setPower(power);
         }
         lift.setPower(0);
@@ -198,7 +198,7 @@ public abstract class AbstractAutonomous extends God3OpMode {
     }
     void intake(double power, double time) {
         clock.reset();
-        while(clock.milliseconds() < time) {
+        while(opModeIsActive() && clock.milliseconds() < time) {
             rightBottom.setPower(-power);
             leftBottom.setPower(power);
             rightTop.setPower(power);
@@ -242,7 +242,7 @@ public abstract class AbstractAutonomous extends God3OpMode {
         double power = 0.6;
         initGyro();
         JS.setPosition(JEWEL_SERVO_DOWN);
-        delay(2000);
+        delay(1500);
         if (isRed()) {
             if (get_colors() == JewelPosition.RED_JEWEL_LEFT) {
                 drive(.15, 0, 0, JEWEL_TURN_TIME);
@@ -287,17 +287,10 @@ public abstract class AbstractAutonomous extends God3OpMode {
 
     public void drive(double turn, double drive_x, double drive_y, double time) {
         counter = getRuntime() * 1000.0;
-        while (getRuntime() * 1000.0 < counter + time) {
+        while (opModeIsActive() && getRuntime() * 1000.0 < counter + time) {
             drive(turn, drive_x, drive_y);
         }
         stopRobot();
-    }
-
-    public void stopRobot(double time) {
-        counter = getRuntime() * 1000.0;
-        while (getRuntime() * 1000.0 < counter + time) {
-            drive(0, 0, 0);
-        }
     }
 
     public void stopRobot() {
@@ -318,10 +311,8 @@ public abstract class AbstractAutonomous extends God3OpMode {
         if (Math.abs(drive_y) > .15) {
             telemetry.addData("Status", "Driving");
             strafe(false);
-
             leftPower = Range.clip(drive_y + turn, -1.0, 1.0);
             rightPower = Range.clip(drive_y - turn, -1.0, 1.0);
-
             FL.setPower(leftPower);
             BL.setPower(leftPower);
             FR.setPower(rightPower);
@@ -334,8 +325,9 @@ public abstract class AbstractAutonomous extends God3OpMode {
             rightPower = Range.clip(drive_x - turn, -1.0, 1.0);
 
             FL.setPower(leftPower);
-            BL.setPower(rightPower);
-            FR.setPower(leftPower);
+            BL.setPower(1.25 * rightPower);
+            FR.setPower(1.25 *
+                    leftPower);
             BR.setPower(rightPower);
         } else {
             telemetry.addData("Status", "Turning");
