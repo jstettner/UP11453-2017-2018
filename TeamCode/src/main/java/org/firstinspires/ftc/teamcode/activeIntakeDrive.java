@@ -34,6 +34,7 @@ public class activeIntakeDrive extends God3OpMode {
     private double short_drive_y;
     private ElapsedTime clock = new ElapsedTime();
     private double startTime = 0.0;
+    double flipPosition = LIFT_FLIPDOWN;
     double scale;
     double drive_scale;
     double gamepad1LeftY;
@@ -112,7 +113,7 @@ public class activeIntakeDrive extends God3OpMode {
 
         // Reset the timer to zero.
         runtime.reset();
-        liftServo.setPosition(LIFT_FLIPDOWN);
+        liftServo.setPosition(flipPosition);
         // Wait for the start button to be pressed on the phone.
         waitForStart();
 
@@ -123,6 +124,7 @@ public class activeIntakeDrive extends God3OpMode {
             telemetry.addData("servoPos", liftServo.getPosition());
             telemetry.addData("read", read);
             // Pull up the jewel arm.
+            liftServo.setPosition(flipPosition);
             JS.setPosition(JEWEL_SERVO_UP);
 
             // left stick controls direction
@@ -233,33 +235,25 @@ public class activeIntakeDrive extends God3OpMode {
                 if (!read) {
                     read = true;
                     if (Math.round(liftServo.getPosition() * 100.0) / 100.0 == LIFT_FLIPDOWN) {
+                        flipPosition = LIFT_FLIPUP;
                         liftServo.setPosition(LIFT_FLIPUP);
                         rightTop = hardwareMap.get(CRServo.class, "leftBottom");
                         leftTop = hardwareMap.get(CRServo.class, "rightBottom");
                         rightBottom = hardwareMap.get(CRServo.class, "leftTop");
                         leftBottom = hardwareMap.get(CRServo.class, "rightTop");
                     } else if (Math.round(liftServo.getPosition() * 100.0) / 100.0 == LIFT_FLIPUP) {
-                        liftServo.setPosition(LIFT_FLIPDOWN);
+                        flipPosition = LIFT_FLIPDOWN;
                         leftBottom = hardwareMap.get(CRServo.class, "leftBottom");
                         rightBottom = hardwareMap.get(CRServo.class, "rightBottom");
                         leftTop = hardwareMap.get(CRServo.class, "leftTop");
                         rightTop = hardwareMap.get(CRServo.class, "rightTop");
                     } else {
-                        liftServo.setPosition(LIFT_FLIPDOWN);
-                    }
-                }
-            } else if (gamepad2.y) {
-                if (!read) {
-                    read = true;
-                    if (Math.round(liftServo.getPosition() * 100.0) / 100.0 == LIFT_FLIPDOWN) {
-                        liftServo.setPosition(LIFT_FLIPUP);
-                        liftServo.setPosition(LIFT_FLIPDOWN);
-                    } else if (Math.round(liftServo.getPosition() * 100.0) / 100.0 == LIFT_FLIPUP) {
-                        liftServo.setPosition(LIFT_FLIPDOWN);
-                        liftServo.setPosition(LIFT_FLIPUP);
-                    } else {
-                        liftServo.setPosition(LIFT_FLIPDOWN);
-                    }
+                        flipPosition = LIFT_FLIPDOWN;
+                        leftBottom = hardwareMap.get(CRServo.class, "leftBottom");
+                        rightBottom = hardwareMap.get(CRServo.class, "rightBottom");
+                        leftTop = hardwareMap.get(CRServo.class, "leftTop");
+                        rightTop = hardwareMap.get(CRServo.class, "rightTop");
+                      }
                 }
             } else {
                 gripped = false;

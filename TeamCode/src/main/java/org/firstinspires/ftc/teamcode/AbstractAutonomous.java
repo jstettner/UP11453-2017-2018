@@ -326,8 +326,7 @@ public abstract class AbstractAutonomous extends God3OpMode {
 
             FL.setPower(leftPower);
             BL.setPower(1.25 * rightPower);
-            FR.setPower(1.25 *
-                    leftPower);
+            FR.setPower(1.25 * leftPower);
             BR.setPower(rightPower);
         } else {
             telemetry.addData("Status", "Turning");

@@ -61,7 +61,7 @@ public class NewAutoBlueActive1 extends NewAutonomous {
         delay(250);
         drive(0,0,-.3,250);
         delay(250);
-        driveUntilColorBlue(-.3);
+        driveUntilColorRed(-.3);
         delay(250);
         drive(0,0,.3,250);
         delay(250);
@@ -76,18 +76,19 @@ public class NewAutoBlueActive1 extends NewAutonomous {
             delay(250);
             turn(.3, 145);
         } else if (column == RelicRecoveryVuMark.RIGHT) {
-            drive(0,-0.3,0,200);
-            delay(500);
-            turn(-250, 140);
+            drive(0,-0.3,0,550);
+            delay(250);
+            turn(-.250, 140);
         }
 
         lift(-.7, 500);
         outtake(.81);
-        delay(1500);
+        delay(750);
+        stopIntake();
+        delay(500);
         drive(0, 0, .3, 1800);
         delay(500);
-        stopIntake();
-        drive(0, 0, -.3, 200);
+        drive(0, 0, -.3, 220);
     }
 /*
     public void run(int state) {
