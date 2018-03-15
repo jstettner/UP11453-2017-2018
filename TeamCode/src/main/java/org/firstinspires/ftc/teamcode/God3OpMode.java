@@ -122,7 +122,7 @@ abstract class God3OpMode extends LinearOpMode {
     static final double SHORT_DRIVE_TIME = 100;
     static final double SHORT_DRIVE_POWER = .5;
     static final double JEWEL_SERVO_DOWN = .75;
-    static final double JEWEL_SERVO_UP = .12;
+    static final double JEWEL_SERVO_UP = .15;
     OpenGLMatrix lastLocation = null;
 
     /**

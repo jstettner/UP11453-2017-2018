@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -12,6 +13,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
  * Created by student on 11/9/17.
  */
 @Autonomous(name = "newAutoRed1")
+@Disabled
 public class NewAutoRed1 extends NewAutonomous {
     RelicRecoveryVuMark column = RelicRecoveryVuMark.UNKNOWN;
     double beforeAngle = 0;

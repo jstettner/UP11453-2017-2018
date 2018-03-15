@@ -56,39 +56,36 @@ public class NewAutoBlueActive1 extends NewAutonomous {
         lift(.7, 500);
         stopIntake();
         pushJewel();
-        delay(250);
-        drive(0,-.3,0,1400);
-        delay(250);
-        drive(0,0,-.3,250);
-        delay(250);
-        driveUntilColorRed(-.3);
-        delay(250);
-        drive(0,0,.3,250);
-        delay(250);
+        delay(500);
+        drive(0,-.3,0,1350);
+        delay(500);
+        drive(0,0,.3,300);
+        delay(500);
+        driveUntilColorRed(-.3); // should be blue
+        delay(500);
+        drive(0, -.3, 0, 350);
+        delay(500);
 
         // these should become until left
         if (column == RelicRecoveryVuMark.CENTER || column == RelicRecoveryVuMark.UNKNOWN) {
-            drive(0,0.3,0,400);
-            delay(250);
-            turn(-.3, 145);
+            turn(-.3, 165);
         } else if (column == RelicRecoveryVuMark.LEFT) {
-            drive(0,-0.3,0,300);
-            delay(250);
-            turn(.3, 145);
+            turn(.3, 150);
         } else if (column == RelicRecoveryVuMark.RIGHT) {
-            drive(0,-0.3,0,550);
-            delay(250);
-            turn(-.250, 140);
+            drive(0, -.3, 0, 350);
+            turn(-.3, 125);
         }
 
-        lift(-.7, 500);
+        delay(500);
+        drive(0, 0, .3, 300);
+        lift(-.7,400);
         outtake(.81);
-        delay(750);
-        stopIntake();
+        delay(1000);
         delay(500);
         drive(0, 0, .3, 1800);
         delay(500);
-        drive(0, 0, -.3, 220);
+        drive(0, 0, -.3, 350);
+        stopIntake();
     }
 /*
     public void run(int state) {

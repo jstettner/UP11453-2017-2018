@@ -603,10 +603,23 @@ public abstract class AbstractAutonomous extends God3OpMode {
         }
         drive(0, 0, 0);
     }
+    public void driveUntilColorRedForward(double power) {
+        while (CBOT.red() < 15) {
+            drive(0, 0, power);
+        }
+        drive(0, 0, 0);
+    }
         public void driveUntilColorBlue(double power) {
             while (CBOT.blue() < 12) {
                 drive(0, power, 0);
             }
             drive(0, 0, 0);
         }
+
+    public void driveUntilColorBlueForward(double power) {
+        while (CBOT.blue() < 12) {
+            drive(0, 0, power);
+        }
+        drive(0, 0, 0);
+    }
 }

@@ -57,37 +57,35 @@ public class NewAutoRedActive1 extends NewAutonomous {
         stopIntake();
         pushJewel();
         delay(500);
-        drive(0,.3,0,1400);
+        drive(0,.3,0,1350);
         delay(500);
-        drive(0,0,-.3,600);
+        drive(0,0,.3,300);
         delay(500);
-        driveUntilColorRed(.3);
+        driveUntilColorRed(-.3);
         delay(500);
-        drive(0,0,.3,400);
+        drive(0, .3, 0, 350);
         delay(500);
 
         // these should become until left
         if (column == RelicRecoveryVuMark.CENTER || column == RelicRecoveryVuMark.UNKNOWN) {
-            drive(0,-0.3,0,520);
-            delay(500);
-            turn(.3, 130);
-            delay(500);
+            turn(.3, 165);
         } else if (column == RelicRecoveryVuMark.LEFT) {
-            drive(0,0.3,0,400);
-            delay(500);
-            turn(.3, 130);
-            delay(500);
+            turn(.3, 150);
         } else if (column == RelicRecoveryVuMark.RIGHT) {
-            drive(0,0.3,0,950);
-            delay(500);
+            drive(0, .3, 0, 350);
             turn(-.3, 140);
-            delay(500);
         }
-        drive(0, 0, .3, 1800);
-        lift(-.7, 500);
-        outtake(.81);
+
         delay(500);
-        drive(0, 0, -.3, 200);
+        drive(0, 0, .3, 300);
+        lift(-.7,400);
+        outtake(.81);
+        delay(1000);
+        delay(500);
+        drive(0, 0, .3, 1800);
+        delay(500);
+        stopIntake();
+        drive(0, 0, -.3, 350);
     }
 
 //    public void run(int state) {
