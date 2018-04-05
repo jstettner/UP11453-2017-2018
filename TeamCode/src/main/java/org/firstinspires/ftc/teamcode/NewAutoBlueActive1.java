@@ -11,7 +11,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
 /**
  * Created by student on 11/9/17.
  */
-@Autonomous(name = "activeBlueSide")
+@Autonomous(name = "BlueSide")
 public class NewAutoBlueActive1 extends NewAutonomous {
     RelicRecoveryVuMark column = RelicRecoveryVuMark.UNKNOWN;
     public Alliance getAlliance() {
@@ -51,41 +51,38 @@ public class NewAutoBlueActive1 extends NewAutonomous {
         JS.setPosition(JEWEL_SERVO_UP);
         liftServo.setPosition(LIFT_FLIPDOWN);
         waitForStart();
-        column = getPicto();
-        intake(.81);
-        lift(.7, 500);
-        stopIntake();
-        pushJewel();
-        delay(500);
-        drive(0,-.3,0,1350);
-        delay(500);
-        drive(0,0,.3,300);
-        delay(500);
-        driveUntilColorRed(-.3); // should be blue
-        delay(500);
-        drive(0, -.3, 0, 350);
-        delay(500);
-
-        // these should become until left
-        if (column == RelicRecoveryVuMark.CENTER || column == RelicRecoveryVuMark.UNKNOWN) {
-            turn(-.3, 165);
-        } else if (column == RelicRecoveryVuMark.LEFT) {
-            turn(.3, 150);
-        } else if (column == RelicRecoveryVuMark.RIGHT) {
-            drive(0, -.3, 0, 350);
-            turn(-.3, 125);
+        if (isStopRequested()) return;
+        if (!isStopRequested() && opModeIsActive())  column = getPicto();
+        if (!isStopRequested() && opModeIsActive()) intake(.81);
+        if (!isStopRequested() && opModeIsActive()) lift(.7, 500);
+        if (!isStopRequested() && opModeIsActive()) stopIntake();
+        if (!isStopRequested() && opModeIsActive()) pushJewel();
+        if (!isStopRequested() && opModeIsActive()) delay(500);
+        if (!isStopRequested() && opModeIsActive()) drive(0,-.3,0,1350);
+        if (!isStopRequested() && opModeIsActive()) delay(500);
+        if (!isStopRequested() && opModeIsActive()) drive(0,0,-.3,350);
+        if (!isStopRequested() && opModeIsActive()) delay(500);
+        if (!isStopRequested() && opModeIsActive()) driveUntilColorBlue(-.3);
+        if (!isStopRequested() && opModeIsActive()) delay(500);
+        if (!isStopRequested() && opModeIsActive()) {
+            if (column == RelicRecoveryVuMark.CENTER || column == RelicRecoveryVuMark.UNKNOWN) {
+                if (!isStopRequested() && opModeIsActive()) turn(-.3, 170);
+            } else if (column == RelicRecoveryVuMark.LEFT) {
+                if (!isStopRequested() && opModeIsActive()) turn(.3, 155);
+            } else if (column == RelicRecoveryVuMark.RIGHT) {
+                if (!isStopRequested() && opModeIsActive()) turn(-.3, 136.5);
+            }
         }
 
-        delay(500);
-        drive(0, 0, .3, 300);
-        lift(-.7,400);
-        outtake(.81);
-        delay(1000);
-        delay(500);
-        drive(0, 0, .3, 1800);
-        delay(500);
-        drive(0, 0, -.3, 350);
-        stopIntake();
+        if (!isStopRequested() && opModeIsActive()) delay(500);
+        if (!isStopRequested() && opModeIsActive()) lift(-.7,400);
+        if (!isStopRequested() && opModeIsActive()) outtake(.81);
+        if (!isStopRequested() && opModeIsActive()) delay(1000);
+        if (!isStopRequested() && opModeIsActive()) stopIntake();
+        if (!isStopRequested() && opModeIsActive()) delay(500);
+        if (!isStopRequested() && opModeIsActive()) drive(0, 0, .3, 1800);
+        if (!isStopRequested() && opModeIsActive()) delay(500);
+        if (!isStopRequested() && opModeIsActive()) drive(0, 0, -.3, 350);
     }
 /*
     public void run(int state) {

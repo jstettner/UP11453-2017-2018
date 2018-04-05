@@ -13,11 +13,10 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
 @TeleOp(name = "Sensor Test")
-//@Disabled
+@Disabled
 public class SensorTest extends God3OpMode {
     // Declare OpMode members.
     ElapsedTime clock = new ElapsedTime();
-
     public void runOpMode() throws InterruptedException {
         // Tell the driver that the Op Mode has started
         telemetry.addData("Status", "Initialized");

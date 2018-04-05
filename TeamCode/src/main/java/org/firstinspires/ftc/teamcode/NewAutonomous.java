@@ -24,7 +24,7 @@ public abstract class NewAutonomous extends AbstractAutonomous {
 
     public void delay(int time) {
         double startTime = clock.milliseconds();
-        while (clock.milliseconds() - startTime < time) {
+        while (!isStopRequested() && opModeIsActive() && clock.milliseconds() - startTime < time) {
         }
     }
 
@@ -46,11 +46,11 @@ public abstract class NewAutonomous extends AbstractAutonomous {
 
     public void drive(double turn, double drive_x, double drive_y, int time) {
         boolean driving = true;
-        while (driving) {
-            drive(turn, drive_x, drive_y);
-            delay(time);
-            drive(0, 0, 0);
-            driving = false;
+        while (!isStopRequested() && opModeIsActive() && driving) {
+            if (!isStopRequested() && opModeIsActive()) drive(turn, drive_x, drive_y);
+            if (!isStopRequested() && opModeIsActive()) delay(time);
+            if (!isStopRequested() && opModeIsActive()) drive(0, 0, 0);
+            if (!isStopRequested() && opModeIsActive()) driving = false;
         }
     }
 
@@ -71,21 +71,27 @@ public abstract class NewAutonomous extends AbstractAutonomous {
             leftPower = Range.clip(drive_y + turn, -1.0, 1.0);
             rightPower = Range.clip(drive_y - turn, -1.0, 1.0);
 
-            FL.setPower(leftPower);
-            BL.setPower(leftPower);
-            FR.setPower(rightPower);
-            BR.setPower(rightPower);
+            FL.setPower(1.1 * leftPower / 1.4);
+            BL.setPower(1.1 * leftPower);
+            FR.setPower(1.1 * rightPower);
+            BR.setPower(1.1 * rightPower / 1.4);
         } else if (Math.abs(drive_x) > .05) {
             telemetry.addData("Status", "Strafing");
             strafe(true);
 
             leftPower = Range.clip(drive_x + turn, -1.0, 1.0);
             rightPower = Range.clip(drive_x - turn, -1.0, 1.0);
-
-            FL.setPower(leftPower);
-            BL.setPower(rightPower);
-            FR.setPower(leftPower);
-            BR.setPower(rightPower);
+            if (drive_x < 0) {
+                FL.setPower(leftPower);
+                BL.setPower(rightPower * 1.2);
+                FR.setPower(leftPower * 1.2);
+                BR.setPower(rightPower);
+            } else {
+                FL.setPower(leftPower);
+                BL.setPower(rightPower);
+                FR.setPower(leftPower);
+                BR.setPower(rightPower);
+            }
         } else {
             telemetry.addData("Status", "Turning");
             strafe(false);

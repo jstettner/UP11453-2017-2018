@@ -185,54 +185,54 @@ public abstract class AbstractAutonomous extends God3OpMode {
      */
     void lift(double power, double time) {
         clock.reset();
-        while (opModeIsActive() && clock.milliseconds() < time) {
-            lift.setPower(power);
+        while (!isStopRequested() && opModeIsActive() && clock.milliseconds() < time) {
+            if (!isStopRequested() && opModeIsActive()) lift.setPower(power);
         }
-        lift.setPower(0);
+        if (!isStopRequested() && opModeIsActive()) lift.setPower(0);
     }
     void intake(double power) {
-        rightBottom.setPower(-power);
-        leftBottom.setPower(power);
-        rightTop.setPower(power);
-        leftTop.setPower(-power);
+        if (!isStopRequested() && opModeIsActive()) rightBottom.setPower(-power);
+        if (!isStopRequested() && opModeIsActive()) leftBottom.setPower(power);
+        if (!isStopRequested() && opModeIsActive()) rightTop.setPower(power);
+        if (!isStopRequested() && opModeIsActive()) leftTop.setPower(-power);
     }
     void intake(double power, double time) {
         clock.reset();
-        while(opModeIsActive() && clock.milliseconds() < time) {
-            rightBottom.setPower(-power);
-            leftBottom.setPower(power);
-            rightTop.setPower(power);
-            leftTop.setPower(-power);
+        while(!isStopRequested() && opModeIsActive() && clock.milliseconds() < time) {
+            if (!isStopRequested() && opModeIsActive()) rightBottom.setPower(-power);
+            if (!isStopRequested() && opModeIsActive()) leftBottom.setPower(power);
+            if (!isStopRequested() && opModeIsActive()) rightTop.setPower(power);
+            if (!isStopRequested() && opModeIsActive()) leftTop.setPower(-power);
         }
-        rightBottom.setPower(0);
-        leftBottom.setPower(0);
-        rightTop.setPower(0);
-        leftTop.setPower(0);
+        if (!isStopRequested() && opModeIsActive()) rightBottom.setPower(0);
+        if (!isStopRequested() && opModeIsActive()) leftBottom.setPower(0);
+        if (!isStopRequested() && opModeIsActive()) rightTop.setPower(0);
+        if (!isStopRequested() && opModeIsActive()) leftTop.setPower(0);
     }
     void stopIntake() {
-        rightBottom.setPower(0);
-        leftBottom.setPower(0);
-        rightTop.setPower(0);
-        leftTop.setPower(0);
+        if (!isStopRequested() && opModeIsActive()) rightBottom.setPower(0);
+        if (!isStopRequested() && opModeIsActive()) leftBottom.setPower(0);
+        if (!isStopRequested() && opModeIsActive()) rightTop.setPower(0);
+        if (!isStopRequested() && opModeIsActive()) leftTop.setPower(0);
     }
     void outtake(double power) {
-        rightBottom.setPower(power);
-        leftBottom.setPower(-power);
-        rightTop.setPower(-power);
-        leftTop.setPower(power);
+        if (!isStopRequested() && opModeIsActive()) rightBottom.setPower(power);
+        if (!isStopRequested() && opModeIsActive()) leftBottom.setPower(-power);
+        if (!isStopRequested() && opModeIsActive()) rightTop.setPower(-power);
+        if (!isStopRequested() && opModeIsActive()) leftTop.setPower(power);
     }
     void outtake(double power, double time) {
         clock.reset();
-        while(clock.milliseconds() < time) {
-            rightBottom.setPower(power);
-            leftBottom.setPower(-power);
-            rightTop.setPower(-power);
-            leftTop.setPower(power);
+        while(!isStopRequested() && opModeIsActive() && clock.milliseconds() < time) {
+            if (!isStopRequested() && opModeIsActive()) rightBottom.setPower(power);
+            if (!isStopRequested() && opModeIsActive()) leftBottom.setPower(-power);
+            if (!isStopRequested() && opModeIsActive()) rightTop.setPower(-power);
+            if (!isStopRequested() && opModeIsActive()) leftTop.setPower(power);
         }
-        rightBottom.setPower(0);
-        leftBottom.setPower(0);
-        rightTop.setPower(0);
-        leftTop.setPower(0);
+        if (!isStopRequested() && opModeIsActive()) rightBottom.setPower(0);
+        if (!isStopRequested() && opModeIsActive()) leftBottom.setPower(0);
+        if (!isStopRequested() && opModeIsActive()) rightTop.setPower(0);
+        if (!isStopRequested() && opModeIsActive()) leftTop.setPower(0);
     }
 
     /**
@@ -240,38 +240,38 @@ public abstract class AbstractAutonomous extends God3OpMode {
      */
     void pushJewel() {
         double power = 0.6;
-        initGyro();
-        JS.setPosition(JEWEL_SERVO_DOWN);
-        delay(1500);
-        if (isRed()) {
-            if (get_colors() == JewelPosition.RED_JEWEL_LEFT) {
-                drive(.15, 0, 0, JEWEL_TURN_TIME);
-                JS.setPosition(JEWEL_SERVO_UP);
-                delay(500);
-                drive(-.15, 0, 0, JEWEL_TURN_TIME);
-            } else if (get_colors() == JewelPosition.RED_JEWEL_RIGHT) {
-                drive(-.15, 0, 0, JEWEL_TURN_TIME);
-                JS.setPosition(JEWEL_SERVO_UP);
-                delay(500);
-                drive(.15, 0, 0, JEWEL_TURN_TIME);
+        if (!isStopRequested() && opModeIsActive()) initGyro();
+        if (!isStopRequested() && opModeIsActive()) JS.setPosition(JEWEL_SERVO_DOWN);
+        if (!isStopRequested() && opModeIsActive()) delay(1500);
+        if (isRed() && !isStopRequested() && opModeIsActive()) {
+            if (get_colors() == JewelPosition.RED_JEWEL_LEFT && !isStopRequested() && opModeIsActive()) {
+                if (!isStopRequested() && opModeIsActive())  drive(.15, 0, 0, JEWEL_TURN_TIME);
+                if (!isStopRequested() && opModeIsActive()) JS.setPosition(JEWEL_SERVO_UP);
+                if (!isStopRequested() && opModeIsActive()) delay(500);
+                if (!isStopRequested() && opModeIsActive())  drive(-.15, 0, 0, JEWEL_TURN_TIME);
+            } else if (get_colors() == JewelPosition.RED_JEWEL_RIGHT && !isStopRequested() && opModeIsActive()) {
+                if (!isStopRequested() && opModeIsActive())  drive(-.15, 0, 0, JEWEL_TURN_TIME);
+                if (!isStopRequested() && opModeIsActive())  JS.setPosition(JEWEL_SERVO_UP);
+                if (!isStopRequested() && opModeIsActive())  delay(500);
+                if (!isStopRequested() && opModeIsActive())   drive(.15, 0, 0, JEWEL_TURN_TIME);
             } else {
-                JS.setPosition(JEWEL_SERVO_UP);
-                delay(500);
+                if (!isStopRequested() && opModeIsActive())  JS.setPosition(JEWEL_SERVO_UP);
+                if (!isStopRequested() && opModeIsActive())  delay(500);
             }
         } else {
-            if (get_colors() == JewelPosition.RED_JEWEL_RIGHT) {
-                drive(.15, 0, 0, JEWEL_TURN_TIME);
-                JS.setPosition(JEWEL_SERVO_UP);
-                delay(500);
-                drive(-.15, 0, 0, JEWEL_TURN_TIME);
+            if (get_colors() == JewelPosition.RED_JEWEL_RIGHT && !isStopRequested() && opModeIsActive()) {
+                if (!isStopRequested() && opModeIsActive())  drive(.15, 0, 0, JEWEL_TURN_TIME);
+                if (!isStopRequested() && opModeIsActive())  JS.setPosition(JEWEL_SERVO_UP);
+                if (!isStopRequested() && opModeIsActive())  delay(500);
+                if (!isStopRequested() && opModeIsActive())  drive(-.15, 0, 0, JEWEL_TURN_TIME);
             } else if (get_colors() == JewelPosition.RED_JEWEL_LEFT) {
-                drive(-.15, 0, 0, JEWEL_TURN_TIME);
-                JS.setPosition(JEWEL_SERVO_UP);
-                delay(500);
-                drive(.15, 0, 0, JEWEL_TURN_TIME);
+                if (!isStopRequested() && opModeIsActive())  drive(-.15, 0, 0, JEWEL_TURN_TIME);
+                if (!isStopRequested() && opModeIsActive())   JS.setPosition(JEWEL_SERVO_UP);
+                if (!isStopRequested() && opModeIsActive())  delay(500);
+                if (!isStopRequested() && opModeIsActive())  drive(.15, 0, 0, JEWEL_TURN_TIME);
             } else {
-                JS.setPosition(JEWEL_SERVO_UP);
-                delay(500);
+                if (!isStopRequested() && opModeIsActive())   JS.setPosition(JEWEL_SERVO_UP);
+                if (!isStopRequested() && opModeIsActive())  delay(500);
             }
         }
     }
@@ -279,7 +279,7 @@ public abstract class AbstractAutonomous extends God3OpMode {
     public void delay(int time) {
         telemetry.addData("delay", "started delay");
         clock.reset();
-        while (time > clock.milliseconds()) {
+        while (!isStopRequested() && opModeIsActive() && time > clock.milliseconds()) {
             telemetry.addData("time: ", clock.milliseconds());
             telemetry.update();
         }
@@ -287,7 +287,7 @@ public abstract class AbstractAutonomous extends God3OpMode {
 
     public void drive(double turn, double drive_x, double drive_y, double time) {
         counter = getRuntime() * 1000.0;
-        while (opModeIsActive() && getRuntime() * 1000.0 < counter + time) {
+        while (!isStopRequested() && opModeIsActive() && getRuntime() * 1000.0 < counter + time) {
             drive(turn, drive_x, drive_y);
         }
         stopRobot();
@@ -457,7 +457,7 @@ public abstract class AbstractAutonomous extends God3OpMode {
             return vuMark;
         }
         clock.reset();
-        while (clock.milliseconds() < 2000 && counts < 50) {
+        while (!isStopRequested() && opModeIsActive() && clock.milliseconds() < 2000 && counts < 50) {
             vuMark = RelicRecoveryVuMark.from(relicTemplate);
             if (vuMark != RelicRecoveryVuMark.UNKNOWN) {
                 return vuMark;
@@ -476,7 +476,7 @@ public abstract class AbstractAutonomous extends God3OpMode {
         telemetry.addData("test", "test");
         clock.reset();
         double startingAngle = angle();
-        while (6000 > clock.milliseconds() && getAngleDiff(startingAngle, angle()) < angle) {
+        while (!isStopRequested() && opModeIsActive() && 6000 > clock.milliseconds() && getAngleDiff(startingAngle, angle()) < angle) {
             telemetry.addData("not working", "plz");
             telemetry.addData("angleDiff", getAngleDiff(startingAngle, angle()));
             telemetry.addData("startingAngle", startingAngle);
@@ -504,26 +504,8 @@ public abstract class AbstractAutonomous extends God3OpMode {
         ultrasonicRight = hardwareMap.get(AnalogInput.class, "ultrasonicRight");
     }
 
-    public double averageQueue(Queue<Double> q) {
-        double sum = 0.0;
-        for(double d : q) {
-            sum += d;
-        }
-        return sum/q.size();
-    }
-
     int i;
     public double getLeftDist() {
-//        if(smooth_left == null) {
-//            smooth_left.add(0.0);
-//            smooth_left.add(0.0);
-//            smooth_left.add(0.0);
-//            smooth_left.add(0.0);
-//            smooth_left.add(0.0);
-//        }
-//        smooth_left.remove();
-//        smooth_left.add(ultrasonicLeft.getVoltage() * 1000 / 6.4);
-//        return averageQueue(smooth_left);
         return ultrasonicLeft.getVoltage() * 1000 / 6.4;
     }
     public double getRightDist() {
@@ -533,91 +515,28 @@ public abstract class AbstractAutonomous extends God3OpMode {
         return ultrasonicBack.getVoltage() * 1000 / 6.4;
     }
 
-    public void driveUntilLeft(double power, double desiredDist, double tolerance) {
-        int counts = 0;
-        while(counts < 3) {
-            if(!(getLeftDist() < desiredDist + tolerance && getLeftDist() > desiredDist - tolerance)) {
-                counts = 0;
-                telemetry.addData("left", getLeftDist());
-                if (getLeftDist() < desiredDist - tolerance) {
-                    drive(0, power, 0);
-                } else {
-                    drive(0, -power, 0);
-                }
-                telemetry.addData("count", counts);
-            } else {
-                drive(0, 0, 0);
-                counts++;
-                telemetry.addData("count", counts);
-            }
-            telemetry.update();
-        }
-        drive(0, 0, 0);
-    }
-    public void driveUntilRight(double power, double desiredDist, double tolerance) {
-        int counts = 0;
-        while(counts < 3) {
-            if (!(getRightDist() < desiredDist + tolerance && getRightDist() > desiredDist - tolerance)) {
-                counts = 0;
-                telemetry.addData("right", getRightDist());
-                if (getRightDist() < desiredDist - tolerance) {
-                    drive(0, -power, 0);
-                } else {
-                    drive(0, power, 0);
-                }
-                telemetry.addData("count", counts);
-            } else {
-                drive(0, 0, 0);
-                counts++;
-                telemetry.addData("count", counts);
-            }
-            telemetry.update();
-        }
-        drive(0, 0, 0);
-    }
-    public void driveUntilBack(double power, double desiredDist, double tolerance) {
-        int counts = 0;
-        while(counts < 3) {
-            if (!(getBackDist() < desiredDist + tolerance && getBackDist() > desiredDist - tolerance)) {
-                counts = 0;
-                telemetry.addData("back", getBackDist());
-                if (getBackDist() < desiredDist - tolerance) {
-                    drive(0, 0, power);
-                } else {
-                    drive(0, 0, -power);
-                }
-                telemetry.addData("count", counts);
-            } else {
-                drive(0, 0, 0);
-                counts++;
-                telemetry.addData("count", counts);
-            }
-            telemetry.update();
-        }
-        drive(0, 0, 0);
-    }
 
     public void driveUntilColorRed(double power) {
-        while (CBOT.red() < 15) {
+        while (!isStopRequested() && opModeIsActive() && CBOT.red() < 15) {
             drive(0, power, 0);
         }
         drive(0, 0, 0);
     }
     public void driveUntilColorRedForward(double power) {
-        while (CBOT.red() < 15) {
+        while (!isStopRequested() && opModeIsActive() && CBOT.red() < 15) {
             drive(0, 0, power);
         }
         drive(0, 0, 0);
     }
         public void driveUntilColorBlue(double power) {
-            while (CBOT.blue() < 12) {
+            while (!isStopRequested() && opModeIsActive() && CBOT.blue() < 12) {
                 drive(0, power, 0);
             }
             drive(0, 0, 0);
         }
 
     public void driveUntilColorBlueForward(double power) {
-        while (CBOT.blue() < 12) {
+        while (!isStopRequested() && opModeIsActive() && CBOT.blue() < 12) {
             drive(0, 0, power);
         }
         drive(0, 0, 0);
